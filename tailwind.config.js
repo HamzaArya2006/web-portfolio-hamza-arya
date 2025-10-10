@@ -8,6 +8,7 @@ export default {
     "./contact.html",
     "./resume.html",
     "./services.html",
+    "./pages/**/*.html",
     "./src/**/*.{js,ts,jsx,tsx,html}",
   ],
   theme: {
