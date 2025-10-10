@@ -3,7 +3,12 @@ export default {
   content: [
     "./index.html",
     "./about.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./blog.html",
+    "./case-studies.html",
+    "./contact.html",
+    "./resume.html",
+    "./services.html",
+    "./src/**/*.{js,ts,jsx,tsx,html}",
   ],
   theme: {
     extend: {

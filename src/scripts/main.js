@@ -1,6 +1,6 @@
-import './style.css';
-import { projects } from './data/projects.js';
-import { testimonials } from './data/testimonials.js';
+import '../styles/main.css';
+import { projects } from '../data/projects.js';
+import { testimonials } from '../data/testimonials.js';
 
 // Set dark mode as default
 const rootElement = document.documentElement;
@@ -66,12 +66,20 @@ function bindContactForm() {
   const form = document.querySelector('form[data-contact]');
   if (!form) return;
   const statusEl = document.querySelector('[data-contact-status]');
+  if (statusEl) {
+    statusEl.setAttribute('role', 'status');
+    statusEl.setAttribute('aria-live', 'polite');
+  }
+  let submitting = false;
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (submitting) return;
+    submitting = true;
     const formData = new FormData(form);
     // Honeypot field to deter bots
     if (formData.get('website')) {
       form.reset();
+      submitting = false;
       return;
     }
     const name = (formData.get('name') || '').toString().trim();
@@ -86,6 +94,7 @@ function bindContactForm() {
         statusEl.classList.remove('text-emerald-400');
         statusEl.classList.add('text-red-400');
       }
+      submitting = false;
       return;
     }
     const endpoint = import.meta.env.VITE_FORM_ENDPOINT;
@@ -111,9 +120,13 @@ function bindContactForm() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, brief, budget }),
         });
-        if (!res.ok) throw new Error('Request failed');
+        if (!res.ok) {
+          const text = await res.text().catch(() => '');
+          throw new Error(text || 'Request failed');
+        }
         showStatus('Thanks! I will get back to you shortly.', 'success');
         form.reset();
+        submitting = false;
         return;
       } catch (err) {
         console.warn('Form endpoint failed, falling back to email.', err);
@@ -133,6 +146,7 @@ function bindContactForm() {
       showStatus('Could not open email app. Please email contact@hamzaarya.dev', 'error');
     } finally {
       setLoading(false);
+      submitting = false;
     }
   });
 }

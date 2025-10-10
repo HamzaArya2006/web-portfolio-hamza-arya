@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Production build
+/dist/
+
+# Env files
+.env
+.env.*
+
+# Editors/IDEs
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Hosting providers
+.vercel/
+.netlify/
+
+# Coverage / reports
+coverage/
