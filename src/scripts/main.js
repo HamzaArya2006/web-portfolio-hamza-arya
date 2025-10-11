@@ -25,22 +25,7 @@ function bindSmoothScroll() {
   });
 }
 
-// Sticky nav shadow on scroll
-function bindStickyNav() {
-  const header = document.querySelector('header[data-sticky]');
-  if (!header) return;
-  const onScroll = () => {
-    if (window.scrollY > 8) {
-      header.classList.add('shadow-lg', 'shadow-black/20', 'backdrop-blur');
-      header.classList.add('bg-gray-900/80');
-    } else {
-      header.classList.remove('shadow-lg', 'shadow-black/20', 'backdrop-blur');
-      header.classList.remove('bg-gray-900/80');
-    }
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-}
+ 
 
 // IntersectionObserver for fade/slide reveals
 function bindRevealOnScroll() {
@@ -89,67 +74,52 @@ function bindParallax() {
 // Hero spotlight: hide hero grids except a circular cursor spotlight
 function bindHeroSpotlight() {
   const hero = document.querySelector('section#top');
-  const bg = hero ? hero.querySelector('[data-hero-bg]') : null;
   const overlay = hero ? hero.querySelector('[data-hero-spotlight]') : null;
-  if (!hero || !bg || !overlay) return;
+  if (!hero || !overlay) return;
 
-  // Start with grids fully hidden; reveal under spotlight only
+  // Natural vignette that follows the cursor with no smoothing latency
   overlay.style.pointerEvents = 'none';
   overlay.style.opacity = '1';
-  overlay.style.mixBlendMode = '';
-  overlay.style.background = 'rgba(0,0,0,1)';
+  overlay.style.mixBlendMode = 'normal';
 
-  let rafId = 0;
-  let running = false;
-  let lastX = hero.clientWidth / 2, lastY = hero.clientHeight / 2; // smoothed position
-  let targetX = lastX, targetY = lastY; // cursor target
-  const baseRadius = 140;    // base visible radius
-  const featherWidth = 180;  // soft edge width
+  // Larger, softer, darker and more natural (not a bright hole)
+  const baseRadius = 240;      // inner influence radius
+  const featherWidth = 420;    // very soft falloff
+  const centerAlpha = 0.14;    // lighter center
+  const midAlpha = 0.38;       // lighter mid
+  const outsideAlpha = 0.66;   // lighter edges
 
-  const frame = () => {
-    lastX += (targetX - lastX) * 0.2;
-    lastY += (targetY - lastY) * 0.2;
-
-    const dx = targetX - lastX;
-    const dy = targetY - lastY;
-    const speed = Math.sqrt(dx * dx + dy * dy);
-    const extra = Math.min(80, speed * 0.6);
-    const visibleRadius = baseRadius + extra;
-    const stop1 = Math.max(0, visibleRadius);
-    const stop2 = visibleRadius + featherWidth;
-
-    // Transparent center reveals grids; opaque outside hides them
-    const gradient = `radial-gradient(circle at ${lastX}px ${lastY}px, transparent ${stop1}px, rgba(0,0,0,0.85) ${stop2}px, rgba(0,0,0,1) ${stop2 + 80}px)`;
+  const setGradient = (x, y) => {
+    const inner = baseRadius;
+    const outer = baseRadius + featherWidth;
+    // Multi-stop gradient: subtly dark in the center, smoothly darkening outward
+    const gradient = `radial-gradient(circle at ${x}px ${y}px, rgba(0,0,0,${centerAlpha}) 0px, rgba(0,0,0,${midAlpha}) ${inner}px, rgba(0,0,0,${outsideAlpha}) ${outer}px)`;
     overlay.style.background = gradient;
-
-    if (running) rafId = requestAnimationFrame(frame);
   };
 
-  const onMove = (e) => {
+  let lastX = hero.clientWidth / 2;
+  let lastY = hero.clientHeight / 2;
+
+  const onPointerMove = (e) => {
     const rect = hero.getBoundingClientRect();
-    targetX = e.clientX - rect.left;
-    targetY = e.clientY - rect.top;
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+    // Update immediately for zero perceived latency
+    setGradient(lastX, lastY);
   };
 
-  const onEnter = (e) => {
+  const onPointerEnter = (e) => {
     const rect = hero.getBoundingClientRect();
-    targetX = e.clientX - rect.left;
-    targetY = e.clientY - rect.top;
-    running = true;
-    cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(frame);
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+    setGradient(lastX, lastY);
   };
 
-  const onLeave = () => {
-    running = false;
-    cancelAnimationFrame(rafId);
-    // Fully hide grids when cursor leaves
-    overlay.style.background = 'rgba(0,0,0,1)';
-  };
+  hero.addEventListener('pointermove', onPointerMove);
+  hero.addEventListener('pointerenter', onPointerEnter);
 
-  hero.addEventListener('mousemove', onMove);
-  hero.addEventListener('mouseenter', onEnter);
-  hero.addEventListener('mouseleave', onLeave);
+  // Initialize centered, so it looks stable before the first move
+  setGradient(lastX, lastY);
 }
 
 // Simple contact form handler (no backend): validate + honeypot
@@ -582,7 +552,6 @@ function bindTestimonialProximity() {
 window.addEventListener('DOMContentLoaded', () => {
   initTheme();
   bindSmoothScroll();
-  bindStickyNav();
   // Render dynamic content before binding observers
   renderProjects();
   bindProjectFilters();
