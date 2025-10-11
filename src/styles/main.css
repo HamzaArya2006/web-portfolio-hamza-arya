@@ -36,6 +36,30 @@
   .btn-minimal {
     @apply inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/5 transition-colors border border-transparent;
   }
+  .nav-link {
+    @apply inline-flex items-center px-3 py-2 rounded-md transition-colors duration-200 text-white/80 hover:text-white hover:bg-white/5;
+    position: relative;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 6px;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #6366f1);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 200ms ease, opacity 200ms ease;
+    opacity: 0.6;
+    border-radius: 9999px;
+    pointer-events: none;
+  }
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after {
+    transform: scaleX(1);
+    opacity: 0.85;
+  }
   .input {
     @apply w-full rounded-md border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50;
   }
@@ -334,6 +358,16 @@
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
+
+  /* Desktop-only group hover scale for services */
+  @media (min-width: 1024px) {
+    .services-grid:hover .service-card {
+      transform: translateY(-2px) scale(1.005);
+    }
+    .services-grid .service-card:hover {
+      transform: translateY(-10px) scale(1.02);
+    }
+  }
   
   .service-card::before {
     content: '';
@@ -353,6 +387,27 @@
   .service-card:hover::before {
     opacity: 1;
     border-color: rgba(255, 255, 255, 0.3);
+    animation: gradient-shift 6s ease infinite;
+  }
+
+  /* Subtle shine sweep */
+  .service-card::after {
+    content: '';
+    position: absolute;
+    top: -25%;
+    left: -40%;
+    width: 22%;
+    height: 150%;
+    transform: rotate(18deg) translateX(-150%);
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.20) 50%, rgba(255,255,255,0) 100%);
+    opacity: 0.2;
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .service-card:hover::after {
+    transform: rotate(18deg) translateX(350%);
   }
   
   .service-card > * {
@@ -381,11 +436,12 @@
   
   .service-icon svg {
     color: rgba(255, 255, 255, 0.7);
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.4s ease;
   }
   
   .service-card:hover .service-icon svg {
     color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px) rotate(4deg);
   }
   
   .service-title {
@@ -459,11 +515,11 @@
   
   /* Service card hover effects */
   .service-card:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-8px) scale(1.015);
     box-shadow: 
-      0 25px 50px rgba(0, 0, 0, 0.2),
+      0 20px 40px rgba(0, 0, 0, 0.18),
       0 0 0 1px rgba(255, 255, 255, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   /* About Section Cards */
@@ -661,11 +717,11 @@
   }
   
   .project-card:hover {
-    transform: translateY(-12px) scale(1.02);
+    transform: translateY(-10px) scale(1.015);
     box-shadow: 
-      0 25px 50px rgba(0, 0, 0, 0.2),
-      0 0 0 1px rgba(255, 255, 255, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 22px 44px rgba(0, 0, 0, 0.18),
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
   
   .project-card::before {
@@ -686,11 +742,32 @@
   .project-card:hover::before {
     opacity: 1;
     border-color: rgba(255, 255, 255, 0.3);
+    animation: gradient-shift 6s ease infinite;
   }
   
   .project-card > * {
     position: relative;
     z-index: 2;
+  }
+
+  /* Subtle shine sweep on project cards */
+  .project-card::after {
+    content: '';
+    position: absolute;
+    top: -25%;
+    left: -40%;
+    width: 20%;
+    height: 150%;
+    transform: rotate(18deg) translateX(-150%);
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+    opacity: 0.18;
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .project-card:hover::after {
+    transform: rotate(18deg) translateX(350%);
   }
   
   .project-image-container {
@@ -870,6 +947,65 @@
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(99, 102, 241, 0.3) 100%);
     border-color: rgba(59, 130, 246, 0.4);
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+  }
+
+  /* Desktop-only group hover scale for projects */
+  @media (min-width: 1024px) {
+    .projects-grid:hover .project-card {
+      transform: translateY(-4px) scale(1.01);
+    }
+    .projects-grid .project-card:hover {
+      transform: translateY(-12px) scale(1.02);
+    }
+  }
+
+  /* Hero: rotating specialties */
+  .hero-rotator {
+    position: relative;
+    height: 1.25rem; /* h-5 */
+    line-height: 1.25rem;
+  }
+  .hero-rotator > span {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: hero-rotate 9s ease-in-out infinite;
+  }
+  .hero-rotator > span:nth-child(1) { animation-delay: 0s; }
+  .hero-rotator > span:nth-child(2) { animation-delay: 3s; }
+  .hero-rotator > span:nth-child(3) { animation-delay: 6s; }
+  
+  @keyframes hero-rotate {
+    0% { opacity: 0; transform: translateY(8px); }
+    10% { opacity: 1; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(0); }
+    35% { opacity: 0; transform: translateY(-8px); }
+    100% { opacity: 0; transform: translateY(-8px); }
+  }
+
+  /* Hero: quick badges */
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+  }
+  .hero-badge:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 }
 

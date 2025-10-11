@@ -2,7 +2,7 @@
 export default {
   content: [
     "./index.html",
-    "./about.html",
+    "./pages/about.html",
     "./blog.html",
     "./case-studies.html",
     "./contact.html",

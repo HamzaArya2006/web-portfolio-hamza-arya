@@ -61,6 +61,97 @@ function bindRevealOnScroll() {
   revealables.forEach((el) => observer.observe(el));
 }
 
+// Lightweight parallax for hero background elements
+function bindParallax() {
+  const parallaxEls = Array.from(document.querySelectorAll('[data-parallax]'));
+  if (!parallaxEls.length) return;
+  let ticking = false;
+  const update = () => {
+    const scrollY = window.scrollY || window.pageYOffset;
+    for (const el of parallaxEls) {
+      const speedAttr = el.getAttribute('data-parallax') || '0';
+      const speed = parseFloat(speedAttr) || 0;
+      // Translate only on Y; keep existing transforms intact by appending translate3d
+      el.style.transform = `translate3d(0, ${Math.round(scrollY * speed)}px, 0)`;
+    }
+    ticking = false;
+  };
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  update();
+}
+
+// Hero spotlight: hide hero grids except a circular cursor spotlight
+function bindHeroSpotlight() {
+  const hero = document.querySelector('section#top');
+  const bg = hero ? hero.querySelector('[data-hero-bg]') : null;
+  const overlay = hero ? hero.querySelector('[data-hero-spotlight]') : null;
+  if (!hero || !bg || !overlay) return;
+
+  // Start with grids fully hidden; reveal under spotlight only
+  overlay.style.pointerEvents = 'none';
+  overlay.style.opacity = '1';
+  overlay.style.mixBlendMode = '';
+  overlay.style.background = 'rgba(0,0,0,1)';
+
+  let rafId = 0;
+  let running = false;
+  let lastX = hero.clientWidth / 2, lastY = hero.clientHeight / 2; // smoothed position
+  let targetX = lastX, targetY = lastY; // cursor target
+  const baseRadius = 140;    // base visible radius
+  const featherWidth = 180;  // soft edge width
+
+  const frame = () => {
+    lastX += (targetX - lastX) * 0.2;
+    lastY += (targetY - lastY) * 0.2;
+
+    const dx = targetX - lastX;
+    const dy = targetY - lastY;
+    const speed = Math.sqrt(dx * dx + dy * dy);
+    const extra = Math.min(80, speed * 0.6);
+    const visibleRadius = baseRadius + extra;
+    const stop1 = Math.max(0, visibleRadius);
+    const stop2 = visibleRadius + featherWidth;
+
+    // Transparent center reveals grids; opaque outside hides them
+    const gradient = `radial-gradient(circle at ${lastX}px ${lastY}px, transparent ${stop1}px, rgba(0,0,0,0.85) ${stop2}px, rgba(0,0,0,1) ${stop2 + 80}px)`;
+    overlay.style.background = gradient;
+
+    if (running) rafId = requestAnimationFrame(frame);
+  };
+
+  const onMove = (e) => {
+    const rect = hero.getBoundingClientRect();
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+  };
+
+  const onEnter = (e) => {
+    const rect = hero.getBoundingClientRect();
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+    running = true;
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(frame);
+  };
+
+  const onLeave = () => {
+    running = false;
+    cancelAnimationFrame(rafId);
+    // Fully hide grids when cursor leaves
+    overlay.style.background = 'rgba(0,0,0,1)';
+  };
+
+  hero.addEventListener('mousemove', onMove);
+  hero.addEventListener('mouseenter', onEnter);
+  hero.addEventListener('mouseleave', onLeave);
+}
+
 // Simple contact form handler (no backend): validate + honeypot
 function bindContactForm() {
   const form = document.querySelector('form[data-contact]');
@@ -502,6 +593,8 @@ window.addEventListener('DOMContentLoaded', () => {
   bindMobileNav();
   bindDesktopDropdown();
   bindMobileSubmenu();
+  bindParallax();
+  bindHeroSpotlight();
 });
 
 
