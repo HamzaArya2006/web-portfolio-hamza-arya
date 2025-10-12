@@ -6,12 +6,17 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lh:build": "vite build",
+    "lh:serve": "vite preview --port 4173 --strictPort --open=false",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "devDependencies": {
     "vite": "^5.0.0",
     "tailwindcss": "^3.4.0",
     "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.32"
+    "postcss": "^8.4.32",
+    "vite-plugin-compression": "^0.5.1",
+    "lighthouse": "^12.0.0"
   }
 }

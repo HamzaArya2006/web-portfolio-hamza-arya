@@ -19,50 +19,42 @@
     <meta name="twitter:image" content="/favicon.svg" />
   </head>
   <body class="bg-gray-900 text-gray-100">
-    <!-- Header / Navbar -->
-    <header data-sticky class="fixed inset-x-0 top-0 z-50 transition-colors">
-      <nav class="container-pro flex h-16 items-center justify-between">
+    <!-- Simple header (brand + quick links) -->
+    <header class="sticky top-0 z-40 border-b border-white/10 bg-gray-900/70 backdrop-blur">
+      <div class="container-pro h-14 flex items-center justify-between">
         <a href="../index.html" class="flex items-center gap-2 font-semibold">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-purple-600 to-blue-600 text-white">H</span>
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-white">H</span>
           <span>Hamza</span>
         </a>
-        <div class="hidden md:flex items-center gap-2 text-sm">
-          <a href="./about.html" class="inline-flex items-center px-3 py-2 rounded-md hover:bg:white/5">About</a>
-          <a href="../index.html#projects" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">Projects</a>
-          <a href="./case-studies.html" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5 text-blue-400">Case Studies</a>
-          <a href="./blog.html" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">Blog</a>
-          <a href="./services.html" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">Services</a>
-          <a href="./contact.html" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">Contact</a>
-          <a href="./resume.html" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">Resume</a>
-          <a href="./contact.html" class="btn-primary">Hire Me</a>
-        </div>
-        <button data-mobile-nav-toggle class="md:hidden btn-ghost" aria-controls="mobile-menu" aria-expanded="false">Menu</button>
-      </nav>
-      <!-- Mobile menu -->
-      <div data-mobile-nav id="mobile-menu" data-open="false" class="hidden md:hidden border-t border-white/10 bg-gray-900/80 backdrop-blur">
-        <div class="container-pro py-4 flex flex-col gap-3">
-          <a href="./about.html" class="py-2">About</a>
-          <a href="../index.html#projects" class="py-2">Projects</a>
-          <a href="./case-studies.html" class="py-2 text-blue-400">Case Studies</a>
-          <a href="./blog.html" class="py-2">Blog</a>
-          <a href="./services.html" class="py-2">Services</a>
-          <a href="./contact.html" class="py-2">Contact</a>
-          <a href="./resume.html" class="py-2">Resume</a>
-          <a href="./contact.html" class="btn-primary">Hire Me</a>
-        </div>
+        <nav class="hidden sm:flex items-center gap-2">
+          <a href="../index.html" class="nav-link">Home</a>
+          <a href="./contact.html" class="btn-minimal">Contact</a>
+        </nav>
       </div>
     </header>
 
+    <!-- Breadcrumb / navigation path -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
+        <li><a href="../index.html" class="hover:text-white">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </li>
+        <li aria-current="page" class="text-white">Case Studies</li>
+      </ol>
+    </nav>
+
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900/30 to-indigo-900 text-white pt-16">
-      <!-- Background elements -->
-      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div class="absolute -top-40 left-1/2 h-96 w-[50rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600/25 via-indigo-600/20 to-cyan-500/25 blur-3xl animate-pulse-slow"></div>
-        <div class="absolute top-1/4 right-1/4 h-64 w-64 rounded-full bg-gradient-to-r from-indigo-500/20 to-blue-500/20 blur-2xl animate-float"></div>
-        <div class="absolute bottom-1/4 left-1/4 h-48 w-48 rounded-full bg-gradient-to-r from-cyan-500/15 to-blue-500/15 blur-2xl animate-bounce-slow"></div>
-        <div class="absolute inset-0 opacity-[0.05] bg-grid mask-radial"></div>
+    <section id="top" class="relative py-20 overflow-hidden bg-black text-white">
+      <!-- Professional animated background -->
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
+        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
+        <div class="absolute inset-0 bg-grid animate-grid-move opacity-60"></div>
+        <div class="absolute inset-0 bg-grid-dots opacity-15"></div>
+        <div data-parallax="0.06" class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl"></div>
       </div>
-      <div class="container-pro relative z-10">
+      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300 mix-blend-soft-light" style="will-change: background;"></div>
+      <div class="container-pro relative z-20">
         <div class="max-w-4xl mx-auto text-center">
           <div data-reveal class="opacity-0 translate-y-6">
             <div class="inline-flex items-center gap-3 glass rounded-full px-8 py-4 mb-12 hover-lift group">
@@ -131,7 +123,7 @@
         <div class="flex items-center gap-4">
           <a class="hover:text-white" href="https://github.com/hamza" target="_blank" rel="noopener">GitHub</a>
           <a class="hover:text-white" href="https://linkedin.com/in/hamza" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="../index.html" class="hover:text-white">Home</a>
+          <a href="#top" class="hover:text-white">Top</a>
         </div>
       </div>
     </footer>

@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import compression from 'vite-plugin-compression'
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -7,6 +8,7 @@ const __dirname = resolve(__filename, '..')
 
 export default defineConfig({
   plugins: [
+    compression({ algorithm: 'brotliCompress', ext: '.br', deleteOriginFile: false }),
     {
       name: 'pages-rewrite',
       configureServer(server) {

@@ -122,6 +122,27 @@ function bindHeroSpotlight() {
   setGradient(lastX, lastY);
 }
 
+// Defer hero animations/effects until idle or first interaction
+function deferHeroAnimations() {
+  const hero = document.querySelector('section#top');
+  let resumed = false;
+  const resume = () => {
+    if (resumed) return;
+    resumed = true;
+    if (hero) hero.classList.remove('hero-anim-off');
+    bindParallax();
+    bindHeroSpotlight();
+  };
+  // First input resumes immediately
+  window.addEventListener('scroll', resume, { once: true, passive: true });
+  window.addEventListener('pointerdown', resume, { once: true });
+  window.addEventListener('keydown', resume, { once: true });
+  // Or after idle timeout
+  const idle = (window.requestIdleCallback
+    ? window.requestIdleCallback(resume, { timeout: 1500 })
+    : setTimeout(resume, 1200));
+}
+
 // Simple contact form handler (no backend): validate + honeypot
 function bindContactForm() {
   const form = document.querySelector('form[data-contact]');
@@ -562,8 +583,7 @@ window.addEventListener('DOMContentLoaded', () => {
   bindMobileNav();
   bindDesktopDropdown();
   bindMobileSubmenu();
-  bindParallax();
-  bindHeroSpotlight();
+  deferHeroAnimations();
 });
 
 

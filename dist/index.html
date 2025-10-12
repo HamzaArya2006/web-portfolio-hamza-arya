@@ -17,6 +17,9 @@
     <meta name="twitter:title" content="Hamza — Full-Stack Developer" />
     <meta name="twitter:description" content="I build fast, reliable web apps that turn ideas into profit." />
     <meta name="twitter:image" content="/favicon.svg" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="modulepreload" href="/assets/main-DLi91bli.js" />
     
     <script type="application/ld+json">
     [
@@ -46,36 +49,37 @@
       }
     ]
     </script>
-    <script type="module" crossorigin src="/assets/index-BJtmS1iE.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BYSlxVko.css">
+    <script type="module" crossorigin src="/assets/main-MAfefFzV.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/main-DGozReg8.css">
   </head>
   <body class="bg-gray-900 text-gray-100">
     <!-- Header / Navbar -->
     <header data-sticky class="fixed inset-x-0 top-0 z-50 transition-colors">
-      <nav class="container-pro flex h-16 items-center justify-between">
+      <div class="px-3 sm:px-4 my-2">
+        <nav class="container-pro glass-professional rounded-full flex h-16 items-center justify-between">
         <div class="flex items-center gap-6">
-          <a href="#top" class="flex items-center gap-2 font-semibold">
+          <a href="index.html" class="flex items-center gap-2 font-semibold">
             <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-white">H</span>
             <span>Hamza</span>
           </a>
           <div class="hidden md:flex items-center gap-2 text-sm">
-            <a href="#top" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">Home</a>
-            <a href="#about" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">About</a>
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="./pages/about.html" class="nav-link">About</a>
             <!-- Work dropdown (hover) -->
             <div class="relative group">
-              <button type="button" class="inline-flex items-center gap-1 px-3 py-2 rounded-md hover:bg-white/5" aria-haspopup="true" aria-expanded="false">
+              <button type="button" class="nav-link gap-1" aria-haspopup="true" aria-expanded="false">
                 Work
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="transition-transform duration-200 group-hover:rotate-180"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
               <div class="absolute left-0 top-full z-50 mt-2 w-56 card p-2 invisible opacity-0 translate-y-1 transition-all duration-200 ease-out group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 focus-within:visible focus-within:opacity-100 focus-within:translate-y-0" role="menu">
-                <a href="#projects" class="block rounded-md px-3 py-2 hover:bg-white/5" role="menuitem">Projects</a>
-                <a href="#testimonials" class="block rounded-md px-3 py-2 hover:bg-white/5" role="menuitem">Testimonials</a>
-                <a href="./pages/case-studies.html" class="block rounded-md px-3 py-2 hover:bg-white/5" role="menuitem">Case Studies</a>
-                <a href="./pages/blog.html" class="block rounded-md px-3 py-2 hover:bg-white/5" role="menuitem">Blog</a>
+                <a href="#projects" class="nav-link w-full" role="menuitem">Projects</a>
+                <a href="#testimonials" class="nav-link w-full" role="menuitem">Testimonials</a>
+                <a href="./pages/case-studies.html" class="nav-link w-full" role="menuitem">Case Studies</a>
+                <a href="./pages/blog.html" class="nav-link w-full" role="menuitem">Blog</a>
               </div>
             </div>
-            <a href="#services" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">Services</a>
-            <a href="#contact" class="inline-flex items-center px-3 py-2 rounded-md hover:bg-white/5">Contact</a>
+            <a href="./pages/services.html" class="nav-link">Services</a>
+            <a href="./pages/contact.html" class="nav-link">Contact</a>
           </div>
         </div>
         <div class="hidden md:flex items-center gap-2">
@@ -88,51 +92,50 @@
             </svg>
             <span class="sr-only">Shop</span>
           </a>
-          <a href="#contact" class="btn-minimal">Hire Me</a>
+          <a href="./pages/contact.html" class="btn-minimal">Hire Me</a>
         </div>
-        <button data-mobile-nav-toggle class="md:hidden btn-ghost" aria-controls="mobile-menu" aria-expanded="false">Menu</button>
-      </nav>
+          <button data-mobile-nav-toggle class="md:hidden btn-ghost" aria-controls="mobile-menu" aria-expanded="false">Menu</button>
+        </nav>
+      </div>
       <!-- Mobile menu -->
       <div data-mobile-nav id="mobile-menu" data-open="false" class="hidden md:hidden border-t border-white/10 bg-gray-900/80 backdrop-blur">
         <div class="container-pro py-4 flex flex-col gap-3">
-          <a href="#about" class="py-2">About</a>
+          <a href="./pages/about.html" class="nav-link">About</a>
           <div data-submenu-container>
             <button class="w-full flex items-center justify-between py-2" data-submenu-toggle aria-expanded="false">
               <span>Work</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
             <div class="ml-3 mt-1 hidden flex-col" data-submenu>
-              <a href="#projects" class="py-1.5">Projects</a>
-              <a href="#testimonials" class="py-1.5">Testimonials</a>
-              <a href="./pages/case-studies.html" class="py-1.5">Case Studies</a>
-              <a href="./pages/blog.html" class="py-1.5">Blog</a>
+              <a href="#projects" class="nav-link">Projects</a>
+              <a href="#testimonials" class="nav-link">Testimonials</a>
+              <a href="./pages/case-studies.html" class="nav-link">Case Studies</a>
+              <a href="./pages/blog.html" class="nav-link">Blog</a>
             </div>
           </div>
-          <a href="#services" class="py-2">Services</a>
-          <a href="#contact" class="py-2">Contact</a>
+          <a href="./pages/services.html" class="nav-link">Services</a>
+          <a href="./pages/contact.html" class="nav-link">Contact</a>
           <div class="flex gap-3 pt-2">
             <a href="#shop" aria-label="Shop" class="btn-ghost" title="Shop">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 6l-1-2H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.5" fill="currentColor"/><circle cx="18" cy="20" r="1.5" fill="currentColor"/></svg>
             </a>
-            <a href="#contact" class="btn-minimal">Hire Me</a>
+            <a href="./pages/contact.html" class="btn-minimal">Hire Me</a>
           </div>
         </div>
       </div>
     </header>
 
     <!-- Hero -->
-    <section id="top" class="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-gray-900 via-blue-900/20 to-black text-white">
+    <section id="top" class="relative min-h-[90vh] flex items-center overflow-hidden bg-black text-white hero-anim-off">
       <!-- Professional grid background -->
-      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
         <!-- Main professional grid -->
-        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-60"></div>
-        <div class="absolute inset-0 bg-grid-dots opacity-40"></div>
+        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25 "></div>
+        <div class="absolute inset-0 bg-grid animate-grid-move opacity-60 " ></div>
+        <div class="absolute inset-0 bg-grid-dots opacity-15 "></div>
         
         <!-- Enhanced gradient orbs with professional styling -->
-        <div class="absolute -top-40 left-1/2 h-96 w-[50rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl animate-pulse-slow"></div>
-        <div class="absolute top-1/4 right-1/4 h-64 w-64 rounded-full bg-gradient-to-r from-indigo-500/20 to-blue-500/20 blur-2xl animate-float"></div>
-        <div class="absolute bottom-1/4 left-1/4 h-48 w-48 rounded-full bg-gradient-to-r from-cyan-500/15 to-blue-500/15 blur-2xl animate-bounce-slow"></div>
-        
+        <div data-parallax="0.06" class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl "></div>     
         <!-- Professional floating elements -->
         <div class="absolute top-20 left-20 w-2 h-2 bg-blue-400/40 rounded-full animate-pulse"></div>
         <div class="absolute top-40 right-32 w-1 h-1 bg-indigo-400/60 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
@@ -140,16 +143,19 @@
         <div class="absolute top-1/2 right-20 w-1.5 h-1.5 bg-blue-300/40 rounded-full animate-pulse" style="animation-delay: 0.5s;"></div>
         
         <!-- Professional accent lines -->
-        <div class="absolute top-1/3 left-0 w-32 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
-        <div class="absolute bottom-1/3 right-0 w-24 h-px bg-gradient-to-l from-transparent via-indigo-500/20 to-transparent"></div>
+        <div data-parallax="-0.06" class="absolute top-1/3 left-0 w-32 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
+        <div data-parallax="-0.05" class="absolute bottom-1/3 right-0 w-24 h-px bg-gradient-to-l from-transparent via-indigo-500/20 to-transparent"></div>
         
         <!-- Grid intersection highlights -->
         <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-blue-400/60 rounded-full animate-pulse" style="animation-delay: 3s;"></div>
         <div class="absolute bottom-1/3 right-1/3 w-1 h-1 bg-indigo-400/60 rounded-full animate-pulse" style="animation-delay: 4s;"></div>
         <div class="absolute top-2/3 left-2/3 w-1 h-1 bg-cyan-400/60 rounded-full animate-pulse" style="animation-delay: 5s;"></div>
+        
+        
       </div>
-      <div class="container-pro relative grid gap-16 lg:grid-cols-2 pt-32 pb-16">
-        <div class="flex flex-col justify-center gap-8">
+      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300 mix-blend-soft-light" style="will-change: background;"></div>
+      <div class="container-pro relative z-20 grid gap-16 lg:grid-cols-2 pt-32 pb-16">
+        <div data-reveal class="opacity-0 translate-y-6 flex flex-col justify-center gap-8">
           <!-- Professional status badge -->
           <div class="glass-professional rounded-full px-6 py-3 w-max hover-lift group">
             <div class="flex items-center gap-3">
@@ -178,6 +184,13 @@
             and <span class="text-cyan-300 font-semibold">production reliability</span>.
           </p>
           
+          <!-- Rotating specialties line -->
+          <div class="hero-rotator mt-2 text-white/80 text-sm" data-allow-motion>
+            <span>SaaS Platforms</span>
+            <span>E‑commerce</span>
+            <span>Data & Analytics</span>
+          </div>
+          
           <!-- Enhanced CTA buttons -->
           <div class="flex flex-wrap gap-4">
             <a href="#projects" class="btn-primary text-base px-8 py-4 hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-xl">
@@ -189,6 +202,33 @@
             <a href="pages/about.html" class="btn-ghost text-base px-8 py-4 hover:scale-105 transition-transform duration-300">
               Learn More
             </a>
+          </div>
+          
+          <!-- Quick trust badges -->
+          <ul class="hero-badges pt-2">
+            <li class="hero-badge">
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse glow-professional"></span>
+              <span>Free 30‑min discovery call</span>
+            </li>
+            <li class="hero-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M3 11a9 9 0 1 0 18 0A9 9 0 0 0 3 11zm9-5v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>Replies within 24h</span>
+            </li>
+            <li class="hero-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1 1 18 0z" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/></svg>
+              <span>Timezone‑friendly (PKT)</span>
+            </li>
+          </ul>
+
+          <!-- Trusted by strip -->
+          <div class="pt-1">
+            <div class="text-[10px] uppercase tracking-[0.2em] text-white/60">Trusted by</div>
+            <div class="mt-2 flex items-center gap-4 opacity-80">
+              <span class="h-2 w-16 rounded-full bg-white/15"></span>
+              <span class="h-2 w-12 rounded-full bg-white/15"></span>
+              <span class="h-2 w-20 rounded-full bg-white/15"></span>
+              <span class="h-2 w-10 rounded-full bg-white/15 hidden sm:inline"></span>
+            </div>
           </div>
           
           <!-- Enhanced tech stack -->
@@ -229,7 +269,7 @@
           </div>
         </div>
         <!-- Enhanced Visual -->
-        <div class="relative">
+        <div data-reveal class="opacity-0 translate-y-6 relative">
           <!-- Professional visual container -->
           <div class="glass-professional relative overflow-hidden rounded-3xl p-0 h-96 sm:h-[28rem] lg:h-[32rem] hover-lift group glow-professional">
             <!-- Enhanced browser window -->
@@ -293,9 +333,9 @@
           </div>
           
           <!-- Floating elements around the visual -->
-          <div class="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-blue-500/20 blur-sm animate-float"></div>
-          <div class="absolute -bottom-6 -left-6 w-6 h-6 rounded-full bg-indigo-500/20 blur-sm animate-bounce-slow"></div>
-          <div class="absolute top-1/4 -left-8 w-4 h-4 rounded-full bg-cyan-500/30 blur-sm animate-pulse"></div>
+          <div data-parallax="0.12" class="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-blue-500/20 blur-sm animate-float"></div>
+          <div data-parallax="0.09" class="absolute -bottom-6 -left-6 w-6 h-6 rounded-full bg-indigo-500/20 blur-sm animate-bounce-slow"></div>
+          <div data-parallax="0.07" class="absolute top-1/4 -left-8 w-4 h-4 rounded-full bg-cyan-500/30 blur-sm animate-pulse"></div>
         </div>
       </div>
       <!-- Enhanced scroll cue -->
@@ -310,7 +350,7 @@
     </section>
 
     <!-- Services (moved up for conversion) -->
-    <section id="services" class="py-24 bg-black relative overflow-hidden">
+    <section id="services" class="py-24 bg-black relative overflow-hidden cv-auto">
       <!-- Background decoration -->
       <div class="absolute inset-0 bg-grid opacity-20"></div>
       <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
@@ -325,9 +365,15 @@
           <p class="text-gray-300 text-lg max-w-2xl mx-auto">
             From concept to deployment, I deliver end-to-end solutions that drive real business results.
           </p>
+          <!-- Section badges -->
+          <ul class="hero-badges justify-center mt-4">
+            <li class="hero-badge"><span class="w-2 h-2 rounded-full bg-blue-400"></span><span>Fixed‑scope or retainer</span></li>
+            <li class="hero-badge"><span class="w-2 h-2 rounded-full bg-indigo-400"></span><span>Kickoff in under 7 days</span></li>
+            <li class="hero-badge"><span class="w-2 h-2 rounded-full bg-cyan-400"></span><span>Weekly progress updates</span></li>
+          </ul>
         </div>
         
-        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="services-grid grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <!-- Full-Stack Development -->
           <div data-reveal class="opacity-0 translate-y-6 service-card group">
             <div class="service-icon">
@@ -351,6 +397,10 @@
               <span class="tech-tag">React</span>
               <span class="tech-tag">Node.js</span>
               <span class="tech-tag">PostgreSQL</span>
+            </div>
+            <div class="mt-4 flex gap-2">
+              <a href="#contact" class="btn-primary px-4 py-2 text-sm">Get a quote</a>
+              <a href="#projects" class="btn-secondary px-4 py-2 text-sm">See work</a>
             </div>
           </div>
 
@@ -378,6 +428,10 @@
               <span class="tech-tag">TypeScript</span>
               <span class="tech-tag">Tailwind</span>
             </div>
+            <div class="mt-4 flex gap-2">
+              <a href="#contact" class="btn-primary px-4 py-2 text-sm">Get a quote</a>
+              <a href="#projects" class="btn-secondary px-4 py-2 text-sm">See work</a>
+            </div>
           </div>
 
           <!-- Performance & SEO -->
@@ -401,6 +455,10 @@
               <span class="tech-tag">Lighthouse</span>
               <span class="tech-tag">Next.js</span>
               <span class="tech-tag">Vercel</span>
+            </div>
+            <div class="mt-4 flex gap-2">
+              <a href="#contact" class="btn-primary px-4 py-2 text-sm">Get a quote</a>
+              <a href="#projects" class="btn-secondary px-4 py-2 text-sm">See work</a>
             </div>
           </div>
 
@@ -429,6 +487,10 @@
               <span class="tech-tag">Shopify</span>
               <span class="tech-tag">WooCommerce</span>
             </div>
+            <div class="mt-4 flex gap-2">
+              <a href="#contact" class="btn-primary px-4 py-2 text-sm">Get a quote</a>
+              <a href="#projects" class="btn-secondary px-4 py-2 text-sm">See work</a>
+            </div>
           </div>
 
           <!-- DevOps & Deployment -->
@@ -454,6 +516,10 @@
               <span class="tech-tag">AWS</span>
               <span class="tech-tag">Docker</span>
               <span class="tech-tag">GitHub Actions</span>
+            </div>
+            <div class="mt-4 flex gap-2">
+              <a href="#contact" class="btn-primary px-4 py-2 text-sm">Get a quote</a>
+              <a href="#projects" class="btn-secondary px-4 py-2 text-sm">See work</a>
             </div>
           </div>
 
@@ -481,6 +547,10 @@
               <span class="tech-tag">Training</span>
               <span class="tech-tag">Support</span>
             </div>
+            <div class="mt-4 flex gap-2">
+              <a href="#contact" class="btn-primary px-4 py-2 text-sm">Get a quote</a>
+              <a href="#projects" class="btn-secondary px-4 py-2 text-sm">See work</a>
+            </div>
           </div>
         </div>
 
@@ -501,7 +571,7 @@
     </section>
 
     <!-- About -->
-    <section id="about" class="py-20 bg-black relative overflow-hidden">
+    <section id="about" class="py-20 bg-black relative overflow-hidden cv-auto">
       <!-- Background decoration -->
       <div class="absolute inset-0 bg-grid opacity-20"></div>
       <div class="absolute top-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
@@ -550,7 +620,7 @@
           <!-- Actions -->
           <div class="mt-8 flex flex-wrap gap-3">
             <a href="#contact" class="btn-primary">Work with me</a>
-            <a href="pages/about.html" class="btn-ghost">Download Resume</a>
+            <a href="pages/resume.html" class="btn-ghost">Download Resume</a>
           </div>
         </div>
         <!-- Capability cards -->
@@ -602,7 +672,7 @@
     </section>
 
     <!-- Projects -->
-    <section id="projects" class="py-24 bg-black relative overflow-hidden">
+    <section id="projects" class="py-24 bg-black relative overflow-hidden cv-auto">
       <!-- Background decoration -->
       <div class="absolute inset-0 bg-grid opacity-20"></div>
       <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
@@ -650,7 +720,7 @@
         </div>
 
         <!-- Projects Grid -->
-        <div id="projects-grid" class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
+        <div id="projects-grid" class="projects-grid grid gap-8 sm:grid-cols-2 lg:grid-cols-3"></div>
 
         <!-- View More Button -->
         <div class="text-center mt-16">
@@ -683,7 +753,7 @@
     </section>
 
     <!-- Testimonials -->
-    <section id="testimonials" class="py-24 bg-gray-900 relative overflow-hidden">
+    <section id="testimonials" class="py-24 bg-gray-900 relative overflow-hidden cv-auto">
       <!-- Background decoration -->
       <div class="absolute inset-0 bg-grid opacity-30"></div>
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"></div>
@@ -723,7 +793,7 @@
 
     
     <!-- Contact -->
-    <section id="contact" class="relative py-24 bg-black overflow-hidden">
+    <section id="contact" class="relative py-24 bg-black overflow-hidden cv-auto">
       <!-- Background decoration -->
       <div class="absolute inset-0 bg-grid opacity-20"></div>
       <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>

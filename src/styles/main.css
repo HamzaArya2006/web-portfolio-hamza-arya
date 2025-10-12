@@ -69,6 +69,18 @@
 }
 
 @layer utilities {
+  /* Reduce hero work at initial paint; re-enable via JS */
+  .hero-anim-off [data-hero-spotlight],
+  .hero-anim-off [data-hero-bg] .animate-grid-move,
+  .hero-anim-off [data-hero-bg] .animate-pulse,
+  .hero-anim-off [data-hero-bg] .animate-bounce-slow,
+  .hero-anim-off [data-hero-bg] .animate-float {
+    animation: none !important;
+  }
+  .hero-anim-off [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
   /* Performance: avoid layout/rendering work for offscreen sections */
   .cv-auto {
     content-visibility: auto;
