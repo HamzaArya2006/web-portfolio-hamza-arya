@@ -59,33 +59,46 @@
       </div>
     </section>
 
-    <section class="py-24 bg-black">
-      <div class="container-pro max-w-5xl">
-        <div class="grid gap-8 md:grid-cols-2">
-          <article data-reveal class="opacity-0 translate-y-6 glass rounded-2xl p-6">
-            <h2 class="text-2xl font-bold mb-2">React Performance: 10 Practical Wins</h2>
-            <p class="text-gray-300 mb-4">Memoization, virtualization, and profiling to keep your UI snappy.</p>
-            <div class="text-sm text-gray-400 mb-4">5 min read • Performance</div>
-            <a href="#" class="btn-secondary">Read</a>
-          </article>
-          <article data-reveal class="opacity-0 translate-y-6 glass rounded-2xl p-6">
-            <h2 class="text-2xl font-bold mb-2">Architecting a Scalable Node API</h2>
-            <p class="text-gray-300 mb-4">Layered architecture, validation, and observability from day one.</p>
-            <div class="text-sm text-gray-400 mb-4">6 min read • Backend</div>
-            <a href="#" class="btn-secondary">Read</a>
-          </article>
-          <article data-reveal class="opacity-0 translate-y-6 glass rounded-2xl p-6">
-            <h2 class="text-2xl font-bold mb-2">Core Web Vitals: A Practical Guide</h2>
-            <p class="text-gray-300 mb-4">Hands‑on steps to move from red to green across all metrics.</p>
-            <div class="text-sm text-gray-400 mb-4">7 min read • Web</div>
-            <a href="#" class="btn-secondary">Read</a>
-          </article>
-          <article data-reveal class="opacity-0 translate-y-6 glass rounded-2xl p-6">
-            <h2 class="text-2xl font-bold mb-2">When to Pick Vite, Next.js, or CRA</h2>
-            <p class="text-gray-300 mb-4">Tradeoffs and decision-making for modern frontend tooling.</p>
-            <div class="text-sm text-gray-400 mb-4">4 min read • Frontend</div>
-            <a href="#" class="btn-secondary">Read</a>
-          </article>
+    <!-- Blog Filters -->
+    <section class="py-8 bg-gray-900 border-b border-white/10">
+      <div class="container-pro">
+        <div class="flex flex-wrap gap-4 justify-center" id="blog-filters">
+          <button class="blog-filter-btn active" data-category="all">All Posts</button>
+          <button class="blog-filter-btn" data-category="Performance">Performance</button>
+          <button class="blog-filter-btn" data-category="React">React</button>
+          <button class="blog-filter-btn" data-category="Backend">Backend</button>
+          <button class="blog-filter-btn" data-category="CSS">CSS</button>
+          <button class="blog-filter-btn" data-category="TypeScript">TypeScript</button>
+          <button class="blog-filter-btn" data-category="DevOps">DevOps</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Blog content -->
+    <section class="py-24 bg-gray-900">
+      <div class="container-pro">
+        <div id="blog-content" class="max-w-4xl mx-auto">
+          <!-- Blog posts will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section class="py-20 bg-black">
+      <div class="container-pro">
+        <div class="glass rounded-2xl p-8 max-w-2xl mx-auto text-center">
+          <h3 class="text-2xl font-bold mb-3">Stay Updated</h3>
+          <p class="text-gray-300 mb-6">Get the latest articles and insights delivered to your inbox.</p>
+          <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" data-newsletter>
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              class="input flex-1"
+              required
+            />
+            <button type="submit" class="btn-primary">Subscribe</button>
+          </form>
+          <p class="text-xs text-gray-400 mt-4">No spam, unsubscribe at any time.</p>
         </div>
       </div>
     </section>

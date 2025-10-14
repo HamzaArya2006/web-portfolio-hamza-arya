@@ -1,6 +1,7 @@
 import '../styles/main.css';
 import { projects } from '../data/projects.js';
 import { testimonials } from '../data/testimonials.js';
+import { blogPosts } from '../data/blog.js';
 
 // Set dark mode as default
 const rootElement = document.documentElement;
@@ -342,6 +343,11 @@ const filterKeywords = {
 };
 
 function classifyProject(p) {
+  // Use the category field if available, otherwise fall back to keyword matching
+  if (p.category) {
+    return [p.category];
+  }
+  
   const hay = `${p.title} ${p.description} ${p.tech}`.toLowerCase();
   const tags = new Set(['web']);
   for (const [key, needles] of Object.entries(filterKeywords)) {
@@ -373,6 +379,28 @@ function renderProjects() {
       const techArray = p.tech.split(' • ');
       const { lazySrc, srcSet, sizes } = buildResponsiveImageAttrs(p.image);
       
+      // Build metrics display
+      const metricsHtml = p.metrics ? `
+        <div class="project-metrics">
+          ${Object.entries(p.metrics).map(([key, value]) => `
+            <div class="metric-item">
+              <span class="metric-value">${value}</span>
+              <span class="metric-label">${key}</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+      
+      // Build features list
+      const featuresHtml = p.features ? `
+        <div class="project-features">
+          <h4 class="features-title">Key Features:</h4>
+          <ul class="features-list">
+            ${p.features.map(feature => `<li>${feature}</li>`).join('')}
+          </ul>
+        </div>
+      ` : '';
+      
       return `
       <article data-reveal class="opacity-0 translate-y-6 project-card">
         <div class="project-image-container">
@@ -392,14 +420,14 @@ function renderProjects() {
             <span>${categories[0]}</span>
           </div>
           <div class="project-actions">
-            <a href="${p.links.live}" class="project-action-btn" title="View Live Demo">
+            <a href="${p.links.live}" class="project-action-btn" title="View Live Demo" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15,3 21,3 21,9"></polyline>
                 <line x1="10" y1="14" x2="21" y2="3"></line>
               </svg>
             </a>
-            <a href="${p.links.code}" class="project-action-btn" title="View Source Code">
+            <a href="${p.links.code}" class="project-action-btn" title="View Source Code" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="16,18 22,12 16,6"></polyline>
                 <polyline points="8,6 2,12 8,18"></polyline>
@@ -410,11 +438,20 @@ function renderProjects() {
         <div class="project-content">
           <h3 class="project-title">${p.title}</h3>
           <p class="project-description">${p.description}</p>
+          
+          ${metricsHtml}
+          ${featuresHtml}
+          
+          <div class="project-meta">
+            ${p.duration ? `<span class="project-duration">⏱️ ${p.duration}</span>` : ''}
+            ${p.client ? `<span class="project-client">👤 ${p.client}</span>` : ''}
+          </div>
+          
           <div class="project-tech">
             ${techArray.map(tech => `<span class="tech-badge">${tech}</span>`).join('')}
           </div>
           <div class="project-footer">
-            <a href="${p.links.live}" class="project-link primary">
+            <a href="${p.links.live}" class="project-link primary" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15,3 21,3 21,9"></polyline>
@@ -422,7 +459,7 @@ function renderProjects() {
               </svg>
               Live Demo
             </a>
-            <a href="${p.links.code}" class="project-link">
+            <a href="${p.links.code}" class="project-link" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="16,18 22,12 16,6"></polyline>
                 <polyline points="8,6 2,12 8,18"></polyline>
@@ -514,6 +551,8 @@ function renderTestimonials() {
   grid.innerHTML = testimonials
     .map((t) => {
       const stars = '★'.repeat(t.rating);
+      const avatar = t.avatar || t.author.split(' ').map(n => n[0]).join('');
+      
       return `
       <article data-reveal class="opacity-0 translate-y-6 group">
         <div class="relative h-full glass rounded-2xl p-8 testimonial-card border border-white/10 hover:border-white/20">
@@ -527,6 +566,7 @@ function renderTestimonials() {
           <!-- Rating stars -->
           <div class="flex items-center gap-1 mb-4">
             <div class="text-yellow-400 text-sm">${stars}</div>
+            <span class="text-xs text-gray-400 ml-2">${t.rating}/5</span>
           </div>
           
           <!-- Quote -->
@@ -534,10 +574,18 @@ function renderTestimonials() {
             "${t.quote}"
           </blockquote>
           
+          <!-- Project info -->
+          ${t.project ? `
+            <div class="mb-4 p-3 bg-white/5 rounded-lg border border-white/10">
+              <div class="text-sm text-blue-300 font-medium">${t.project}</div>
+              ${t.result ? `<div class="text-xs text-green-300 mt-1">📈 ${t.result}</div>` : ''}
+            </div>
+          ` : ''}
+          
           <!-- Author info -->
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-lg">
-              ${t.author.split(' ').map(n => n[0]).join('')}
+              ${avatar}
             </div>
             <div>
               <div class="font-semibold text-gray-100">${t.author}</div>
@@ -569,6 +617,276 @@ function bindTestimonialProximity() {
   });
 }
 
+// Blog functionality
+let currentBlogFilter = 'all';
+
+function renderBlogPosts() {
+  const container = document.getElementById('blog-content');
+  if (!container) return;
+  
+  const filtered = blogPosts.filter(post => 
+    currentBlogFilter === 'all' || post.category === currentBlogFilter
+  );
+  
+  container.innerHTML = filtered
+    .map((post) => {
+      const { lazySrc, srcSet, sizes } = buildResponsiveImageAttrs(post.image);
+      const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      
+      return `
+        <article data-reveal class="opacity-0 translate-y-6 blog-post-card">
+          <div class="blog-post-image">
+            <img 
+              width="400" 
+              height="250" 
+              alt="${post.title}" 
+              class="blog-image" 
+              loading="lazy"
+              decoding="async"
+              data-src="${lazySrc}"
+              data-srcset="${srcSet}"
+              data-sizes="${sizes}"
+            />
+            ${post.featured ? '<div class="featured-badge">Featured</div>' : ''}
+          </div>
+          <div class="blog-post-content">
+            <div class="blog-meta">
+              <span class="blog-category">${post.category}</span>
+              <span class="blog-date">${formattedDate}</span>
+              <span class="blog-read-time">${post.readTime}</span>
+            </div>
+            <h2 class="blog-title">${post.title}</h2>
+            <p class="blog-excerpt">${post.excerpt}</p>
+            <div class="blog-tags">
+              ${post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
+            </div>
+            <a href="#blog-post-${post.id}" class="blog-read-more" data-post-id="${post.id}">
+              Read Article
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+      `;
+    })
+    .join('');
+}
+
+function bindBlogFilters() {
+  const filters = document.getElementById('blog-filters');
+  if (!filters) return;
+  
+  const buttons = filters.querySelectorAll('.blog-filter-btn');
+  
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentBlogFilter = btn.getAttribute('data-category') || 'all';
+      
+      // Update active state
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Re-render posts
+      renderBlogPosts();
+      bindRevealOnScroll();
+      bindLazyImages();
+      bindBlogPostHandlers();
+    });
+  });
+}
+
+function bindBlogPostHandlers() {
+  const readMoreLinks = document.querySelectorAll('.blog-read-more');
+  readMoreLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const postId = link.getAttribute('data-post-id');
+      showBlogPost(postId);
+    });
+  });
+}
+
+function showBlogPost(postId) {
+  const post = blogPosts.find(p => p.id === postId);
+  if (!post) return;
+  
+  const modal = document.createElement('div');
+  modal.className = 'blog-modal';
+  modal.innerHTML = `
+    <div class="blog-modal-overlay">
+      <div class="blog-modal-content">
+        <button class="blog-modal-close" aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <article class="blog-post-full">
+          <header class="blog-post-header">
+            <div class="blog-meta">
+              <span class="blog-category">${post.category}</span>
+              <span class="blog-date">${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span class="blog-read-time">${post.readTime}</span>
+            </div>
+            <h1 class="blog-post-title">${post.title}</h1>
+            <p class="blog-post-subtitle">${post.excerpt}</p>
+            <div class="blog-tags">
+              ${post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
+            </div>
+          </header>
+          <div class="blog-post-body">
+            ${post.content}
+          </div>
+          <footer class="blog-post-footer">
+            <div class="blog-author">
+              <div class="author-avatar">${post.author.split(' ').map(n => n[0]).join('')}</div>
+              <div class="author-info">
+                <div class="author-name">${post.author}</div>
+                <div class="author-title">Full-Stack Developer</div>
+              </div>
+            </div>
+            <div class="blog-share">
+              <button class="share-btn" data-url="${window.location.origin}/blog#${post.id}" data-title="${post.title}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16,6 12,2 8,6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+                Share
+              </button>
+            </div>
+          </footer>
+        </article>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(modal);
+  document.body.style.overflow = 'hidden';
+  
+  // Close modal handlers
+  const closeBtn = modal.querySelector('.blog-modal-close');
+  const overlay = modal.querySelector('.blog-modal-overlay');
+  
+  const closeModal = () => {
+    document.body.removeChild(modal);
+    document.body.style.overflow = '';
+  };
+  
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+}
+
+// PWA Service Worker Registration
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('SW registered: ', registration);
+        })
+        .catch((registrationError) => {
+          console.log('SW registration failed: ', registrationError);
+        });
+    });
+  }
+}
+
+// Performance monitoring
+function initPerformanceMonitoring() {
+  // Basic performance metrics
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const perfData = performance.getEntriesByType('navigation')[0];
+      if (perfData) {
+        console.log('Page Load Time:', perfData.loadEventEnd - perfData.loadEventStart);
+        console.log('DOM Content Loaded:', perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart);
+        
+        // Log Core Web Vitals if available
+        if (performance.getEntriesByType) {
+          const paintEntries = performance.getEntriesByType('paint');
+          paintEntries.forEach(entry => {
+            console.log(`${entry.name}: ${entry.startTime}ms`);
+          });
+        }
+      }
+    }, 0);
+  });
+}
+
+// Enhanced contact form with better validation
+function enhanceContactForm() {
+  const form = document.querySelector('form[data-contact]');
+  if (!form) return;
+  
+  const inputs = form.querySelectorAll('input, textarea');
+  
+  inputs.forEach(input => {
+    // Real-time validation
+    input.addEventListener('blur', () => {
+      validateField(input);
+    });
+    
+    input.addEventListener('input', () => {
+      clearFieldError(input);
+    });
+  });
+  
+  function validateField(field) {
+    const value = field.value.trim();
+    const type = field.type;
+    const name = field.name;
+    
+    clearFieldError(field);
+    
+    if (field.required && !value) {
+      showFieldError(field, `${name} is required`);
+      return false;
+    }
+    
+    if (type === 'email' && value && !isValidEmail(value)) {
+      showFieldError(field, 'Please enter a valid email address');
+      return false;
+    }
+    
+    return true;
+  }
+  
+  function showFieldError(field, message) {
+    field.classList.add('border-red-500');
+    let errorEl = field.parentNode.querySelector('.field-error');
+    if (!errorEl) {
+      errorEl = document.createElement('div');
+      errorEl.className = 'field-error text-red-400 text-sm mt-1';
+      field.parentNode.appendChild(errorEl);
+    }
+    errorEl.textContent = message;
+  }
+  
+  function clearFieldError(field) {
+    field.classList.remove('border-red-500');
+    const errorEl = field.parentNode.querySelector('.field-error');
+    if (errorEl) {
+      errorEl.remove();
+    }
+  }
+  
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+}
+
 // Init
 window.addEventListener('DOMContentLoaded', () => {
   initTheme();
@@ -577,13 +895,19 @@ window.addEventListener('DOMContentLoaded', () => {
   renderProjects();
   bindProjectFilters();
   renderTestimonials();
+  renderBlogPosts();
+  bindBlogFilters();
+  bindBlogPostHandlers();
   bindRevealOnScroll();
   bindContactForm();
+  enhanceContactForm();
   bindLazyImages();
   bindMobileNav();
   bindDesktopDropdown();
   bindMobileSubmenu();
   deferHeroAnimations();
+  registerServiceWorker();
+  initPerformanceMonitoring();
 });
 
 
