@@ -78,48 +78,56 @@ function bindHeroSpotlight() {
   const overlay = hero ? hero.querySelector('[data-hero-spotlight]') : null;
   if (!hero || !overlay) return;
 
-  // Natural vignette that follows the cursor with no smoothing latency
   overlay.style.pointerEvents = 'none';
   overlay.style.opacity = '1';
   overlay.style.mixBlendMode = 'normal';
 
-  // Larger, softer, darker and more natural (not a bright hole)
-  const baseRadius = 240;      // inner influence radius
-  const featherWidth = 420;    // very soft falloff
-  const centerAlpha = 0.14;    // lighter center
-  const midAlpha = 0.38;       // lighter mid
-  const outsideAlpha = 0.66;   // lighter edges
+  const baseRadius = 240;
+  const featherWidth = 420;
+  const centerAlpha = 0.14;
+  const midAlpha = 0.38;
+  const outsideAlpha = 0.66;
 
   const setGradient = (x, y) => {
     const inner = baseRadius;
     const outer = baseRadius + featherWidth;
-    // Multi-stop gradient: subtly dark in the center, smoothly darkening outward
-    const gradient = `radial-gradient(circle at ${x}px ${y}px, rgba(0,0,0,${centerAlpha}) 0px, rgba(0,0,0,${midAlpha}) ${inner}px, rgba(0,0,0,${outsideAlpha}) ${outer}px)`;
-    overlay.style.background = gradient;
+    overlay.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0,0,0,${centerAlpha}) 0px, rgba(0,0,0,${midAlpha}) ${inner}px, rgba(0,0,0,${outsideAlpha}) ${outer}px)`;
   };
 
   let lastX = hero.clientWidth / 2;
   let lastY = hero.clientHeight / 2;
+  let rafId = 0;
+  let framePending = false;
+
+  const flush = () => {
+    framePending = false;
+    setGradient(lastX, lastY);
+    rafId = 0;
+  };
+
+  const queueFlush = () => {
+    if (framePending) return;
+    framePending = true;
+    rafId = requestAnimationFrame(flush);
+  };
 
   const onPointerMove = (e) => {
     const rect = hero.getBoundingClientRect();
     lastX = e.clientX - rect.left;
     lastY = e.clientY - rect.top;
-    // Update immediately for zero perceived latency
-    setGradient(lastX, lastY);
+    queueFlush();
   };
 
   const onPointerEnter = (e) => {
     const rect = hero.getBoundingClientRect();
     lastX = e.clientX - rect.left;
     lastY = e.clientY - rect.top;
-    setGradient(lastX, lastY);
+    queueFlush();
   };
 
   hero.addEventListener('pointermove', onPointerMove);
   hero.addEventListener('pointerenter', onPointerEnter);
 
-  // Initialize centered, so it looks stable before the first move
   setGradient(lastX, lastY);
 }
 
@@ -263,15 +271,36 @@ function bindLazyImages() {
   lazyImages.forEach((img) => imgObserver.observe(img));
 }
 
+// (Removed) navbar scroll behavior and active link detection per request
+
 // Mobile nav toggle
 function bindMobileNav() {
   const btn = document.querySelector('[data-mobile-nav-toggle]');
   const menu = document.querySelector('[data-mobile-nav]');
   if (!btn || !menu) return;
+  
   btn.addEventListener('click', () => {
     const open = menu.getAttribute('data-open') === 'true';
     menu.setAttribute('data-open', String(!open));
     menu.classList.toggle('hidden', open);
+    
+    // Update aria-expanded
+    btn.setAttribute('aria-expanded', String(!open));
+    
+    // Add animation classes
+    if (!open) {
+      menu.style.display = 'block';
+      // Force reflow
+      menu.offsetHeight;
+      menu.classList.remove('hidden');
+    } else {
+      menu.classList.add('hidden');
+      setTimeout(() => {
+        if (menu.getAttribute('data-open') === 'false') {
+          menu.style.display = 'none';
+        }
+      }, 400);
+    }
   });
 }
 
@@ -905,6 +934,7 @@ window.addEventListener('DOMContentLoaded', () => {
   bindMobileNav();
   bindDesktopDropdown();
   bindMobileSubmenu();
+  // scroll-based navbar and active link detection removed per request
   deferHeroAnimations();
   registerServiceWorker();
   initPerformanceMonitoring();
