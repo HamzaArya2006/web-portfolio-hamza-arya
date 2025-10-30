@@ -2,14 +2,9 @@
 export default {
   content: [
     "./index.html",
-    "./pages/about.html",
-    "./blog.html",
-    "./case-studies.html",
-    "./contact.html",
-    "./resume.html",
-    "./services.html",
-    "./pages/**/*.html",
-    "./src/**/*.{js,ts,jsx,tsx,html}",
+    "./src/pages/*.html",
+    "./src/scripts/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.js",
   ],
   theme: {
     extend: {
