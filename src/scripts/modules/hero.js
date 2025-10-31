@@ -25,14 +25,20 @@ export function bindHeroSpotlight() {
   const hero = document.querySelector('section#top');
   const overlay = hero ? hero.querySelector('[data-hero-spotlight]') : null;
   if (!hero || !overlay) return;
+  // Respect reduced motion
+  const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) {
+    overlay.style.opacity = '0';
+    return;
+  }
   overlay.style.pointerEvents = 'none';
   overlay.style.opacity = '1';
   const getBaseRadius = () => Math.max(220, Math.min(360, Math.floor(window.innerWidth * 0.18)));
   let baseRadius = getBaseRadius();
   let featherWidth = Math.floor(baseRadius * 1.6);
   const centerAlpha = 0.10;
-  const midAlpha = 0.34;
-  const outsideAlpha = 0.62;
+  const midAlpha = 0.28;
+  const outsideAlpha = 0.50;
   const state = {
     currentX: hero.clientWidth / 2,
     currentY: hero.clientHeight / 2,
@@ -45,29 +51,57 @@ export function bindHeroSpotlight() {
   const setGradient = (x, y, extra = 0) => {
     const inner = baseRadius + extra;
     const outer = inner + featherWidth;
-    const rect = hero.getBoundingClientRect();
-    const nx = Math.min(1, Math.max(0, x / Math.max(1, rect.width)));
-    const hue = Math.round(200 + nx * 60);
-    const vignette = `radial-gradient(circle at ${x}px ${y}px, rgba(0,0,0,${centerAlpha}) 0px, rgba(0,0,0,${midAlpha}) ${inner}px, rgba(0,0,0,${outsideAlpha}) ${outer}px)`;
-    const tint = `radial-gradient(circle at ${x}px ${y}px, hsla(${hue}, 85%, 60%, 0.18) ${Math.max(0, inner - 40)}px, hsla(${hue}, 85%, 60%, 0) ${outer + 120}px)`;
-    overlay.style.background = `${vignette}, ${tint}`;
+    // Single radial gradient (no blend mode) to reduce repaint cost
+    overlay.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0,0,0,${centerAlpha}) 0px, rgba(0,0,0,${midAlpha}) ${inner}px, rgba(0,0,0,${outsideAlpha}) ${outer}px)`;
   };
-  let running = true;
-  const animate = () => {
-    if (!running) return;
+  let rafId = 0;
+  let active = false;
+  let lastDrawX = -1;
+  let lastDrawY = -1;
+  let lastDrawExtra = -1;
+  let lastFrameTime = 0;
+  const animate = (now = 0) => {
+    if (!active) return;
+    // Cap to ~30fps
+    if (now - lastFrameTime < 33) {
+      rafId = requestAnimationFrame(animate);
+      return;
+    }
+    lastFrameTime = now;
     state.currentX = lerp(state.currentX, state.targetX, 0.14);
     state.currentY = lerp(state.currentY, state.targetY, 0.14);
     state.vx = state.targetX - state.currentX;
     state.vy = state.targetY - state.currentY;
     const speed = Math.min(60, Math.hypot(state.vx, state.vy));
     const extra = speed * 0.25;
-    setGradient(state.currentX, state.currentY, extra);
-    requestAnimationFrame(animate);
+    const quantize = (v) => Math.round(v / 2) * 2; // reduce sub-pixel churn
+    const drawX = quantize(state.currentX);
+    const drawY = quantize(state.currentY);
+    const drawExtra = Math.round(extra);
+    if (drawX !== lastDrawX || drawY !== lastDrawY || drawExtra !== lastDrawExtra) {
+      lastDrawX = drawX;
+      lastDrawY = drawY;
+      lastDrawExtra = drawExtra;
+      setGradient(drawX, drawY, drawExtra);
+    }
+    // Stop the loop when motion settles and pointer not inside
+    const settled = Math.abs(state.vx) < 0.5 && Math.abs(state.vy) < 0.5;
+    if (!isPointerInside && settled) {
+      active = false;
+      rafId = 0;
+      return;
+    }
+    rafId = requestAnimationFrame(animate);
   };
+  let isPointerInside = false;
   const onPointerMove = (e) => {
     const rect = hero.getBoundingClientRect();
     state.targetX = e.clientX - rect.left;
     state.targetY = e.clientY - rect.top;
+    if (!active) {
+      active = true;
+      rafId = requestAnimationFrame(animate);
+    }
   };
   const centerSpotlight = () => {
     state.targetX = hero.clientWidth / 2;
@@ -79,24 +113,40 @@ export function bindHeroSpotlight() {
     state.currentY = state.targetY = e.clientY - rect.top;
     overlay.style.transition = 'opacity 200ms ease';
     overlay.style.opacity = '1';
+    isPointerInside = true;
+    if (!active) {
+      active = true;
+      rafId = requestAnimationFrame(animate);
+    }
   };
   const onPointerLeave = () => {
     centerSpotlight();
     overlay.style.transition = 'opacity 400ms ease';
     overlay.style.opacity = '0.85';
+    isPointerInside = false;
   };
   const onResize = () => {
     baseRadius = getBaseRadius();
     featherWidth = Math.floor(baseRadius * 1.6);
     centerSpotlight();
   };
+  const onVisibilityChange = () => {
+    if (document.hidden) {
+      active = false;
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+    } else if (isPointerInside && !rafId) {
+      active = true;
+      rafId = requestAnimationFrame(animate);
+    }
+  };
   hero.addEventListener('pointermove', onPointerMove, { passive: true });
   hero.addEventListener('pointerenter', onPointerEnter);
   hero.addEventListener('pointerleave', onPointerLeave);
   window.addEventListener('resize', onResize);
+  document.addEventListener('visibilitychange', onVisibilityChange);
   centerSpotlight();
   setGradient(state.currentX, state.currentY, 0);
-  requestAnimationFrame(animate);
 }
 
 export function deferHeroAnimations() {
@@ -109,12 +159,22 @@ export function deferHeroAnimations() {
     bindParallax();
     bindHeroSpotlight();
   };
+  // Activate on first interaction or when hero is actually visible
   window.addEventListener('scroll', resume, { once: true, passive: true });
   window.addEventListener('pointerdown', resume, { once: true });
   window.addEventListener('keydown', resume, { once: true });
-  const idle = (window.requestIdleCallback
-    ? window.requestIdleCallback(resume, { timeout: 1500 })
-    : setTimeout(resume, 1200));
+  if ('IntersectionObserver' in window && hero) {
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          resume();
+          io.disconnect();
+          break;
+        }
+      }
+    }, { root: null, threshold: 0.01, rootMargin: '0px 0px -20% 0px' });
+    io.observe(hero);
+  }
 }
 
 

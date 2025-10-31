@@ -397,6 +397,7 @@
   [data-hero-spotlight] {
     mix-blend-mode: soft-light;
     transition: opacity 200ms ease;
+    contain: paint; /* isolate repaint region to reduce overdraw */
   }
   /* Reduce motion for parallax and spotlight when user prefers reduced motion */
   @media (prefers-reduced-motion: reduce) {
@@ -449,6 +450,25 @@
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 20px 20px;
     color: rgba(255, 255, 255, 0.1);
+  }
+  /* Hero-only: lighten background effects to avoid heavy composites */
+section#top [data-hero-bg] .blur-3xl {
+  filter: blur(12px) !important; /* reduce large-area blur cost */
+}
+
+@media (max-width: 640px) {
+  section#top [data-hero-bg] .blur-3xl {
+    filter: blur(8px) !important;
+  }
+}
+  section#top [data-hero-bg] .animate-pulse {
+    animation-duration: 6s !important; /* slower, fewer frames per time */
+  }
+  section#top [data-hero-bg] .animate-bounce-slow {
+    animation-duration: 4.5s !important;
+  }
+  section#top [data-hero-bg] .animate-float {
+    animation-duration: 9s !important;
   }
 
   /* Enhanced grid with dots */
