@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import compression from 'vite-plugin-compression'
+import handlebars from 'vite-plugin-handlebars'
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -9,6 +10,9 @@ const __dirname = resolve(__filename, '..')
 export default defineConfig({
   plugins: [
     compression({ algorithm: 'brotliCompress', ext: '.br', deleteOriginFile: false }),
+    handlebars({
+      partialDirectory: resolve(__dirname, 'src/partials')
+    }),
     {
       name: 'pages-rewrite',
       configureServer(server) {
@@ -39,6 +43,8 @@ export default defineConfig({
         'pages/contact': resolve(__dirname, 'src/pages/contact.html'),
         'pages/services': resolve(__dirname, 'src/pages/services.html'),
         'pages/resume': resolve(__dirname, 'src/pages/resume.html'),
+        'pages/open-source': resolve(__dirname, 'src/pages/open-source.html'),
+        'pages/speaking': resolve(__dirname, 'src/pages/speaking.html'),
       }
     }
   }

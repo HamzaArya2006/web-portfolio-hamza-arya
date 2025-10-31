@@ -20,18 +20,7 @@
   </head>
   <body class="bg-gray-900 text-gray-100">
     <!-- Simple header (brand + quick links) -->
-    <header class="sticky top-0 z-40 border-b border-white/10 bg-gray-900/70 backdrop-blur">
-      <div class="container-pro h-14 flex items-center justify-between">
-        <a href="/index.html" class="flex items-center gap-2 font-semibold">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-white">H</span>
-          <span>Hamza</span>
-        </a>
-        <nav class="hidden sm:flex items-center gap-2">
-          <a href="/index.html" class="nav-link">Home</a>
-          <a href="/pages/contact.html" class="btn-minimal">Contact</a>
-        </nav>
-      </div>
-    </header>
+    {{> header}}
 
     <!-- Breadcrumb / navigation path -->
     <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
@@ -117,21 +106,10 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-10 border-t border-white/10">
-      <div class="container-pro flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-300">
-        <p>© <span id="year"></span> Hamza. All rights reserved.</p>
-        <div class="flex items-center gap-4">
-          <a class="hover:text-white" href="https://github.com/hamza" target="_blank" rel="noopener">GitHub</a>
-          <a class="hover:text-white" href="https://linkedin.com/in/hamza" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="#top" class="hover:text-white">Top</a>
-        </div>
-      </div>
-    </footer>
+    {{> footer}}
 
     <script type="module" src="/src/scripts/main.js"></script>
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
+    
     <script type="application/ld+json">
     {
       "@context":"https://schema.org",

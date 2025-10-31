@@ -28,6 +28,11 @@ import {
   initPerformanceMonitoring,
 } from "./modules/pwa_perf.js";
 import { runModernIntroOverlaySequence } from "./modules/intro.js";
+import { initAnalytics } from "./modules/analytics.js";
+import { renderSkills } from "./modules/skills.js";
+import { renderOpenSourceContributions, renderPinnedRepos } from "./modules/openSource.js";
+import { renderSpeakingEngagements, renderPublications } from "./modules/speaking.js";
+import { renderPressLogos, renderClientLogos } from "./modules/press.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   initTheme();
@@ -50,6 +55,15 @@ window.addEventListener("DOMContentLoaded", () => {
   deferHeroAnimations();
   registerServiceWorker();
   initPerformanceMonitoring();
+  initAnalytics();
+  // Render new sections
+  renderSkills();
+  renderOpenSourceContributions();
+  renderPinnedRepos();
+  renderSpeakingEngagements();
+  renderPublications();
+  renderPressLogos();
+  renderClientLogos();
 });
 
 window.addEventListener("DOMContentLoaded", () => {

@@ -63,6 +63,7 @@ export function renderProjects() {
       const categories = classifyProject(p);
       const techArray = p.tech.split(' • ');
       const { lazySrc, srcSet, sizes } = buildResponsiveImageAttrs(p.image);
+      const isCaseStudy = !!(p.caseStudy || (p.metrics && Object.keys(p.metrics).length >= 3));
       const metricsHtml = p.metrics ? `
         <div class="project-metrics">
           ${Object.entries(p.metrics).map(([key, value]) => `
@@ -82,8 +83,9 @@ export function renderProjects() {
         </div>
       ` : '';
       return `
-      <article data-reveal class="opacity-0 translate-y-6 project-card">
+      <article data-reveal class="opacity-0 translate-y-6 project-card loading">
         <div class="project-image-container">
+          <div class="project-skeleton-image project-skeleton-anim"></div>
           <img 
             width="600" 
             height="400" 
@@ -94,11 +96,19 @@ export function renderProjects() {
             data-src="${lazySrc}"
             data-srcset="${srcSet}"
             data-sizes="${sizes}"
+            onload="this.closest('article') && this.closest('article').classList.remove('loading')"
           />
           <div class="project-overlay"></div>
           <div class="project-category">
             <span>${categories[0]}</span>
           </div>
+          ${isCaseStudy ? `
+          <div class="case-study-badge" aria-label="Case study">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span>Case Study</span>
+          </div>` : ''}
           <div class="project-actions">
             <a href="${p.links.live}" class="project-action-btn" title="View Live Demo" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -118,6 +128,8 @@ export function renderProjects() {
         <div class="project-content">
           <h3 class="project-title">${p.title}</h3>
           <p class="project-description">${p.description}</p>
+          <div class="project-skeleton-text wide project-skeleton-anim"></div>
+          <div class="project-skeleton-text project-skeleton-anim" style="width: 70%; margin-top: 0.5rem;"></div>
           ${metricsHtml}
           ${featuresHtml}
           <div class="project-meta">

@@ -1005,6 +1005,26 @@ section#top [data-hero-bg] .blur-3xl {
       0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
+  /* Skill Item */
+  .skill-item {
+    margin-bottom: 1rem;
+  }
+
+  .skill-bar-container {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .skill-bar {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.8), rgba(99, 102, 241, 0.8));
+    border-radius: 9999px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   /* Project Filter Buttons */
   .project-filter-btn {
     display: inline-flex;
@@ -1087,6 +1107,56 @@ section#top [data-hero-bg] .blur-3xl {
     );
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(8px);
+  }
+
+  /* Project skeleton loading */
+  .project-card.loading .project-image {
+    opacity: 0;
+  }
+  .project-skeleton-image,
+  .project-skeleton-text {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .project-skeleton-image {
+    height: 12rem;
+  }
+  .project-skeleton-text {
+    height: 0.875rem;
+    border-radius: 0.375rem;
+  }
+  .project-skeleton-text.wide { height: 1.25rem; }
+  .project-skeleton-text.sm { height: 0.75rem; }
+  .project-skeleton-anim::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    animation: skeleton-shimmer 1.4s infinite;
+  }
+  @keyframes skeleton-shimmer {
+    100% { transform: translateX(100%); }
+  }
+
+  /* Case study badge */
+  .case-study-badge {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: rgba(16, 185, 129, 0.16);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    backdrop-filter: blur(6px);
   }
 
   /* Project Metrics */
@@ -1369,6 +1439,109 @@ section#top [data-hero-bg] .blur-3xl {
     );
     border-color: rgba(59, 130, 246, 0.4);
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+  }
+
+  /* Testimonials carousel */
+  .testimonials-carousel {
+    position: relative;
+    overflow: visible;
+  }
+  .testimonials-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    gap: 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scroll-padding-inline: 1rem;
+    padding-inline: 0.5rem;
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .testimonials-track::-webkit-scrollbar { display: none; }
+  .testimonial-slide {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    height: 100%;
+    padding-inline: 0.5rem;
+  }
+  .testimonials-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .testimonials-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.2s ease;
+  }
+  .testimonials-btn:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .testimonials-btn.play[aria-pressed="true"] {
+    background: rgba(34, 197, 94, 0.18);
+    border-color: rgba(34, 197, 94, 0.35);
+    color: #34d399;
+  }
+
+  .testimonials-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .testimonials-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.2s ease;
+  }
+  .testimonials-dot[aria-current="true"] {
+    background: #60a5fa;
+    border-color: rgba(96, 165, 250, 0.8);
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
+  }
+
+  /* Mobile: stacked layout */
+  @media (max-width: 640px) {
+    .testimonials-track {
+      display: block;
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+    .testimonial-slide { margin-bottom: 1rem; }
+  }
+
+  /* >= sm: show 2 cards */
+  @media (min-width: 640px) {
+    .testimonials-track {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 50%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+  }
+
+  /* >= lg: show 3 cards */
+  @media (min-width: 1024px) {
+    .testimonials-track {
+      grid-auto-columns: 33.3333%;
+    }
   }
 
   /* Hero: rotating specialties */

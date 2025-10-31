@@ -7,6 +7,16 @@ export function bindContactForm() {
     statusEl.setAttribute('aria-live', 'polite');
   }
   let submitting = false;
+  // Ensure timestamp field for basic anti-bot timing validation
+  let tsField = form.querySelector('input[name="_ts"]');
+  if (!tsField) {
+    tsField = document.createElement('input');
+    tsField.type = 'hidden';
+    tsField.name = '_ts';
+    form.appendChild(tsField);
+  }
+  tsField.value = Date.now().toString();
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (submitting) return;
@@ -31,7 +41,7 @@ export function bindContactForm() {
       submitting = false;
       return;
     }
-    const endpoint = import.meta.env.VITE_FORM_ENDPOINT;
+    const endpoint = import.meta.env.VITE_FORM_ENDPOINT || '/api/contact';
     const submitBtn = form.querySelector('button[type="submit"]');
     const prevBtnText = submitBtn ? submitBtn.textContent : '';
     const setLoading = (loading) => {
@@ -52,7 +62,7 @@ export function bindContactForm() {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, brief, budget }),
+          body: JSON.stringify({ name, email, brief, budget, website: formData.get('website') || '', _ts: Number(tsField.value) || Date.now() }),
         });
         if (!res.ok) {
           const text = await res.text().catch(() => '');

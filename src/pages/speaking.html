@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speaking & Writing — Talks, Publications, Events</title>
+    <meta name="description" content="Hamza's speaking engagements, conference talks, podcasts, and published articles." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    {{> header}}
+
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </li>
+        <li aria-current="page" class="text-white">Speaking & Writing</li>
+      </ol>
+    </nav>
+
+    <!-- Hero -->
+    <section id="top" class="relative py-20 overflow-hidden bg-black text-white">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
+        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
+        <div class="absolute inset-0 bg-grid animate-grid-move opacity-60"></div>
+        <div class="absolute inset-0 bg-grid-dots opacity-15"></div>
+        <div data-parallax="0.06" class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl"></div>
+      </div>
+      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300 mix-blend-soft-light" style="will-change: background;"></div>
+
+      <div class="container-pro relative z-20 text-center">
+        <div data-reveal class="opacity-0 translate-y-6">
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight mb-6">
+            Speaking <span class="text-gradient">& Writing</span>
+          </h1>
+          <p class="text-white/90 text-xl max-w-3xl mx-auto leading-relaxed">Sharing knowledge through talks, articles, and community engagement.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Speaking Engagements -->
+    <section class="py-24 bg-gray-900 relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Speaking <span class="text-gradient">Engagements</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            Conference talks, workshops, and podcast appearances.
+          </p>
+        </div>
+        <div id="speaking-engagements">
+          <!-- Speaking engagements will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Publications -->
+    <section class="py-24 bg-black relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Published <span class="text-gradient">Articles</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            Technical articles and tutorials published across various platforms.
+          </p>
+        </div>
+        <div id="publications" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <!-- Publications will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    {{> footer}}
+
+    <script type="module" src="/src/scripts/main.js"></script>
+  </body>
+</html>
+

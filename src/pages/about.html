@@ -20,19 +20,7 @@
     <meta name="twitter:image" content="/favicon.svg" />
   </head>
   <body class="bg-gray-900 text-gray-100">
-    <!-- Simple header (brand only) -->
-    <header class="sticky top-0 z-40 border-b border-white/10 bg-gray-900/70 backdrop-blur">
-      <div class="container-pro h-14 flex items-center justify-between">
-        <a href="/index.html" class="flex items-center gap-2 font-semibold">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-white">H</span>
-          <span>Hamza</span>
-        </a>
-        <nav class="hidden sm:flex items-center gap-2">
-          <a href="/index.html" class="nav-link">Home</a>
-          <a href="/pages/contact.html" class="btn-minimal">Contact</a>
-        </nav>
-      </div>
-    </header>
+    {{> header}}
 
     <!-- Breadcrumb / navigation path -->
     <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
@@ -147,8 +135,26 @@
       </div>
     </section>
 
+    <!-- Skills/Stack Section -->
+    <section class="py-24 bg-gray-900 relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Technical <span class="text-gradient">Expertise</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            Deep proficiency across the modern web development stack, with continuous learning and active usage in recent projects.
+          </p>
+        </div>
+        <div id="skills-container" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <!-- Skills will be rendered here -->
+        </div>
+      </div>
+    </section>
+
     <!-- Values strip -->
-    <section class="py-16 bg-gradient-to-b from-black to-gray-900 text-white">
+    <section class="py-16 bg-gradient-to-b from-gray-900 to-black text-white">
       <div class="container-pro grid gap-6 sm:grid-cols-3">
         <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
           <p class="text-sm text-white/70">Quality</p>
@@ -179,22 +185,10 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-10 border-t border-white/10">
-      <div class="container-pro flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-300">
-        <p>© <span id="year"></span> Hamza. All rights reserved.</p>
-        <div class="flex items-center gap-4">
-          <a class="hover:text-white" href="https://github.com/hamza" target="_blank" rel="noopener">GitHub</a>
-          <a class="hover:text-white" href="https://linkedin.com/in/hamza" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="#top" class="hover:text-white">Top</a>
-        </div>
-      </div>
-    </footer>
+    {{> footer}}
 
     <script type="module" src="/src/scripts/main.js"></script>
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
+    
 
     <!-- Structured data -->
     <script type="application/ld+json">

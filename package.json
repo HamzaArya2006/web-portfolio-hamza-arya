@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/optimize-images.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "lh:build": "vite build",
     "lh:serve": "vite preview --port 4173 --strictPort --open=false",
     "lighthouse": "node scripts/lighthouse.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.33.4"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.16",
@@ -17,6 +21,7 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
     "vite": "^5.0.0",
-    "vite-plugin-compression": "^0.5.1"
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-handlebars": "^2.0.0"
   }
 }

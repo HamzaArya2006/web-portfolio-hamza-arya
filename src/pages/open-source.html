@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Open Source — Contributions & Projects</title>
+    <meta name="description" content="Explore Hamza's open source contributions, featured repositories, and community work." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    {{> header}}
+
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </li>
+        <li aria-current="page" class="text-white">Open Source</li>
+      </ol>
+    </nav>
+
+    <!-- Hero -->
+    <section id="top" class="relative py-20 overflow-hidden bg-black text-white">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
+        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
+        <div class="absolute inset-0 bg-grid animate-grid-move opacity-60"></div>
+        <div class="absolute inset-0 bg-grid-dots opacity-15"></div>
+        <div data-parallax="0.06" class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl"></div>
+      </div>
+      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300 mix-blend-soft-light" style="will-change: background;"></div>
+
+      <div class="container-pro relative z-20 text-center">
+        <div data-reveal class="opacity-0 translate-y-6">
+          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight mb-6">Open Source</h1>
+          <p class="text-white/90 text-xl max-w-3xl mx-auto leading-relaxed">Contributing to the community and sharing knowledge through open source projects.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contributions -->
+    <section class="py-24 bg-gray-900 relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Contributions <span class="text-gradient">to the Ecosystem</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            Merged pull requests and active participation in open source projects.
+          </p>
+        </div>
+        <div id="open-source-contributions" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <!-- Contributions will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Pinned Repos -->
+    <section class="py-24 bg-black relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Featured <span class="text-gradient">Repositories</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            Open source projects I've created and maintain.
+          </p>
+        </div>
+        <div id="pinned-repos" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <!-- Pinned repos will be rendered here -->
+        </div>
+        <div class="text-center mt-12">
+          <a href="https://github.com/hamza" target="_blank" rel="noopener" class="btn-primary">
+            View All on GitHub
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline ml-2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15,3 21,3 21,9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    {{> footer}}
+
+    <script type="module" src="/src/scripts/main.js"></script>
+  </body>
+</html>
+

@@ -9,18 +9,7 @@
   </head>
   <body class="bg-gray-900 text-gray-100">
     <!-- Simple header (brand + quick links) -->
-    <header class="sticky top-0 z-40 border-b border-white/10 bg-gray-900/70 backdrop-blur">
-      <div class="container-pro h-14 flex items-center justify-between">
-        <a href="/index.html" class="flex items-center gap-2 font-semibold">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-white">H</span>
-          <span>Hamza</span>
-        </a>
-        <nav class="hidden sm:flex items-center gap-2">
-          <a href="/index.html" class="nav-link">Home</a>
-          <a href="/pages/contact.html" class="btn-minimal">Contact</a>
-        </nav>
-      </div>
-    </header>
+    {{> header}}
 
     <!-- Breadcrumb / navigation path -->
     <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
@@ -136,6 +125,40 @@
       </div>
     </section>
 
+    <!-- FAQ Section -->
+    <section class="py-24 bg-gray-900">
+      <div class="container-pro max-w-3xl">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Frequently Asked <span class="text-gradient">Questions</span>
+          </h2>
+          <p class="text-gray-300 text-lg">Everything you need to know about working together.</p>
+        </div>
+        <div class="space-y-4">
+          <div class="glass rounded-2xl p-6">
+            <h3 class="font-semibold text-white mb-2">What's included in your packages?</h3>
+            <p class="text-gray-300 text-sm">All packages include source code, documentation, deployment support, and 30 days of post-launch bug fixes. Premium packages include design consultation and ongoing maintenance.</p>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <h3 class="font-semibold text-white mb-2">What are typical delivery timelines?</h3>
+            <p class="text-gray-300 text-sm">Audit & Roadmap: 1 week | MVP Sprint: 2-3 weeks | Custom projects: 4-12 weeks depending on scope. All timelines include milestones for review and feedback.</p>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <h3 class="font-semibold text-white mb-2">Do you provide ongoing support?</h3>
+            <p class="text-gray-300 text-sm">Yes! I offer monthly retainer packages for ongoing development, maintenance, and feature additions. Priority support is available for retainer clients.</p>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <h3 class="font-semibold text-white mb-2">Can we work within our existing systems?</h3>
+            <p class="text-gray-300 text-sm">Absolutely. I integrate seamlessly with your current tech stack, workflows, and team processes. I can also provide recommendations for optimizing existing systems.</p>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <h3 class="font-semibold text-white mb-2">What about intellectual property?</h3>
+            <p class="text-gray-300 text-sm">You own all IP rights to custom code created for your project. Open source libraries maintain their respective licenses. All details are outlined in our standard contract.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="py-20 bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white text-center">
       <div class="container-pro">
         <h2 class="text-4xl font-bold mb-4">Ready to get started?</h2>
@@ -144,21 +167,10 @@
       </div>
     </section>
 
-    <footer class="py-10 border-t border-white/10">
-      <div class="container-pro flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-300">
-        <p>© <span id="year"></span> Hamza. All rights reserved.</p>
-        <div class="flex items-center gap-4">
-          <a class="hover:text-white" href="https://github.com/hamza" target="_blank" rel="noopener">GitHub</a>
-          <a class="hover:text-white" href="https://linkedin.com/in/hamza" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="#top" class="hover:text-white">Top</a>
-        </div>
-      </div>
-    </footer>
+    {{> footer}}
 
     <script type="module" src="/src/scripts/main.js"></script>
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
+    
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"WebSite","name":"Hamza Services","url":"https://hamzaarya.dev/services"}
     </script>

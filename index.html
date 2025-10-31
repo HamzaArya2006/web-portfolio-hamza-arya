@@ -527,18 +527,13 @@
             </li>
           </ul>
 
-          <!-- Trusted by strip -->
+          <!-- Press & Clients -->
           <div class="pt-1">
-            <div class="text-[10px] uppercase tracking-[0.2em] text-white/60">
-              Trusted by
+            <div class="text-[10px] uppercase tracking-[0.2em] text-white/60 mb-3">
+              As Seen In
             </div>
-            <div class="mt-2 flex items-center gap-4 opacity-80">
-              <span class="h-2 w-16 rounded-full bg-white/15"></span>
-              <span class="h-2 w-12 rounded-full bg-white/15"></span>
-              <span class="h-2 w-20 rounded-full bg-white/15"></span>
-              <span
-                class="h-2 w-10 rounded-full bg-white/15 hidden sm:inline"
-              ></span>
+            <div id="press-logos" class="flex items-center gap-4 opacity-80">
+              <!-- Press logos will be rendered here -->
             </div>
           </div>
 
@@ -2186,10 +2181,7 @@
           </p>
         </div>
 
-        <div
-          id="testimonials-grid"
-          class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
-        ></div>
+        <div id="testimonials-grid"></div>
 
         <!-- Trust indicators -->
         <div class="mt-16 text-center">
@@ -2409,34 +2401,9 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-10 border-t border-white/10">
-      <div
-        class="container-pro flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-300"
-      >
-        <p>© <span id="year"></span> Hamza. All rights reserved.</p>
-        <div class="flex items-center gap-4">
-          <a
-            class="hover:text-white"
-            href="https://github.com/hamza"
-            target="_blank"
-            rel="noopener"
-            >GitHub</a
-          >
-          <a
-            class="hover:text-white"
-            href="https://linkedin.com/in/hamza"
-            target="_blank"
-            rel="noopener"
-            >LinkedIn</a
-          >
-          <a href="#top" class="hover:text-white">Top</a>
-        </div>
-      </div>
-    </footer>
+    {{> footer}}
 
     <script type="module" src="/src/scripts/main.js"></script>
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear();
-    </script>
+    
   </body>
 </html>
