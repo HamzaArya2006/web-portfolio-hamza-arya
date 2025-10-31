@@ -1,0 +1,222 @@
+<svg
+  width="100%"
+  height="100%"
+  viewBox="0 0 1920 1080"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#0b1223" />
+    </linearGradient>
+    <radialGradient id="v" cx="50%" cy="55%" r="70%">
+      <stop offset="60%" stop-color="#000" stop-opacity="0" />
+      <stop offset="100%" stop-color="#000" stop-opacity="0.55" />
+    </radialGradient>
+    <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="2" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.02" />
+      </feComponentTransfer>
+    </filter>
+    <linearGradient id="tab" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2d2d30" />
+      <stop offset="100%" stop-color="#26262a" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="20" flood-color="#000" flood-opacity="0.35" />
+    </filter>
+    <!-- Clip for editor content to prevent overflow into minimap/status -->
+    <clipPath id="editorClip">
+      <rect x="336" y="70" width="1476" height="980" />
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#bg)" />
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#v)" />
+  <rect x="0" y="0" width="1920" height="1080" filter="url(#grain)" opacity="0.22" />
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="1920" height="36" fill="#1f1f22" />
+  <circle cx="20" cy="18" r="6" fill="#ff5f56" />
+  <circle cx="42" cy="18" r="6" fill="#ffbd2e" />
+  <circle cx="64" cy="18" r="6" fill="#27ca3f" />
+  <rect x="92" y="11" width="140" height="14" rx="3" fill="#2a2a2e" />
+
+  <!-- Tabs -->
+  <rect x="0" y="36" width="1920" height="34" fill="#202226" />
+  <g filter="url(#shadow)">
+    <rect x="220" y="38" width="200" height="30" rx="6" fill="url(#tab)" />
+    <rect x="220" y="66" width="200" height="2" fill="#3b82f6" />
+    <!-- Active tab label and close icon -->
+    <g font-family="Consolas, monospace" font-size="12" fill="#cfd6e4">
+      <text x="236" y="57">main.cpp</text>
+      <g transform="translate(402,48)" fill="#8a90a0" opacity="0.9">
+        <rect x="0" y="0" width="16" height="16" rx="3" fill="#24262b" />
+        <path d="M4 4 L12 12 M12 4 L4 12" stroke="#a5adbd" stroke-width="1.6" stroke-linecap="round" />
+      </g>
+    </g>
+  </g>
+  <rect x="430" y="38" width="150" height="30" rx="6" fill="#1b1c20" />
+  <rect x="590" y="38" width="140" height="30" rx="6" fill="#1b1c20" />
+
+  <!-- Sidebar & Explorer -->
+  <rect x="0" y="70" width="280" height="980" fill="#111317" />
+  <g opacity="0.9">
+    <rect x="18" y="90" width="32" height="32" rx="6" fill="#1e2126" />
+    <rect x="18" y="132" width="32" height="32" rx="6" fill="#1e2126" />
+    <rect x="18" y="174" width="32" height="32" rx="6" fill="#1e2126" />
+    <rect x="18" y="216" width="32" height="32" rx="6" fill="#1e2126" />
+  </g>
+  <rect x="60" y="90" width="200" height="22" rx="4" fill="#1b1d22" />
+  <g fill="#1b1d22">
+    <rect x="60" y="122" width="180" height="16" rx="3" />
+    <rect x="60" y="146" width="150" height="16" rx="3" />
+    <rect x="60" y="170" width="160" height="16" rx="3" />
+    <rect x="60" y="194" width="120" height="16" rx="3" />
+    <rect x="60" y="218" width="190" height="16" rx="3" />
+    <rect x="60" y="242" width="140" height="16" rx="3" />
+    <rect x="60" y="266" width="170" height="16" rx="3" />
+  </g>
+
+  <!-- Editor area -->
+  <rect x="280" y="70" width="1540" height="980" fill="#0f1116" />
+  <rect x="280" y="70" width="56" height="980" fill="#0b0d12" />
+  <!-- Editor subtle top sheen and border -->
+  <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.05" />
+    <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+  </linearGradient>
+  <rect x="280" y="70" width="1540" height="80" fill="url(#sheen)" />
+  <rect x="280.5" y="70.5" width="1539" height="979" fill="none" stroke="#1a2230" stroke-opacity="0.6" />
+
+  <!-- Gutter line numbers aligned to code baselines -->
+  <g font-family="Consolas, monospace" font-size="12" fill="#4b5563" opacity="0.85">
+    <text x="308" y="88">1</text>
+    <text x="300" y="112">2</text>
+    <text x="300" y="136">3</text>
+    <text x="300" y="160">4</text>
+    <text x="300" y="184">5</text>
+    <text x="300" y="208">6</text>
+    <text x="300" y="232">7</text>
+    <text x="298" y="256">8</text>
+    <text x="298" y="280">9</text>
+    <text x="292" y="304">10</text>
+    <text x="292" y="328">11</text>
+    <text x="292" y="352">12</text>
+    <text x="292" y="376">13</text>
+    <text x="292" y="400">14</text>
+    <text x="292" y="424">15</text>
+    <text x="292" y="448">16</text>
+  </g>
+
+  <!-- Realistic C++ (syntax-colored) -->
+  <g font-family="Consolas, monospace" font-size="14" fill="#d4d4d4" clip-path="url(#editorClip)">
+    <text x="344" y="88">
+      <tspan fill="#60a5fa">#include</tspan><tspan> </tspan><tspan fill="#ce9178">&lt;vector&gt;</tspan><tspan> </tspan>
+      <tspan fill="#60a5fa">#include</tspan><tspan> </tspan><tspan fill="#ce9178">&lt;string&gt;</tspan><tspan> </tspan>
+      <tspan fill="#60a5fa">#include</tspan><tspan> </tspan><tspan fill="#ce9178">&lt;expected&gt;</tspan>
+    </text>
+    <text x="344" y="112">
+      <tspan fill="#60a5fa">#include</tspan><tspan> </tspan><tspan fill="#ce9178">&lt;ranges&gt;</tspan><tspan> </tspan>
+      <tspan fill="#60a5fa">#include</tspan><tspan> </tspan><tspan fill="#ce9178">&lt;tuple&gt;</tspan><tspan> </tspan>
+      <tspan fill="#60a5fa">#include</tspan><tspan> </tspan><tspan fill="#ce9178">&lt;print&gt;</tspan>
+    </text>
+    <text x="344" y="136">
+      <tspan fill="#60a5fa">template</tspan><tspan>&lt;</tspan><tspan fill="#60a5fa">typename</tspan><tspan> T&gt; </tspan>
+      <tspan fill="#60a5fa">concept</tspan><tspan> Hashable = </tspan>
+      <tspan fill="#60a5fa">requires</tspan><tspan>(T a) { </tspan>
+      <tspan>{ </tspan><tspan fill="#a78bfa">std</tspan><tspan>::</tspan><tspan fill="#a78bfa">hash</tspan><tspan>&lt;T&gt;{}(a) }</tspan>
+      <tspan> -&gt; </tspan><tspan fill="#a78bfa">std</tspan><tspan>::convertible_to&lt;</tspan><tspan fill="#a78bfa">std</tspan><tspan>::size_t&gt;; };</tspan>
+    </text>
+    <text x="344" y="160">
+      <tspan fill="#60a5fa">struct</tspan><tspan> Node { </tspan>
+      <tspan fill="#a78bfa">int</tspan><tspan> id; </tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::string name; </tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::vector&lt;</tspan><tspan fill="#a78bfa">std</tspan><tspan>::unique_ptr&lt;Node&gt;&gt; children; };</tspan>
+    </text>
+    <text x="344" y="184">
+      <tspan fill="#60a5fa">template</tspan><tspan>&lt;</tspan><tspan fill="#60a5fa">class</tspan><tspan> R&gt; </tspan>
+      <tspan fill="#60a5fa">auto</tspan><tspan> sum(R&amp;&amp; r) -&gt; </tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::ranges::range_value_t&lt;R&gt; { </tspan>
+      <tspan fill="#60a5fa">using</tspan><tspan> V = </tspan><tspan fill="#a78bfa">std</tspan><tspan>::ranges::range_value_t&lt;R&gt;; </tspan>
+      <tspan>V acc{}; </tspan><tspan fill="#60a5fa">for</tspan><tspan> (</tspan><tspan fill="#60a5fa">auto</tspan><tspan>&amp;&amp; x : r) acc += x; </tspan>
+      <tspan fill="#60a5fa">return</tspan><tspan> acc; }</tspan>
+    </text>
+    <text x="344" y="208">
+      <tspan fill="#60a5fa">template</tspan><tspan>&lt;</tspan><tspan fill="#60a5fa">class</tspan><tspan> F, </tspan><tspan fill="#60a5fa">class</tspan><tspan>... Ts&gt; </tspan>
+      <tspan fill="#a78bfa">decltype</tspan><tspan>(</tspan><tspan fill="#60a5fa">auto</tspan><tspan>) defer(F&amp;&amp; f, Ts&amp;&amp;... ts) { </tspan>
+      <tspan fill="#60a5fa">return</tspan><tspan> [fn = </tspan><tspan fill="#a78bfa">std</tspan><tspan>::forward&lt;F&gt;(f), </tspan>
+      <tspan>tup = </tspan><tspan fill="#a78bfa">std</tspan><tspan>::make_tuple(</tspan><tspan fill="#a78bfa">std</tspan><tspan>::forward&lt;Ts&gt;(ts)...)]() mutable { </tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::apply(fn, tup); }; }</tspan>
+    </text>
+    <text x="344" y="232">
+      <tspan fill="#60a5fa">template</tspan><tspan>&lt;Hashable K, </tspan><tspan fill="#60a5fa">class</tspan><tspan> V&gt; </tspan>
+      <tspan fill="#60a5fa">class</tspan><tspan> LRUCache { </tspan>
+      <tspan fill="#60a5fa">public</tspan><tspan>:</tspan>
+      <tspan>  </tspan><tspan fill="#a78bfa">explicit</tspan><tspan> LRUCache(</tspan><tspan fill="#a78bfa">std</tspan><tspan>::size_t cap); </tspan>
+      <tspan>  V</tspan><tspan>&amp; put(</tspan><tspan fill="#a78bfa">const</tspan><tspan> K&amp;, V); </tspan>
+      <tspan>  </tspan><tspan fill="#a78bfa">std</tspan><tspan>::optional&lt;V&gt; get(</tspan><tspan fill="#a78bfa">const</tspan><tspan> K&amp;); </tspan>
+      <tspan>};</tspan>
+    </text>
+    <text x="344" y="256">
+      <tspan fill="#a78bfa">std</tspan><tspan>::expected&lt;</tspan><tspan fill="#a78bfa">std</tspan><tspan>::string, </tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::error_code&gt; read_file(</tspan><tspan fill="#a78bfa">std</tspan><tspan>::string_view p);</tspan>
+    </text>
+    <text x="344" y="280">
+      <tspan fill="#60a5fa">task</tspan><tspan>&lt;</tspan><tspan fill="#a78bfa">std</tspan><tspan>::string&gt; async_read(</tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::string path);</tspan>
+    </text>
+    <text x="344" y="304">
+      <tspan>pool</tspan><tspan>.submit([</tspan><tspan fill="#60a5fa">&amp;</tspan><tspan>]{ </tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::println(</tspan><tspan fill="#ce9178">"ready"</tspan><tspan>); </tspan><tspan>});</tspan>
+    </text>
+    <text x="344" y="328">
+      <tspan fill="#a78bfa">int</tspan><tspan> main() { </tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::vector&lt;</tspan><tspan fill="#a78bfa">int</tspan><tspan>&gt; v{1,2,3,4}; </tspan>
+      <tspan fill="#60a5fa">auto</tspan><tspan> s = sum(v); </tspan>
+      <tspan fill="#a78bfa">std</tspan><tspan>::println(</tspan><tspan fill="#ce9178">"sum = {}"</tspan><tspan>, s); </tspan>
+      <tspan fill="#60a5fa">return</tspan><tspan> 0; }</tspan>
+    </text>
+  </g>
+  <!-- Selection highlight and indent guides -->
+  <rect x="336" y="320" width="1080" height="20" rx="4" fill="#2563eb" opacity="0.08" clip-path="url(#editorClip)" />
+  <g stroke="#2a3446" stroke-width="1" opacity="0.25" clip-path="url(#editorClip)">
+    <line x1="380" y1="90" x2="380" y2="1040" />
+    <line x1="420" y1="90" x2="420" y2="1040" />
+    <line x1="460" y1="90" x2="460" y2="1040" />
+  </g>
+
+  <!-- Minimap -->
+  <rect x="1812" y="70" width="48" height="980" fill="#131722" />
+  <g fill="#2a3345" opacity="0.9">
+    <rect x="1818" y="96" width="36" height="4" rx="2" />
+    <rect x="1818" y="112" width="30" height="4" rx="2" />
+    <rect x="1818" y="128" width="40" height="4" rx="2" />
+    <rect x="1818" y="144" width="34" height="4" rx="2" />
+    <rect x="1818" y="160" width="28" height="4" rx="2" />
+    <rect x="1818" y="176" width="38" height="4" rx="2" />
+  </g>
+  <rect x="1812" y="120" width="48" height="220" fill="#3b82f6" opacity="0.18" />
+
+  <!-- Status bar -->
+  <rect x="0" y="1050" width="1920" height="30" fill="#0b0d12" />
+  <g font-family="Consolas, monospace" font-size="12" fill="#9aa3b2" opacity="0.9">
+    <text x="16" y="1070">main.cpp</text>
+    <text x="120" y="1070">UTF-8</text>
+    <text x="180" y="1070">LF</text>
+    <text x="220" y="1070">C++23</text>
+    <text x="300" y="1070"> main</text>
+    <text x="380" y="1070">✔ No issues</text>
+    <circle cx="520" cy="1066" r="4" fill="#10b981" opacity="0.8" />
+  </g>
+
+  <!-- Caret -->
+  <rect x="344" y="320" width="2.5" height="18" fill="#e5efff" opacity="0.9" clip-path="url(#editorClip)">
+    <animate attributeName="opacity" values="0.85;0;0.85" dur="1s" repeatCount="indefinite" />
+  </rect>
+</svg>
+
+
