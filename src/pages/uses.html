@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uses — Development Setup, Tools & Gear</title>
+    <meta name="description" content="A detailed breakdown of the tools, software, hardware, and setup I use for development. Highly linkable page for developers and tech enthusiasts." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Uses — Hamza Arya's Development Setup" />
+    <meta property="og:description" content="My complete development setup: tools, software, hardware, and workflow." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hamzaarya.dev/uses" />
+    <meta property="og:image" content="/favicon.svg" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Uses — Hamza Arya's Development Setup" />
+    <meta name="twitter:description" content="My complete development setup: tools, software, hardware, and workflow." />
+    <meta name="twitter:image" content="/favicon.svg" />
+    <!-- Performance hints -->
+    <link rel="preload" href="/src/styles/main.css" as="style" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preload" href="/src/scripts/main.js" as="script" />
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    {{> header}}
+
+    <!-- Breadcrumb / navigation path -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </li>
+        <li aria-current="page" class="text-white">Uses</li>
+      </ol>
+    </nav>
+
+    <!-- Hero / Intro -->
+    <section id="top" class="relative py-20 bg-black overflow-hidden">
+      <!-- Professional animated background -->
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
+        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
+        <div class="absolute inset-0 bg-grid animate-grid-move opacity-60"></div>
+        <div class="absolute inset-0 bg-grid-dots opacity-15"></div>
+        <div data-parallax="0.06" class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl"></div>
+      </div>
+      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300 mix-blend-soft-light" style="will-change: background;"></div>
+
+      <div class="container-pro relative z-20">
+        <div data-reveal class="opacity-0 translate-y-6 text-center max-w-3xl mx-auto">
+          <div class="glass-professional rounded-full px-5 py-2 inline-flex items-center gap-2 w-max mb-6">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse glow-professional"></span>
+            <span class="text-xs tracking-wide uppercase text-white/90 font-medium">Setup</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4">
+            What I <span class="text-gradient">Use</span>
+          </h1>
+          <p class="text-gray-300 text-lg max-w-prose mx-auto">
+            A detailed breakdown of the tools, software, hardware, and setup I use for development. This page is frequently updated as my workflow evolves.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Development Environment -->
+    <section class="py-24 bg-gray-900 relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Development <span class="text-gradient">Environment</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            The core tools I use every day for coding and development.
+          </p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">💻</span>
+              <span>Code Editor</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">VS Code</strong> — Primary editor</li>
+              <li class="text-xs text-gray-400 ml-4">Extensions: ESLint, Prettier, Tailwind CSS IntelliSense, GitLens</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">🌐</span>
+              <span>Terminal</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Windows Terminal</strong> — Modern terminal</li>
+              <li><strong class="text-white">PowerShell</strong> — Shell of choice</li>
+              <li class="text-xs text-gray-400 ml-4">Git Bash for compatibility when needed</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">📦</span>
+              <span>Package Manager</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">npm</strong> — Node.js packages</li>
+              <li><strong class="text-white">pnpm</strong> — Faster alternative for larger projects</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">🔧</span>
+              <span>Build Tools</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Vite</strong> — Fast dev server & build</li>
+              <li><strong class="text-white">Tailwind CSS</strong> — Utility-first CSS</li>
+              <li><strong class="text-white">PostCSS</strong> — CSS processing</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">🗂️</span>
+              <span>Version Control</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Git</strong> — Version control</li>
+              <li><strong class="text-white">GitHub</strong> — Code hosting & collaboration</li>
+              <li class="text-xs text-gray-400 ml-4">GitHub Actions for CI/CD</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">🐳</span>
+              <span>Containerization</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Docker</strong> — Container platform</li>
+              <li class="text-xs text-gray-400 ml-4">Docker Compose for local development</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design & Productivity -->
+    <section class="py-24 bg-black relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Design & <span class="text-gradient">Productivity</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            Tools I use for design, productivity, and collaboration.
+          </p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">🎨</span>
+              <span>Design Tools</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Figma</strong> — UI/UX design</li>
+              <li><strong class="text-white">Adobe XD</strong> — Prototyping (occasional)</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">📝</span>
+              <span>Note Taking</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Notion</strong> — Project documentation</li>
+              <li><strong class="text-white">Obsidian</strong> — Personal knowledge base</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">💬</span>
+              <span>Communication</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Discord</strong> — Team chat</li>
+              <li><strong class="text-white">Slack</strong> — Client communication</li>
+              <li><strong class="text-white">Email</strong> — Professional correspondence</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">☁️</span>
+              <span>Cloud Storage</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Google Drive</strong> — File sharing</li>
+              <li><strong class="text-white">Dropbox</strong> — Backup & sync</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">📊</span>
+              <span>Analytics</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Google Analytics</strong> — Web analytics</li>
+              <li><strong class="text-white">Vercel Analytics</strong> — Performance monitoring</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">🌍</span>
+              <span>Deployment</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Vercel</strong> — Frontend deployment</li>
+              <li><strong class="text-white">AWS</strong> — Cloud infrastructure</li>
+              <li><strong class="text-white">Netlify</strong> — Static site hosting</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hardware -->
+    <section class="py-24 bg-gray-900 relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Hardware <span class="text-gradient">Setup</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            The physical tools I work with daily.
+          </p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2">
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">💻</span>
+              <span>Primary Machine</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Desktop PC</strong></li>
+              <li class="text-xs text-gray-400 ml-4">Windows 11</li>
+              <li class="text-xs text-gray-400 ml-4">Multiple monitor setup for increased productivity</li>
+            </ul>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3 flex items-center gap-2">
+              <span class="text-2xl">⌨️</span>
+              <span>Peripherals</span>
+            </h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">Mechanical Keyboard</strong> — For comfortable typing</li>
+              <li><strong class="text-white">Wireless Mouse</strong> — Precise control</li>
+              <li><strong class="text-white">External Monitors</strong> — Dual monitor setup</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Browser & Extensions -->
+    <section class="py-24 bg-black relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Browser & <span class="text-gradient">Extensions</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            My browser setup and essential extensions for development.
+          </p>
+        </div>
+        <div class="glass rounded-xl p-8 max-w-2xl mx-auto">
+          <div class="mb-6">
+            <h3 class="font-semibold text-white mb-3">Primary Browser</h3>
+            <p class="text-gray-300 text-sm mb-4"><strong class="text-white">Google Chrome</strong> — Development & testing</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-white mb-3">Essential Extensions</h3>
+            <ul class="space-y-2 text-sm text-gray-300">
+              <li><strong class="text-white">React Developer Tools</strong> — React debugging</li>
+              <li><strong class="text-white">Redux DevTools</strong> — State management debugging</li>
+              <li><strong class="text-white">Lighthouse</strong> — Performance auditing</li>
+              <li><strong class="text-white">Web Developer</strong> — Various dev utilities</li>
+              <li><strong class="text-white">ColorZilla</strong> — Color picker</li>
+              <li><strong class="text-white">JSON Formatter</strong> — JSON viewing</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other Tools -->
+    <section class="py-24 bg-gray-900 relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20"></div>
+      <div class="container-pro relative">
+        <div class="text-center mb-16">
+          <h2 class="text-4xl font-bold mb-4">
+            Other <span class="text-gradient">Tools</span>
+          </h2>
+          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+            Additional tools that help streamline my workflow.
+          </p>
+        </div>
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3">API Testing</h3>
+            <p class="text-sm text-gray-300"><strong class="text-white">Postman</strong> — API development & testing</p>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3">Database</h3>
+            <p class="text-sm text-gray-300"><strong class="text-white">pgAdmin</strong> — PostgreSQL management</p>
+            <p class="text-sm text-gray-300 mt-2"><strong class="text-white">MongoDB Compass</strong> — MongoDB GUI</p>
+          </div>
+
+          <div class="glass rounded-xl p-6">
+            <h3 class="font-semibold text-white mb-3">Screen Recording</h3>
+            <p class="text-sm text-gray-300"><strong class="text-white">OBS Studio</strong> — Screen recording & streaming</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 bg-black">
+      <div class="container-pro">
+        <div class="glass rounded-2xl p-8 max-w-2xl mx-auto text-center">
+          <h3 class="text-2xl font-bold mb-3">Want to know more?</h3>
+          <p class="text-gray-300 mb-6">Have questions about my setup or want to discuss tools? Feel free to reach out.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/pages/contact.html" class="btn-primary">Get in touch</a>
+            <a href="/index.html" class="btn-secondary">Back to home</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{> footer}}
+
+    <script type="module" src="/src/scripts/main.js"></script>
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Uses — Hamza Arya's Development Setup",
+      "description": "Tools, software, hardware, and setup used for development",
+      "url": "https://hamzaarya.dev/uses"
+    }
+    </script>
+  </body>
+</html>
+

@@ -26,6 +26,8 @@
       content="I build fast, reliable web apps that turn ideas into profit."
     />
     <meta name="twitter:image" content="/favicon.svg" />
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://hamzaarya.dev/" />
     <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
     <link rel="modulepreload" href="/src/scripts/main.js" />
@@ -55,7 +57,40 @@
           "url": "https://hamzaarya.dev",
           "image": "https://hamzaarya.dev/favicon.svg",
           "jobTitle": "Full-Stack Developer",
-          "worksFor": { "@type": "Organization", "name": "Freelance" },
+          "description": "Full-stack developer building fast, reliable web apps for startups, brands, and founders.",
+          "email": "contact@hamzaarya.dev",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Lahore",
+            "addressCountry": "PK"
+          },
+          "sameAs": [
+            "https://github.com/hamza",
+            "https://linkedin.com/in/hamza"
+          ],
+          "knowsAbout": ["Web Development", "Full-Stack Development", "React", "Node.js", "PostgreSQL", "AWS", "TypeScript", "DevOps", "Performance Optimization", "SEO"],
+          "award": "Core Web Vitals Grade A",
+          "alumniOf": {
+            "@type": "Organization",
+            "name": "Freelance"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "Hamza Arya",
+          "url": "https://hamzaarya.dev",
+          "logo": "https://hamzaarya.dev/favicon.svg",
+          "founder": {
+            "@type": "Person",
+            "name": "Hamza Arya"
+          },
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "contact@hamzaarya.dev",
+            "contactType": "General Inquiries",
+            "availableLanguage": "English"
+          },
           "sameAs": [
             "https://github.com/hamza",
             "https://linkedin.com/in/hamza"
@@ -66,6 +101,11 @@
           "@type": "WebSite",
           "name": "Hamza — Full-Stack Developer",
           "url": "https://hamzaarya.dev",
+          "description": "Full-stack developer building fast, reliable web apps for startups, brands, and founders.",
+          "publisher": {
+            "@type": "Person",
+            "name": "Hamza Arya"
+          },
           "potentialAction": {
             "@type": "SearchAction",
             "target": "https://hamzaarya.dev/search?q={search_term_string}",
@@ -81,54 +121,31 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
+    <!-- Preload hero images -->
+    <link rel="preload" as="image" href="/src/assets/svg/hero-vscode-bg.svg" fetchpriority="high" />
   </head>
   <body class="bg-gray-900 text-gray-100 page-intro-init">
     <div
       id="intro-overlay"
       class="fixed inset-0 z-[9999] flex items-center justify-center"
       style="
-        background: radial-gradient(
-          ellipse at 50% 60%,
-          #101725 55%,
-          #0a1623 75%,
-          #222b38 97%,
-          #000 100%
-        );
+        background: rgba(8, 14, 24, 0.55);
+        -webkit-backdrop-filter: blur(22px) saturate(1.05);
+        backdrop-filter: blur(22px) saturate(1.05);
+        border: 1px solid rgba(255, 255, 255, 0.06);
       "
     >
       <div
         class="absolute inset-0 animated-gradient-bg pointer-events-none z-0"
       ></div>
-      <div class="flex flex-col items-center z-10">
-        <div class="mb-6">
-          <img
-            src="/src/assets/svg/hamza-logo-light.svg"
-            alt="Hamza Arya Logo"
-            class="h-12 w-12"
-          />
-        </div>
-        <div
-          class="intro-terminal glassy-blur p-8 rounded-2xl shadow-2xl max-w-md w-full relative"
-        >
-          <span class="intro-terminal-code"></span>
-          <div class="intro-debug mt-2" style="opacity: 0">
-            debug: Success — No issues detected!
-          </div>
-          <div class="intro-loader mt-3">
-            <div class="intro-loader-bar"></div>
-          </div>
-          <span
-            class="intro-loader-text block mt-2 text-center text-blue-300/90 text-sm tracking-wide opacity-0"
-            >Loading experience…</span
-          >
-        </div>
-      </div>
+      <div id="intro-logo-host" class="z-10"></div>
     </div>
     <!-- Header / Navbar -->
-    <header data-sticky class="fixed inset-x-0 top-0 z-50 transition-colors">
+    <header data-sticky class="fixed inset-x-0 top-0 z-50 transition-colors" role="banner">
       <div class="px-3 sm:px-4 my-2">
         <nav
           class="container-pro glass-professional rounded-full flex h-16 items-center justify-between"
+          aria-label="Main navigation"
         >
           <div class="flex items-center gap-6">
             <a
@@ -204,7 +221,7 @@
             </div>
           </div>
           <div class="hidden md:flex items-center gap-2">
-            <a href="#shop" aria-label="Shop" class="btn-minimal" title="Shop">
+            <a href="#shop" aria-label="Shop" class="btn-minimal">
               <svg
                 width="18"
                 height="18"
@@ -230,7 +247,6 @@
                 <circle cx="9" cy="20" r="1.5" fill="currentColor" />
                 <circle cx="18" cy="20" r="1.5" fill="currentColor" />
               </svg>
-              <span class="sr-only">Shop</span>
             </a>
             <a href="./src/pages/contact.html" class="btn-minimal">Hire Me</a>
           </div>
@@ -250,6 +266,8 @@
         id="mobile-menu"
         data-open="false"
         class="hidden md:hidden border-t border-white/10 bg-gray-900/80 backdrop-blur"
+        role="navigation"
+        aria-label="Mobile navigation"
       >
         <div class="container-pro py-4 flex flex-col gap-3">
           <a href="./src/pages/about.html" class="nav-link">About</a>
@@ -289,7 +307,7 @@
           <a href="./src/pages/services.html" class="nav-link">Services</a>
           <a href="./src/pages/contact.html" class="nav-link">Contact</a>
           <div class="flex gap-3 pt-2">
-            <a href="#shop" aria-label="Shop" class="btn-ghost" title="Shop">
+            <a href="#shop" aria-label="Shop" class="btn-ghost">
               <svg
                 width="18"
                 height="18"
@@ -325,7 +343,8 @@
     <!-- Hero -->
     <section
       id="top"
-      class="relative min-h-[90vh] flex items-center overflow-hidden bg-black text-white hero-anim-off"
+      class="relative min-h-[90vh] flex items-center overflow-hidden bg-black text-white hero-anim-off hero-pro"
+      aria-label="Hero introduction"
     >
       <!-- VS Code Window Background -->
       <div
@@ -337,9 +356,9 @@
         <div class="absolute inset-0">
           <img
             src="/src/assets/svg/hero-vscode-bg.svg"
-            alt=""
+            alt="Decorative code editor interface"
             aria-hidden="true"
-            class="opacity-15"
+            class="opacity-10"
             style="width: 100%; height: 100%"
             decoding="async"
             fetchpriority="low"
@@ -349,34 +368,17 @@
         <!-- Enhanced gradient orbs with professional styling -->
         <div
           data-parallax="0.06"
-          class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl"
+          class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-blue-500/20 blur-3xl"
         ></div>
         <!-- Professional floating elements -->
-        <div
-          class="absolute top-20 left-20 w-2 h-2 bg-blue-400/40 rounded-full animate-pulse"
-        ></div>
-        <div
-          class="absolute top-40 right-32 w-1 h-1 bg-indigo-400/60 rounded-full animate-pulse"
-          style="animation-delay: 1s"
-        ></div>
-        <div
-          class="absolute bottom-32 left-1/3 w-3 h-3 bg-cyan-400/30 rounded-full animate-pulse"
-          style="animation-delay: 2s"
-        ></div>
-        <div
-          class="absolute top-1/2 right-20 w-1.5 h-1.5 bg-blue-300/40 rounded-full animate-pulse"
-          style="animation-delay: 0.5s"
-        ></div>
+        <div class="absolute top-20 left-20 w-2 h-2 bg-blue-400/35 rounded-full animate-pulse"></div>
+        <div class="absolute top-40 right-32 w-1 h-1 bg-indigo-400/45 rounded-full animate-pulse" style="animation-delay: 1s"></div>
+        <div class="absolute bottom-32 left-1/3 w-3 h-3 bg-blue-300/30 rounded-full animate-pulse" style="animation-delay: 2s"></div>
+        <div class="absolute top-1/2 right-20 w-1.5 h-1.5 bg-indigo-300/35 rounded-full animate-pulse" style="animation-delay: 0.5s"></div>
 
         <!-- Professional accent lines -->
-        <div
-          data-parallax="-0.06"
-          class="absolute top-1/3 left-0 w-32 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"
-        ></div>
-        <div
-          data-parallax="-0.05"
-          class="absolute bottom-1/3 right-0 w-24 h-px bg-gradient-to-l from-transparent via-indigo-500/20 to-transparent"
-        ></div>
+        <div data-parallax="-0.06" class="absolute top-1/3 left-0 w-32 h-px bg-gradient-to-r from-transparent via-blue-500/15 to-transparent"></div>
+        <div data-parallax="-0.05" class="absolute bottom-1/3 right-0 w-24 h-px bg-gradient-to-l from-transparent via-indigo-500/15 to-transparent"></div>
       </div>
       <div
         data-hero-spotlight
@@ -413,12 +415,12 @@
             >
               <span class="block">Hamza</span>
               <span
-                class="block bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-300 bg-clip-text text-transparent"
+                class="block bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent"
               >
                 Full‑Stack
               </span>
               <span
-                class="block bg-gradient-to-r from-cyan-300 via-blue-400 to-indigo-400 bg-clip-text text-transparent"
+                class="block bg-gradient-to-r from-blue-300 to-indigo-400 bg-clip-text text-transparent"
               >
                 Developer
               </span>
@@ -527,13 +529,18 @@
             </li>
           </ul>
 
-          <!-- Press & Clients -->
+          <!-- Trusted by strip -->
           <div class="pt-1">
-            <div class="text-[10px] uppercase tracking-[0.2em] text-white/60 mb-3">
-              As Seen In
+            <div class="text-[10px] uppercase tracking-[0.2em] text-white/60">
+              Trusted by
             </div>
-            <div id="press-logos" class="flex items-center gap-4 opacity-80">
-              <!-- Press logos will be rendered here -->
+            <div class="mt-2 flex items-center gap-4 opacity-80">
+              <span class="h-2 w-16 rounded-full bg-white/15"></span>
+              <span class="h-2 w-12 rounded-full bg-white/15"></span>
+              <span class="h-2 w-20 rounded-full bg-white/15"></span>
+              <span
+                class="h-2 w-10 rounded-full bg-white/15 hidden sm:inline"
+              ></span>
             </div>
           </div>
 
@@ -1238,6 +1245,7 @@
     <section
       id="services"
       class="py-24 bg-black relative overflow-hidden cv-auto"
+      aria-labelledby="services-heading"
     >
       <!-- Background decoration -->
       <div
@@ -1305,7 +1313,7 @@
 
       <div class="container-pro relative">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">
+          <h2 id="services-heading" class="text-4xl font-bold mb-4">
             Services I Provide
             <span class="text-gradient">For Your Success</span>
           </h2>
@@ -1695,7 +1703,7 @@
     </section>
 
     <!-- About -->
-    <section id="about" class="py-20 bg-black relative overflow-hidden cv-auto">
+    <section id="about" class="py-20 bg-black relative overflow-hidden cv-auto" aria-labelledby="about-heading">
       <!-- Background decoration -->
       <div
         class="absolute inset-0 bg-grid opacity-20"
@@ -1838,7 +1846,7 @@
       <div class="container-pro relative grid gap-12 lg:grid-cols-2">
         <!-- Copy -->
         <div data-reveal class="opacity-0 translate-y-6">
-          <h2 class="text-3xl font-bold text-white mb-4">
+          <h2 id="about-heading" class="text-3xl font-bold text-white mb-4">
             About
             <span class="text-gradient">My Expertise</span>
           </h2>
@@ -2045,6 +2053,7 @@
     <section
       id="projects"
       class="py-24 bg-black relative overflow-hidden cv-auto"
+      aria-labelledby="projects-heading"
     >
       <!-- Background decoration -->
       <div
@@ -2063,7 +2072,7 @@
       <div class="container-pro relative">
         <!-- Header -->
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">
+          <h2 id="projects-heading" class="text-4xl font-bold mb-4">
             Featured
             <span class="text-gradient">Projects</span>
           </h2>
@@ -2158,6 +2167,7 @@
     <section
       id="testimonials"
       class="py-24 bg-gray-900 relative overflow-hidden cv-auto"
+      aria-labelledby="testimonials-heading"
     >
       <!-- Background decoration -->
       <div
@@ -2171,7 +2181,7 @@
 
       <div class="container-pro relative">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">
+          <h2 id="testimonials-heading" class="text-4xl font-bold mb-4">
             What Clients Say
             <span class="text-gradient">About My Work</span>
           </h2>
@@ -2207,6 +2217,7 @@
     <section
       id="contact"
       class="relative py-24 bg-black overflow-hidden cv-auto"
+      aria-labelledby="contact-heading"
     >
       <!-- Background decoration -->
       <div
@@ -2237,7 +2248,7 @@
                 >Available for new projects</span
               >
             </div>
-            <h2 class="text-4xl font-bold mb-3">
+            <h2 id="contact-heading" class="text-4xl font-bold mb-3">
               Let's build <span class="text-gradient">something great</span>
             </h2>
             <p class="text-gray-300 text-lg max-w-prose">

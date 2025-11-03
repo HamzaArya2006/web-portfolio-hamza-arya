@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Hamza Arya — Blog</title>
+    <link>https://hamzaarya.dev</link>
+    <description>Articles on web development, performance, architecture, and real-world case studies by Hamza Arya.</description>
+    <language>en-US</language>
+    <lastBuildDate>Mon, 15 Jan 2024 12:00:00 +0000</lastBuildDate>
+    <atom:link href="https://hamzaarya.dev/rss.xml" rel="self" type="application/rss+xml"/>
+    <managingEditor>hamza@hamzaarya.dev (Hamza Arya)</managingEditor>
+    <webMaster>hamza@hamzaarya.dev (Hamza Arya)</webMaster>
+    <generator>Static Site Generator</generator>
+    <ttl>60</ttl>
+    
+    <item>
+      <title>Modern Web Performance: Beyond Core Web Vitals</title>
+      <link>https://hamzaarya.dev/blog#modern-web-performance</link>
+      <description>Explore advanced performance optimization techniques that go beyond basic Core Web Vitals to create truly exceptional user experiences.</description>
+      <content:encoded><![CDATA[<p>Web performance has evolved far beyond simple page load times. Today's users expect instant interactions, smooth animations, and seamless experiences across all devices.</p><h3>Advanced Optimization Strategies</h3><p>Modern performance optimization involves multiple layers...</p>]]></content:encoded>
+      <guid isPermaLink="false">https://hamzaarya.dev/blog#modern-web-performance</guid>
+      <pubDate>Mon, 15 Jan 2024 12:00:00 +0000</pubDate>
+      <category>Performance</category>
+      <category>Web Vitals</category>
+      <category>Optimization</category>
+      <category>JavaScript</category>
+    </item>
+    
+    <item>
+      <title>React Architecture Patterns for Scalable Applications</title>
+      <link>https://hamzaarya.dev/blog#react-architecture-patterns</link>
+      <description>Learn proven patterns and best practices for building maintainable React applications that scale with your team and business needs.</description>
+      <content:encoded><![CDATA[<p>Building scalable React applications requires more than just knowing the framework. It's about establishing patterns that promote maintainability, testability, and team collaboration.</p>]]></content:encoded>
+      <guid isPermaLink="false">https://hamzaarya.dev/blog#react-architecture-patterns</guid>
+      <pubDate>Wed, 10 Jan 2024 12:00:00 +0000</pubDate>
+      <category>React</category>
+      <category>Architecture</category>
+      <category>JavaScript</category>
+      <category>Best Practices</category>
+    </item>
+    
+    <item>
+      <title>RESTful API Design: Best Practices for 2024</title>
+      <link>https://hamzaarya.dev/blog#api-design-best-practices</link>
+      <description>Design APIs that developers love to use. Learn modern RESTful design principles, versioning strategies, and documentation techniques.</description>
+      <content:encoded><![CDATA[<p>Great APIs are invisible to users but crucial for developers. They should be intuitive, consistent, and well-documented.</p>]]></content:encoded>
+      <guid isPermaLink="false">https://hamzaarya.dev/blog#api-design-best-practices</guid>
+      <pubDate>Fri, 05 Jan 2024 12:00:00 +0000</pubDate>
+      <category>Backend</category>
+      <category>API</category>
+      <category>REST</category>
+      <category>Node.js</category>
+    </item>
+    
+    <!-- Additional blog posts can be added here -->
+    <!-- Note: This RSS feed can be generated at build time using a script that reads from src/data/blog.js -->
+  </channel>
+</rss>

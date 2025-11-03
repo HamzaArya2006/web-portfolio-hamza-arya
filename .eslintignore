@@ -1,0 +1,16 @@
+node_modules
+dist
+build
+coverage
+*.lock
+package-lock.json
+*.min.js
+sw.js
+public/sw.js
+lighthouse-report.html
+lighthouse-report.json
+
+
+
+
+

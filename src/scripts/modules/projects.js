@@ -41,7 +41,9 @@ export function withParam(url, key, value) {
 export function buildResponsiveImageAttrs(originalUrl) {
   try {
     const widths = [400, 800, 1200];
-    const srcSet = widths.map((w) => `${withParam(originalUrl, 'w', w)} ${w}w`).join(', ');
+    const srcSet = widths
+      .map(w => `${withParam(originalUrl, 'w', w)} ${w}w`)
+      .join(', ');
     const sizes = '(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw';
     const lazySrc = withParam(originalUrl, 'w', 800);
     return { lazySrc, srcSet, sizes };
@@ -59,29 +61,40 @@ export function renderProjects() {
   if (count) count.textContent = String(filtered.length);
   if (totalCount) totalCount.textContent = String(projects.length);
   grid.innerHTML = filtered
-    .map((p) => {
+    .map(p => {
       const categories = classifyProject(p);
       const techArray = p.tech.split(' • ');
       const { lazySrc, srcSet, sizes } = buildResponsiveImageAttrs(p.image);
-      const isCaseStudy = !!(p.caseStudy || (p.metrics && Object.keys(p.metrics).length >= 3));
-      const metricsHtml = p.metrics ? `
+      const isCaseStudy = !!(
+        p.caseStudy ||
+        (p.metrics && Object.keys(p.metrics).length >= 3)
+      );
+      const metricsHtml = p.metrics
+        ? `
         <div class="project-metrics">
-          ${Object.entries(p.metrics).map(([key, value]) => `
+          ${Object.entries(p.metrics)
+            .map(
+              ([key, value]) => `
             <div class="metric-item">
               <span class="metric-value">${value}</span>
               <span class="metric-label">${key}</span>
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
-      ` : '';
-      const featuresHtml = p.features ? `
+      `
+        : '';
+      const featuresHtml = p.features
+        ? `
         <div class="project-features">
           <h4 class="features-title">Key Features:</h4>
           <ul class="features-list">
             ${p.features.map(feature => `<li>${feature}</li>`).join('')}
           </ul>
         </div>
-      ` : '';
+      `
+        : '';
       return `
       <article data-reveal class="opacity-0 translate-y-6 project-card loading">
         <div class="project-image-container">
@@ -102,13 +115,17 @@ export function renderProjects() {
           <div class="project-category">
             <span>${categories[0]}</span>
           </div>
-          ${isCaseStudy ? `
+          ${
+            isCaseStudy
+              ? `
           <div class="case-study-badge" aria-label="Case study">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
             <span>Case Study</span>
-          </div>` : ''}
+          </div>`
+              : ''
+          }
           <div class="project-actions">
             <a href="${p.links.live}" class="project-action-btn" title="View Live Demo" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -160,16 +177,54 @@ export function renderProjects() {
       </article>`;
     })
     .join('');
+
+  // Fallbacks to ensure visibility and image loading
+  try {
+    const images = grid.querySelectorAll('img[data-src]');
+    images.forEach(img => {
+      // If IntersectionObserver isn't available, eager-load images
+      if (!('IntersectionObserver' in window)) {
+        const ds = img.getAttribute('data-src');
+        if (ds) img.setAttribute('src', ds);
+        const dss = img.getAttribute('data-srcset');
+        if (dss) img.setAttribute('srcset', dss);
+        const dsizes = img.getAttribute('data-sizes');
+        if (dsizes) img.setAttribute('sizes', dsizes);
+      }
+      // Safety: reveal cards even if image load event doesn't fire
+      const article = img.closest('article');
+      if (article) {
+        setTimeout(() => {
+          article.classList.remove('loading');
+          article.classList.remove('opacity-0');
+          article.classList.remove('translate-y-6');
+        }, 2000);
+      }
+    });
+    // If reveal observer didn't bind to newly injected nodes, ensure baseline visibility
+    grid.querySelectorAll('article.project-card').forEach(card => {
+      card.classList.remove('opacity-0');
+      card.classList.remove('translate-y-6');
+    });
+  } catch (_) {
+    // no-op
+  }
 }
 
 export function bindProjectFilters() {
   const bar = document.getElementById('projects-filters');
   if (!bar) return;
   const buttons = bar.querySelectorAll('button[data-filter]');
+
+  // Set up ARIA attributes for filter group
+  bar.setAttribute('role', 'group');
+  bar.setAttribute('aria-label', 'Project category filters');
+
   const updateActive = () => {
-    buttons.forEach((b) => {
+    buttons.forEach(b => {
       const active = b.getAttribute('data-filter') === currentFilter;
       b.classList.toggle('active', active);
+      b.setAttribute('aria-pressed', String(active));
     });
   };
   const updateCounts = () => {
@@ -179,20 +234,59 @@ export function bindProjectFilters() {
       if (countElement) {
         let count = 0;
         if (filter === 'all') count = projects.length;
-        else count = projects.filter(p => classifyProject(p).includes(filter)).length;
+        else
+          count = projects.filter(p =>
+            classifyProject(p).includes(filter)
+          ).length;
         countElement.textContent = count;
       }
     });
   };
-  buttons.forEach((btn) => {
+
+  // Filter button interactions
+  buttons.forEach(btn => {
+    // Set initial ARIA attributes
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-pressed', 'false');
+
+    // Click handler
     btn.addEventListener('click', () => {
       currentFilter = btn.getAttribute('data-filter') || 'all';
       renderProjects();
       updateActive();
     });
+
+    // Keyboard navigation
+    btn.addEventListener('keydown', e => {
+      const buttonsArray = Array.from(buttons);
+      const currentIndex = buttonsArray.indexOf(btn);
+
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+          e.preventDefault();
+          const nextIndex = (currentIndex + 1) % buttonsArray.length;
+          buttonsArray[nextIndex].focus();
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          e.preventDefault();
+          const prevIndex =
+            (currentIndex - 1 + buttonsArray.length) % buttonsArray.length;
+          buttonsArray[prevIndex].focus();
+          break;
+        case 'Home':
+          e.preventDefault();
+          buttonsArray[0].focus();
+          break;
+        case 'End':
+          e.preventDefault();
+          buttonsArray[buttonsArray.length - 1].focus();
+          break;
+      }
+    });
   });
+
   updateActive();
   updateCounts();
 }
-
-

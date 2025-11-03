@@ -1,0 +1,31 @@
+/* Critical above-the-fold styles - inline in <head> */
+@tailwind base;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+  }
+  body {
+    @apply bg-gray-900 text-gray-100;
+  }
+}
+
+/* Critical hero section styles */
+@layer utilities {
+  .container-pro {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Hero only - minimal styles for initial render */
+  section#top {
+    @apply relative min-h-[90vh] flex items-center overflow-hidden bg-black text-white;
+  }
+  
+  /* Prevent layout shift */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+

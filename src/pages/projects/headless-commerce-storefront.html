@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Headless Commerce Storefront — Hamza Arya's Portfolio</title>
+    <meta name="description" content="Lightning-fast e-commerce platform with SSR and CDN caching delivering sub-second product pages even under peak traffic loads." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Headless Commerce Storefront" />
+    <meta property="og:description" content="Lightning-fast e-commerce platform with SSR and CDN caching delivering sub-second product pages even under peak traffic loads." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hamzaarya.dev/projects/headless-commerce-storefront" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Headless Commerce Storefront" />
+    <meta name="twitter:description" content="Lightning-fast e-commerce platform with SSR and CDN caching delivering sub-second product pages even under peak traffic loads." />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop" />
+    
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    {{> header}}
+
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </li>
+        <li><a href="#projects" class="hover:text-white">Projects</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </li>
+        <li aria-current="page" class="text-white">Headless Commerce Storefront</li>
+      </ol>
+    </nav>
+
+    <!-- Project Detail -->
+    <article class="py-16 bg-black relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20" data-parallax="0.02"></div>
+      <div class="container-pro relative">
+        <div class="max-w-5xl mx-auto">
+          <!-- Header -->
+          <header class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">E-commerce</span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">Headless</span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">Performance</span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">SSR</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">Headless Commerce Storefront</h1>
+            <p class="text-xl text-gray-300 mb-8">Lightning-fast e-commerce platform with SSR and CDN caching delivering sub-second product pages even under peak traffic loads.</p>
+            <div class="flex flex-wrap items-center gap-4 text-sm text-gray-400">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white">Role:</span>
+                <span>Full-Stack Developer</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white">Client:</span>
+                <span>RetailTech</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white">Duration:</span>
+                <span>8 weeks</span>
+              </div>
+            </div>
+          </header>
+
+          <!-- Main Image -->
+          <div class="mb-12">
+            <img 
+              src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop" 
+              alt="Headless Commerce Storefront" 
+              class="w-full rounded-2xl object-cover"
+              loading="eager"
+            />
+          </div>
+
+          <!-- Tech Stack -->
+          <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Tech Stack</h2>
+            <div class="flex flex-wrap gap-3">
+              <span class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 border border-white/10 text-gray-200 text-sm font-medium">Next.js</span>
+              <span class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 border border-white/10 text-gray-200 text-sm font-medium">Stripe</span>
+              <span class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 border border-white/10 text-gray-200 text-sm font-medium">Cloudflare</span>
+              <span class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 border border-white/10 text-gray-200 text-sm font-medium">Sanity CMS</span>
+            </div>
+          </div>
+
+          <!-- Features -->
+          <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Key Features</h2>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <li class="flex items-center gap-3 p-4 rounded-lg bg-gray-800/50 border border-white/5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="flex-shrink-0 text-green-400">
+                  <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-gray-200">Headless CMS</span>
+              </li>
+              <li class="flex items-center gap-3 p-4 rounded-lg bg-gray-800/50 border border-white/5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="flex-shrink-0 text-green-400">
+                  <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-gray-200">Payment processing</span>
+              </li>
+              <li class="flex items-center gap-3 p-4 rounded-lg bg-gray-800/50 border border-white/5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="flex-shrink-0 text-green-400">
+                  <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-gray-200">Inventory management</span>
+              </li>
+              <li class="flex items-center gap-3 p-4 rounded-lg bg-gray-800/50 border border-white/5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="flex-shrink-0 text-green-400">
+                  <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="text-gray-200">Order tracking</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Metrics -->
+          <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Results</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="glass rounded-xl p-6 hover-lift">
+                <div class="text-3xl font-bold text-blue-300 mb-2">0.8s</div>
+                <div class="text-sm text-gray-400 font-medium capitalize">speed</div>
+              </div>
+              <div class="glass rounded-xl p-6 hover-lift">
+                <div class="text-3xl font-bold text-blue-300 mb-2">+25%</div>
+                <div class="text-sm text-gray-400 font-medium capitalize">conversion</div>
+              </div>
+              <div class="glass rounded-xl p-6 hover-lift">
+                <div class="text-3xl font-bold text-blue-300 mb-2">99.9%</div>
+                <div class="text-sm text-gray-400 font-medium capitalize">uptime</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Images -->
+          <div class="mb-12">
+            <h2 class="text-2xl font-bold mb-6">Gallery</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <img 
+                src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop" 
+                alt="Headless Commerce Storefront" 
+                class="w-full rounded-xl object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          <!-- Links -->
+          <div class="mb-12">
+            <div class="flex flex-wrap gap-4">
+              <a href="https://storefront.hamzaarya.dev" target="_blank" rel="noopener" class="btn-primary inline-flex items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="mr-2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                View Live
+              </a>
+              <a href="https://github.com/hamza/headless-commerce" target="_blank" rel="noopener" class="btn-secondary inline-flex items-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="mr-2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                View Code
+              </a>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <footer class="mt-16 pt-12 border-t border-white/10">
+            <div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+              <a href="/index.html#projects" class="btn-ghost inline-flex items-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="mr-2">
+                  <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to Portfolio
+              </a>
+              <div class="flex items-center gap-4 text-sm text-gray-400">
+                <span>Share:</span>
+                <a href="https://twitter.com/intent/tweet?text=Headless%20Commerce%20Storefront&url=https%3A%2F%2Fhamzaarya.dev%2Fprojects%2Fheadless-commerce-storefront" target="_blank" rel="noopener" class="hover:text-white">Twitter</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fhamzaarya.dev%2Fprojects%2Fheadless-commerce-storefront" target="_blank" rel="noopener" class="hover:text-white">LinkedIn</a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </article>
+
+    {{> footer}}
+    <script type="module" src="/src/scripts/main.js"></script>
+  </body>
+</html>

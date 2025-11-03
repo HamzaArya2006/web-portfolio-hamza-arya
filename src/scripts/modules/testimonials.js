@@ -47,7 +47,7 @@ export function renderTestimonials() {
 
   grid.innerHTML = `
     <div class="testimonials-carousel" role="region" aria-roledescription="carousel" aria-label="Client testimonials">
-      <div class="testimonials-track" id="testimonials-track" tabindex="0">
+      <div class="testimonials-track" id="testimonials-track">
         ${slidesHtml}
       </div>
       <div class="testimonials-controls">
@@ -101,11 +101,32 @@ export function bindTestimonialsCarousel(prefersReducedMotion) {
     dots.forEach((d, i) => d.setAttribute('aria-current', String(i === index)));
   };
 
-  const scrollToIndex = (i) => {
+  const scrollToIndex = (i, preventAutoFocus = false) => {
     index = (i + slides.length) % slides.length;
     const slide = slides[index];
-    if (slide) {
-      slide.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    if (slide && track) {
+      // Use direct scroll instead of scrollIntoView to prevent focus
+      const trackRect = track.getBoundingClientRect();
+      const slideRect = slide.getBoundingClientRect();
+      const scrollLeft = track.scrollLeft + (slideRect.left - trackRect.left - (trackRect.width - slideRect.width) / 2);
+      
+      // Temporarily remove focus from track if it has it
+      const hadFocus = document.activeElement === track;
+      if (hadFocus) {
+        track.blur();
+      }
+      
+      // Scroll using scrollTo to avoid focus
+      track.scrollTo({
+        left: scrollLeft,
+        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+      });
+      
+      // Ensure track stays unfocused
+      if (document.activeElement === track) {
+        track.blur();
+      }
+      
       announce();
     }
   };
@@ -136,9 +157,51 @@ export function bindTestimonialsCarousel(prefersReducedMotion) {
     dot.addEventListener('click', () => scrollToIndex(i));
   });
 
+  // Aggressively prevent focus on the track
+  track.setAttribute('tabindex', '-1');
+  track.addEventListener('focus', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    track.blur();
+    // If something tried to focus it, focus the container instead
+    if (track.parentElement) {
+      track.parentElement.focus();
+      setTimeout(() => {
+        if (document.activeElement === track.parentElement) {
+          track.parentElement.blur();
+        }
+      }, 0);
+    }
+  }, { capture: true, passive: false });
+  
+  track.addEventListener('mousedown', (e) => {
+    // Only prevent focus on the track itself, allow interaction with children
+    if (e.target === track) {
+      e.preventDefault();
+      // Allow scrolling by manually handling the interaction
+      const startX = e.pageX - track.offsetLeft;
+      const scrollLeft = track.scrollLeft;
+      
+      const onMouseMove = (e) => {
+        const x = e.pageX - track.offsetLeft;
+        const walk = (x - startX) * 2;
+        track.scrollLeft = scrollLeft - walk;
+      };
+      
+      const onMouseUp = () => {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+      
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
+  }, { capture: true });
+  
+  // Only allow keyboard navigation via buttons, not the track itself
   track.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); scrollToIndex(index + 1); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); scrollToIndex(index - 1); }
+    e.preventDefault();
+    e.stopPropagation();
   });
 
   // Sync index on manual scroll
@@ -162,6 +225,32 @@ export function bindTestimonialsCarousel(prefersReducedMotion) {
   track.addEventListener('mouseleave', () => { if (autoplay) start(); });
   track.addEventListener('focusout', () => { if (autoplay) start(); });
 
+  // Ensure track starts at position 0 and doesn't cause page scroll
+  requestAnimationFrame(() => {
+    track.scrollLeft = 0;
+  });
+  
+  // Use focusin (bubbles) to catch any focus attempts early
+  track.parentElement.addEventListener('focusin', (e) => {
+    if (e.target === track || track.contains(e.target)) {
+      // Only allow focus on interactive children, not the track itself
+      if (e.target === track) {
+        e.preventDefault();
+        e.stopPropagation();
+        track.blur();
+        // Focus the carousel container briefly then blur it too
+        if (track.parentElement && document.activeElement !== track.parentElement) {
+          track.parentElement.focus();
+          setTimeout(() => {
+            if (document.activeElement === track.parentElement) {
+              track.parentElement.blur();
+            }
+          }, 0);
+        }
+      }
+    }
+  }, { capture: true, passive: false });
+  
   if (autoplay) start();
   announce();
 }

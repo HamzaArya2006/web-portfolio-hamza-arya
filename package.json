@@ -5,21 +5,25 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/optimize-images.mjs",
+    "prebuild": "node scripts/optimize-images.mjs && node scripts/generate-pages.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "lh:build": "vite build",
     "lh:serve": "vite preview --port 4173 --strictPort --open=false",
-    "lighthouse": "node scripts/lighthouse.mjs"
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "generate-pages": "node scripts/generate-pages.mjs"
   },
   "dependencies": {
     "sharp": "^0.33.4"
   },
   "devDependencies": {
+    "@types/node": "^24.9.2",
     "autoprefixer": "^10.4.16",
+    "esbuild": "^0.24.0",
     "lighthouse": "^12.0.0",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
+    "typescript": "^5.9.3",
     "vite": "^5.0.0",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-handlebars": "^2.0.0"

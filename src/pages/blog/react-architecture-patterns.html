@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Architecture Patterns for Scalable Applications — Hamza Arya's Blog</title>
+    <meta name="description" content="Proven patterns and best practices for building maintainable React applications that scale with your team and business needs." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="React Architecture Patterns for Scalable Applications" />
+    <meta property="og:description" content="Proven patterns and best practices for building maintainable React applications that scale with your team and business needs." />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://hamzaarya.dev/blog/react-architecture-patterns" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="React Architecture Patterns for Scalable Applications" />
+    <meta name="twitter:description" content="Proven patterns and best practices for building maintainable React applications that scale with your team and business needs." />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop" />
+    
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    {{> header}}
+
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </li>
+        <li><a href="./blog.html" class="hover:text-white">Blog</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </li>
+        <li aria-current="page" class="text-white">React Architecture Patterns for Scalable Applications</li>
+      </ol>
+    </nav>
+
+    <!-- Article -->
+    <article class="py-16 bg-black relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-20" data-parallax="0.02"></div>
+      <div class="container-pro relative">
+        <div class="max-w-4xl mx-auto">
+          <!-- Header -->
+          <header class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">React</span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">Architecture</span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">JavaScript</span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">Best Practices</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">React Architecture Patterns for Scalable Applications</h1>
+            <div class="flex items-center gap-4 text-sm text-gray-400">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-white">Hamza Arya</span>
+              </div>
+              <span>•</span>
+              <time datetime="2024-01-10">January 10, 2024</time>
+              <span>•</span>
+              <span>12 read</span>
+            </div>
+          </header>
+
+          <!-- Cover Image -->
+          <div class="mb-12">
+            <img 
+              src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop" 
+              alt="React Architecture Patterns for Scalable Applications" 
+              class="w-full rounded-2xl object-cover"
+              loading="eager"
+            />
+          </div>
+
+          <!-- Content -->
+          <div class="prose prose-lg prose-invert max-w-none">
+            
+      <p>Building scalable React applications requires more than just knowing the framework. It's about establishing patterns that promote maintainability, testability, and team collaboration.</p>
+      
+      <h3>Key Architecture Patterns</h3>
+      <ul>
+        <li><strong>Component Composition:</strong> Building flexible, reusable components</li>
+        <li><strong>Custom Hooks:</strong> Encapsulating logic and state management</li>
+        <li><strong>Context API:</strong> Managing global state without external libraries</li>
+        <li><strong>Error Boundaries:</strong> Graceful error handling and recovery</li>
+      </ul>
+      
+      <h3>State Management Strategies</h3>
+      <p>Choosing the right state management approach depends on your application's complexity and team size. For most applications, a combination of local state, context, and server state works best.</p>
+    
+          </div>
+
+          <!-- Footer -->
+          <footer class="mt-16 pt-12 border-t border-white/10">
+            <div class="flex flex-wrap gap-2 mb-6">
+              <a href="../blog.html?tag=React" class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium hover:bg-blue-500/20 transition-colors">#React</a>
+              <a href="../blog.html?tag=Architecture" class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium hover:bg-blue-500/20 transition-colors">#Architecture</a>
+              <a href="../blog.html?tag=JavaScript" class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium hover:bg-blue-500/20 transition-colors">#JavaScript</a>
+              <a href="../blog.html?tag=Best%20Practices" class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium hover:bg-blue-500/20 transition-colors">#Best Practices</a>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+              <a href="../blog.html" class="btn-ghost inline-flex items-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="mr-2">
+                  <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to Blog
+              </a>
+              <div class="flex items-center gap-4 text-sm text-gray-400">
+                <span>Share:</span>
+                <a href="https://twitter.com/intent/tweet?text=React%20Architecture%20Patterns%20for%20Scalable%20Applications&url=https%3A%2F%2Fhamzaarya.dev%2Fblog%2Freact-architecture-patterns" target="_blank" rel="noopener" class="hover:text-white">Twitter</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fhamzaarya.dev%2Fblog%2Freact-architecture-patterns" target="_blank" rel="noopener" class="hover:text-white">LinkedIn</a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </article>
+
+    {{> footer}}
+    <script type="module" src="/src/scripts/main.js"></script>
+  </body>
+</html>

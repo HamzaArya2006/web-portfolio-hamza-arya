@@ -1,0 +1,80 @@
+/* Utility classes and performance optimizations */
+@layer utilities {
+  /* Performance: hint the compositor for frequently transformed elements */
+  [data-parallax],
+  [data-reveal],
+  [data-hero-spotlight] {
+    will-change: transform, opacity;
+    transform: translateZ(0); /* promote to its own layer */
+    backface-visibility: hidden;
+  }
+
+  /* Hero spotlight visual polish */
+  [data-hero-spotlight] {
+    mix-blend-mode: soft-light;
+    transition: opacity 200ms ease;
+    contain: paint; /* isolate repaint region to reduce overdraw */
+  }
+  
+  /* Reduce motion for parallax and spotlight when user prefers reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    [data-parallax] {
+      transform: none !important;
+    }
+  }
+  
+  /* Reduce hero work at initial paint; re-enable via JS */
+  .hero-anim-off [data-hero-spotlight],
+  .hero-anim-off [data-hero-bg] .animate-grid-move,
+  .hero-anim-off [data-hero-bg] .animate-pulse,
+  .hero-anim-off [data-hero-bg] .animate-bounce-slow,
+  .hero-anim-off [data-hero-bg] .animate-float {
+    animation: none !important;
+  }
+  .hero-anim-off [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  
+  /* Performance: avoid layout/rendering work for offscreen sections */
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1000px 2000px; /* reasonable fallback size */
+  }
+  .cv-contain {
+    content-visibility: auto;
+    contain: content;
+  }
+
+  /* Respect user reduced motion and cut heavy animations */
+  @media (prefers-reduced-motion: reduce) {
+    *:not([data-allow-motion]) {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  .fade-in {
+    @apply animate-fade-in;
+  }
+  .slide-up {
+    @apply animate-slide-up;
+  }
+  
+  /* Image blur-up placeholder */
+  .image-blur-up {
+    transition: filter 0.3s ease;
+  }
+  .image-blur-up::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px);
+    transform: scale(1.1);
+    z-index: -1;
+  }
+}
+

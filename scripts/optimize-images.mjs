@@ -37,12 +37,33 @@ async function processImage(file) {
   const widths = RESPONSIVE_WIDTHS.filter((w) => !meta.width || w <= meta.width);
   widths.push(meta.width || widths[widths.length - 1]);
 
+  // Generate blur-up placeholder (20px wide, base64-ready)
+  const blurPlaceholder = await sharp(file)
+    .resize(20, null, { withoutEnlargement: true })
+    .blur(10)
+    .toBuffer();
+  const blurPlaceholderBase64 = blurPlaceholder.toString('base64');
+  const placeholderDataUri = `data:image/${ext === '.png' ? 'png' : 'jpeg'};base64,${blurPlaceholderBase64}`;
+  
+  // Save placeholder metadata to JSON
+  const metadataFile = path.join(outBaseDir, `${baseName}-metadata.json`);
+  const metadata = {
+    widths: [...new Set(widths)].sort((a, b) => a - b),
+    placeholder: placeholderDataUri,
+    aspectRatio: meta.width && meta.height ? meta.width / meta.height : null,
+    original: {
+      width: meta.width,
+      height: meta.height,
+    }
+  };
+  await fs.promises.writeFile(metadataFile, JSON.stringify(metadata, null, 2));
+
   // Generate WebP and AVIF variants
   for (const w of widths) {
     const outWebp = path.join(outBaseDir, `${baseName}-w${w}.webp`);
     const outAvif = path.join(outBaseDir, `${baseName}-w${w}.avif`);
-    await sharp(file).resize({ width: w }).webp({ quality: 82 }).toFile(outWebp);
-    await sharp(file).resize({ width: w }).avif({ quality: 55 }).toFile(outAvif);
+    await sharp(file).resize({ width: w, withoutEnlargement: true }).webp({ quality: 82 }).toFile(outWebp);
+    await sharp(file).resize({ width: w, withoutEnlargement: true }).avif({ quality: 55 }).toFile(outAvif);
   }
 
   // Also output an optimized original-format at max width

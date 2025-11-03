@@ -56,13 +56,15 @@ export function bindContactForm() {
       statusEl.classList.remove('text-red-400', 'text-emerald-400');
       statusEl.classList.add(kind === 'error' ? 'text-red-400' : 'text-emerald-400');
     };
+    const submissionData = { name, email, brief, budget, website: formData.get('website') || '', _ts: Number(tsField.value) || Date.now() };
+    
     if (endpoint) {
       try {
         setLoading(true);
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, brief, budget, website: formData.get('website') || '', _ts: Number(tsField.value) || Date.now() }),
+          body: JSON.stringify(submissionData),
         });
         if (!res.ok) {
           const text = await res.text().catch(() => '');
@@ -73,7 +75,27 @@ export function bindContactForm() {
         submitting = false;
         return;
       } catch (err) {
-        console.warn('Form endpoint failed, falling back to email.', err);
+        console.warn('Form endpoint failed, trying background sync.', err);
+        
+        // Try to store in IndexedDB for background sync
+        if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+          try {
+            await storeSubmissionForSync(submissionData);
+            showStatus('Message queued. Will be sent when connection is restored.', 'info');
+            
+            // Register background sync
+            const registration = await navigator.serviceWorker.ready;
+            await registration.sync.register('sync-contact-form');
+            
+            form.reset();
+            submitting = false;
+            return;
+          } catch (syncErr) {
+            console.error('Background sync setup failed:', syncErr);
+          }
+        }
+        
+        console.warn('Background sync not available, falling back to email.');
       } finally {
         setLoading(false);
       }
@@ -91,6 +113,32 @@ export function bindContactForm() {
       setLoading(false);
       submitting = false;
     }
+  });
+}
+
+// Store submission in IndexedDB for background sync
+async function storeSubmissionForSync(data) {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('contact-forms', 1);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      const db = request.result;
+      const transaction = db.transaction(['submissions'], 'readwrite');
+      const store = transaction.objectStore('submissions');
+      const submission = { data, timestamp: Date.now() };
+      const addRequest = store.add(submission);
+      
+      addRequest.onsuccess = () => resolve();
+      addRequest.onerror = () => reject(addRequest.error);
+    };
+    
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('submissions')) {
+        db.createObjectStore('submissions', { keyPath: 'id', autoIncrement: true });
+      }
+    };
   });
 }
 
@@ -123,18 +171,51 @@ export function enhanceContactForm() {
   }
   function showFieldError(field, message) {
     field.classList.add('border-red-500');
+    field.setAttribute('aria-invalid', 'true');
+    
+    // Remove existing error if any
     let errorEl = field.parentNode.querySelector('.field-error');
-    if (!errorEl) {
-      errorEl = document.createElement('div');
-      errorEl.className = 'field-error text-red-400 text-sm mt-1';
-      field.parentNode.appendChild(errorEl);
+    if (errorEl) {
+      errorEl.remove();
     }
+    
+    // Create error container
+    errorEl = document.createElement('div');
+    errorEl.className = 'field-error text-red-400 text-sm mt-1';
+    errorEl.setAttribute('role', 'alert');
+    errorEl.id = `${field.name || field.id || 'field'}-error`;
+    field.parentNode.appendChild(errorEl);
     errorEl.textContent = message;
+    
+    // Link field to error via aria-describedby
+    const existingDescribedBy = field.getAttribute('aria-describedby');
+    const errorId = errorEl.id;
+    if (existingDescribedBy && !existingDescribedBy.includes(errorId)) {
+      field.setAttribute('aria-describedby', `${existingDescribedBy} ${errorId}`);
+    } else if (!existingDescribedBy) {
+      field.setAttribute('aria-describedby', errorId);
+    }
   }
   function clearFieldError(field) {
     field.classList.remove('border-red-500');
+    field.setAttribute('aria-invalid', 'false');
     const errorEl = field.parentNode.querySelector('.field-error');
     if (errorEl) {
+      // Remove the error ID from aria-describedby
+      const describedBy = field.getAttribute('aria-describedby');
+      if (describedBy) {
+        const errorId = errorEl.id;
+        const newDescribedBy = describedBy
+          .split(' ')
+          .filter(id => id !== errorId)
+          .join(' ')
+          .trim();
+        if (newDescribedBy) {
+          field.setAttribute('aria-describedby', newDescribedBy);
+        } else {
+          field.removeAttribute('aria-describedby');
+        }
+      }
       errorEl.remove();
     }
   }

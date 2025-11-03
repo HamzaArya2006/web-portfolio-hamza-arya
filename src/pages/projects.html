@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects — Portfolio of Web Applications & Case Studies</title>
+    <meta name="description" content="Explore Hamza Arya's portfolio of web applications, SaaS platforms, and case studies. Filter by technology, category, and tags." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Projects — Hamza Arya Portfolio" />
+    <meta property="og:description" content="Explore my portfolio of web applications, SaaS platforms, and case studies." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hamzaarya.dev/projects" />
+    <meta property="og:image" content="/favicon.svg" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Projects — Hamza Arya Portfolio" />
+    <meta name="twitter:description" content="Explore my portfolio of web applications, SaaS platforms, and case studies." />
+    <meta name="twitter:image" content="/favicon.svg" />
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://hamzaarya.dev/projects" />
+    <!-- Performance hints -->
+    <link rel="preload" href="/src/styles/main.css" as="style" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preload" href="/src/scripts/main.js" as="script" />
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    {{> header}}
+
+    <!-- Breadcrumb / navigation path -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </li>
+        <li aria-current="page" class="text-white">Projects</li>
+      </ol>
+    </nav>
+
+    <!-- Hero / Intro -->
+    <section id="top" class="relative py-20 bg-black overflow-hidden" aria-label="Projects introduction">
+      <!-- Professional animated background -->
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
+        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
+        <div class="absolute inset-0 bg-grid animate-grid-move opacity-60"></div>
+        <div class="absolute inset-0 bg-grid-dots opacity-15"></div>
+        <div data-parallax="0.06" class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl"></div>
+      </div>
+      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300 mix-blend-soft-light" style="will-change: background;"></div>
+
+      <div class="container-pro relative z-20">
+        <div data-reveal class="opacity-0 translate-y-6 text-center max-w-3xl mx-auto">
+          <div class="glass-professional rounded-full px-5 py-2 inline-flex items-center gap-2 w-max mb-6">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse glow-professional"></span>
+            <span class="text-xs tracking-wide uppercase text-white/90 font-medium">Portfolio</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4">
+            All <span class="text-gradient">Projects</span>
+          </h1>
+          <p class="text-gray-300 text-lg max-w-prose mx-auto">
+            A curated collection of web applications, SaaS platforms, and case studies. Filter by category, technology, or tags to explore.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Filters -->
+    <section class="py-8 bg-gray-900 border-b border-white/10 sticky top-14 z-30 backdrop-blur-sm" aria-label="Project filters">
+      <div class="container-pro">
+        <div class="flex flex-wrap gap-3 justify-center" id="projects-filters">
+          <button class="project-filter-btn active" data-filter="all">
+            All Projects <span id="count-all" class="filter-count">0</span>
+          </button>
+          <button class="project-filter-btn" data-filter="web">
+            Web <span id="count-web" class="filter-count">0</span>
+          </button>
+          <button class="project-filter-btn" data-filter="saas">
+            SaaS <span id="count-saas" class="filter-count">0</span>
+          </button>
+          <button class="project-filter-btn" data-filter="commerce">
+            Commerce <span id="count-commerce" class="filter-count">0</span>
+          </button>
+          <button class="project-filter-btn" data-filter="data">
+            Data <span id="count-data" class="filter-count">0</span>
+          </button>
+        </div>
+        <div class="mt-4 text-center">
+          <p class="text-sm text-gray-400">
+            Showing <span id="projects-count" class="text-white font-medium">0</span> of <span id="total-projects" class="text-white font-medium">0</span> projects
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section class="py-24 bg-gray-900" aria-label="Projects showcase">
+      <div class="container-pro">
+        <div id="projects-grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <!-- Projects will be rendered here -->
+        </div>
+        <div id="projects-empty" class="hidden text-center py-16">
+          <p class="text-gray-400 text-lg">No projects found matching the selected filter.</p>
+          <button class="mt-4 btn-ghost" onclick="document.querySelector('[data-filter=\'all\']').click();">
+            Clear filters
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tag Filter Section (Optional) -->
+    <section class="py-12 bg-black border-t border-white/10" aria-label="Popular tags">
+      <div class="container-pro">
+        <div class="text-center mb-8">
+          <h3 class="text-xl font-semibold mb-4">Popular Tags</h3>
+          <div class="flex flex-wrap gap-2 justify-center" id="tag-filters">
+            <!-- Tags will be dynamically generated -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 bg-black" aria-label="Call to action">
+      <div class="container-pro">
+        <div class="glass rounded-2xl p-8 max-w-2xl mx-auto text-center">
+          <h3 class="text-2xl font-bold mb-3">Interested in working together?</h3>
+          <p class="text-gray-300 mb-6">Let's discuss your project and explore how we can bring your ideas to life.</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/pages/contact.html" class="btn-primary">Get in touch</a>
+            <a href="/pages/about.html" class="btn-secondary">Learn more about me</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{> footer}}
+
+    <script type="module" src="/src/scripts/main.js"></script>
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Projects — Hamza Arya",
+      "description": "Portfolio of web applications, SaaS platforms, and case studies",
+      "url": "https://hamzaarya.dev/projects",
+      "publisher": {
+        "@type": "Person",
+        "name": "Hamza Arya"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://hamzaarya.dev/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projects",
+          "item": "https://hamzaarya.dev/projects"
+        }
+      ]
+    }
+    </script>
+  </body>
+</html>
+

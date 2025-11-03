@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search Blog — Find Articles by Keyword</title>
+    <meta name="description" content="Search through blog articles, tutorials, and case studies. Find content by keywords, tags, or categories." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Performance hints -->
+    <link rel="preload" href="/src/styles/main.css" as="style" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preload" href="/src/scripts/main.js" as="script" />
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    {{> header}}
+
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </li>
+        <li aria-current="page" class="text-white">Search</li>
+      </ol>
+    </nav>
+
+    <!-- Hero -->
+    <section id="top" class="relative py-20 overflow-hidden bg-black text-white">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
+        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
+        <div class="absolute inset-0 bg-grid animate-grid-move opacity-60"></div>
+        <div class="absolute inset-0 bg-grid-dots opacity-15"></div>
+        <div data-parallax="0.06" class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl"></div>
+      </div>
+      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300 mix-blend-soft-light" style="will-change: background;"></div>
+
+      <div class="container-pro relative z-20">
+        <div class="max-w-3xl mx-auto text-center">
+          <h1 class="text-5xl sm:text-6xl font-bold leading-[0.9] tracking-tight mb-6">Search</h1>
+          <p class="text-white/90 text-xl mb-8">Find articles, tutorials, and case studies</p>
+          
+          <!-- Search Input -->
+          <div class="glass rounded-2xl p-4">
+            <div class="relative">
+              <input 
+                type="search" 
+                id="search-input"
+                placeholder="Search articles..." 
+                aria-label="Search articles"
+                class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 pl-12 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                autocomplete="off"
+                autofocus
+              />
+              <svg 
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </div>
+            
+            <!-- Search Stats -->
+            <div id="search-stats" class="mt-4 text-sm text-gray-400 hidden">
+              <span id="result-count">0</span> results found
+            </div>
+          </div>
+
+          <!-- Quick Filters -->
+          <div class="mt-6 flex flex-wrap gap-2 justify-center" id="quick-filters">
+            <button class="blog-filter-btn active" data-filter="all">All</button>
+            <button class="blog-filter-btn" data-filter="Performance">Performance</button>
+            <button class="blog-filter-btn" data-filter="React">React</button>
+            <button class="blog-filter-btn" data-filter="Backend">Backend</button>
+            <button class="blog-filter-btn" data-filter="CSS">CSS</button>
+            <button class="blog-filter-btn" data-filter="TypeScript">TypeScript</button>
+            <button class="blog-filter-btn" data-filter="DevOps">DevOps</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Results -->
+    <section class="py-24 bg-gray-900">
+      <div class="container-pro">
+        <div id="search-results" class="max-w-4xl mx-auto">
+          <!-- Results will be rendered here -->
+          <div id="search-empty" class="text-center py-16 hidden">
+            <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <p class="text-gray-400 text-lg">No results found. Try different keywords.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {{> footer}}
+
+    <script type="module">
+      import { blogPosts } from '../../data/blog.js';
+
+      // Build search index
+      const searchIndex = blogPosts.map(post => ({
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content.replace(/<[^>]*>/g, ' '), // Strip HTML tags
+        category: post.category,
+        tags: post.tags.join(' '),
+        date: post.date,
+        readTime: post.readTime,
+        image: post.image,
+        slug: post.slug
+      }));
+
+      // Search function
+      function searchPosts(query, category = 'all') {
+        if (!query.trim()) return [];
+
+        const queryLower = query.toLowerCase();
+        const terms = queryLower.split(/\s+/).filter(term => term.length > 0);
+
+        return searchIndex
+          .filter(post => {
+            // Category filter
+            if (category !== 'all' && post.category !== category) return false;
+            
+            // Search in title, excerpt, content, tags
+            const searchableText = `${post.title} ${post.excerpt} ${post.content} ${post.tags} ${post.category}`.toLowerCase();
+            
+            // Match all terms
+            return terms.every(term => searchableText.includes(term));
+          })
+          .sort((a, b) => {
+            // Simple relevance scoring
+            const aTitle = a.title.toLowerCase();
+            const bTitle = b.title.toLowerCase();
+            const aExcerpt = a.excerpt.toLowerCase();
+            const bExcerpt = b.excerpt.toLowerCase();
+            
+            const aScore = (aTitle.includes(queryLower) ? 10 : 0) + 
+                          (aExcerpt.includes(queryLower) ? 5 : 0) +
+                          (a.tags.toLowerCase().includes(queryLower) ? 3 : 0);
+            const bScore = (bTitle.includes(queryLower) ? 10 : 0) + 
+                          (bExcerpt.includes(queryLower) ? 5 : 0) +
+                          (b.tags.toLowerCase().includes(queryLower) ? 3 : 0);
+            
+            return bScore - aScore;
+          });
+      }
+
+      // Render results
+      function renderResults(results) {
+        const container = document.getElementById('search-results');
+        const emptyState = document.getElementById('search-empty');
+        const stats = document.getElementById('search-stats');
+        const count = document.getElementById('result-count');
+
+        if (results.length === 0) {
+          container.innerHTML = '';
+          emptyState.classList.remove('hidden');
+          stats.classList.add('hidden');
+          return;
+        }
+
+        emptyState.classList.add('hidden');
+        stats.classList.remove('hidden');
+        count.textContent = results.length;
+
+        container.innerHTML = results.map(post => {
+          const originalPost = blogPosts.find(p => p.id === post.id);
+          const formattedDate = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+          
+          return `
+            <article data-reveal class="opacity-0 translate-y-6 blog-post-card mb-8">
+              <div class="blog-post-image">
+                <img 
+                  width="400" 
+                  height="250" 
+                  alt="${post.title}" 
+                  class="blog-image" 
+                  loading="lazy"
+                  decoding="async"
+                  src="${post.image}"
+                />
+              </div>
+              <div class="blog-post-content">
+                <div class="blog-meta">
+                  <span class="blog-category">${post.category}</span>
+                  <span class="blog-date">${formattedDate}</span>
+                  <span class="blog-read-time">${post.readTime}</span>
+                </div>
+                <h2 class="blog-title">${post.title}</h2>
+                <p class="blog-excerpt">${post.excerpt}</p>
+                <div class="blog-tags">
+                  ${originalPost.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
+                </div>
+                <a href="/pages/blog.html#${post.id}" class="blog-read-more">
+                  Read Article
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                  </svg>
+                </a>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        // Trigger reveal animations
+        const reveals = container.querySelectorAll('[data-reveal]');
+        reveals.forEach((el, i) => {
+          setTimeout(() => {
+            el.classList.add('opacity-100');
+            el.classList.remove('translate-y-6');
+          }, i * 50);
+        });
+      }
+
+      // Event listeners
+      let currentCategory = 'all';
+      const searchInput = document.getElementById('search-input');
+      const quickFilters = document.querySelectorAll('.quick-filter-btn');
+
+      // Search input
+      let searchTimeout;
+      searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          const query = e.target.value;
+          const results = searchPosts(query, currentCategory);
+          renderResults(results);
+          
+          // Update URL
+          const url = new URL(window.location);
+          if (query) {
+            url.searchParams.set('q', query);
+          } else {
+            url.searchParams.delete('q');
+          }
+          window.history.replaceState({}, '', url);
+        }, 300);
+      });
+
+      // Quick filters
+      quickFilters.forEach(btn => {
+        btn.addEventListener('click', () => {
+          quickFilters.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCategory = btn.getAttribute('data-filter') || 'all';
+          
+          const query = searchInput.value;
+          const results = searchPosts(query, currentCategory);
+          renderResults(results);
+        });
+      });
+
+      // Load search from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryParam = urlParams.get('q');
+      if (queryParam) {
+        searchInput.value = queryParam;
+        const results = searchPosts(queryParam, currentCategory);
+        renderResults(results);
+      }
+    </script>
+    <script type="module" src="/src/scripts/main.js"></script>
+  </body>
+</html>
+

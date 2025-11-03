@@ -18,6 +18,8 @@
     <meta name="twitter:title" content="About Hamza — Full-Stack Developer" />
     <meta name="twitter:description" content="My journey, expertise, and passion for building exceptional web applications." />
     <meta name="twitter:image" content="/favicon.svg" />
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://hamzaarya.dev/about" />
   </head>
   <body class="bg-gray-900 text-gray-100">
     {{> header}}
@@ -34,7 +36,7 @@
     </nav>
 
     <!-- Hero / Intro -->
-    <section id="top" class="relative py-20 bg-black overflow-hidden">
+    <section id="top" class="relative py-20 bg-black overflow-hidden" aria-label="About introduction">
       <!-- Professional animated background -->
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
         <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
@@ -136,11 +138,11 @@
     </section>
 
     <!-- Skills/Stack Section -->
-    <section class="py-24 bg-gray-900 relative overflow-hidden">
+    <section class="py-24 bg-gray-900 relative overflow-hidden" aria-labelledby="skills-heading">
       <div class="absolute inset-0 bg-grid opacity-20"></div>
       <div class="container-pro relative">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">
+          <h2 id="skills-heading" class="text-4xl font-bold mb-4">
             Technical <span class="text-gradient">Expertise</span>
           </h2>
           <p class="text-gray-300 text-lg max-w-2xl mx-auto">
@@ -197,10 +199,37 @@
       "@type": "Person",
       "name": "Hamza Arya",
       "jobTitle": "Full-Stack Developer",
+      "description": "Full-stack developer building fast, reliable web apps for startups, brands, and founders.",
       "url": "https://hamzaarya.dev",
+      "image": "https://hamzaarya.dev/favicon.svg",
+      "email": "contact@hamzaarya.dev",
+      "knowsAbout": ["Web Development", "Full-Stack Development", "React", "Node.js", "PostgreSQL", "AWS", "TypeScript"],
       "sameAs": [
         "https://github.com/hamza",
         "https://linkedin.com/in/hamza"
+      ],
+      "alumniOf": {
+        "@type": "Organization",
+        "name": "Freelance"
+      },
+      "award": "Core Web Vitals Grade A"
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://hamzaarya.dev/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "About",
+          "item": "https://hamzaarya.dev/about"
+        }
       ]
     }
     </script>

@@ -2,7 +2,9 @@ export const blogPosts = [
   {
     id: 'modern-web-performance',
     title: 'Modern Web Performance: Beyond Core Web Vitals',
+    slug: 'modern-web-performance',
     excerpt: 'Explore advanced performance optimization techniques that go beyond basic Core Web Vitals to create truly exceptional user experiences.',
+    summary: 'Advanced performance optimization techniques that go beyond basic Core Web Vitals to create exceptional user experiences with measurable business impact.',
     content: `
       <p>Web performance has evolved far beyond simple page load times. Today's users expect instant interactions, smooth animations, and seamless experiences across all devices.</p>
       
@@ -26,15 +28,20 @@ export const blogPosts = [
     author: 'Hamza Arya',
     date: '2024-01-15',
     readTime: '8 min read',
+    readingTime: 8,
     category: 'Performance',
     tags: ['Performance', 'Web Vitals', 'Optimization', 'JavaScript'],
     featured: true,
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop'
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop',
+    canonicalUrl: 'https://hamzaarya.dev/blog/modern-web-performance'
   },
   {
     id: 'react-architecture-patterns',
     title: 'React Architecture Patterns for Scalable Applications',
+    slug: 'react-architecture-patterns',
     excerpt: 'Learn proven patterns and best practices for building maintainable React applications that scale with your team and business needs.',
+    summary: 'Proven patterns and best practices for building maintainable React applications that scale with your team and business needs.',
     content: `
       <p>Building scalable React applications requires more than just knowing the framework. It's about establishing patterns that promote maintainability, testability, and team collaboration.</p>
       
@@ -52,15 +59,20 @@ export const blogPosts = [
     author: 'Hamza Arya',
     date: '2024-01-10',
     readTime: '12 min read',
+    readingTime: 12,
     category: 'React',
     tags: ['React', 'Architecture', 'JavaScript', 'Best Practices'],
     featured: true,
-    image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop'
+    image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=800&auto=format&fit=crop',
+    canonicalUrl: 'https://hamzaarya.dev/blog/react-architecture-patterns'
   },
   {
     id: 'api-design-best-practices',
     title: 'RESTful API Design: Best Practices for 2024',
+    slug: 'api-design-best-practices',
     excerpt: 'Design APIs that developers love to use. Learn modern RESTful design principles, versioning strategies, and documentation techniques.',
+    summary: 'Modern RESTful design principles, versioning strategies, and documentation techniques for building APIs that developers love to use.',
     content: `
       <p>Great APIs are invisible to users but crucial for developers. They should be intuitive, consistent, and well-documented.</p>
       
@@ -78,15 +90,20 @@ export const blogPosts = [
     author: 'Hamza Arya',
     date: '2024-01-05',
     readTime: '10 min read',
+    readingTime: 10,
     category: 'Backend',
     tags: ['API', 'Backend', 'REST', 'Node.js'],
     featured: false,
-    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop'
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop',
+    canonicalUrl: 'https://hamzaarya.dev/blog/api-design-best-practices'
   },
   {
     id: 'css-grid-vs-flexbox',
     title: 'CSS Grid vs Flexbox: When to Use Each',
+    slug: 'css-grid-vs-flexbox',
     excerpt: 'Master the art of CSS layout with a comprehensive guide to Grid and Flexbox, including practical examples and use cases.',
+    summary: 'Comprehensive guide to CSS Grid and Flexbox with practical examples and use cases for creating efficient, maintainable layouts.',
     content: `
       <p>CSS Grid and Flexbox are both powerful layout tools, but they serve different purposes. Understanding when to use each is key to creating efficient, maintainable layouts.</p>
       
@@ -111,15 +128,20 @@ export const blogPosts = [
     author: 'Hamza Arya',
     date: '2024-01-01',
     readTime: '6 min read',
+    readingTime: 6,
     category: 'CSS',
     tags: ['CSS', 'Grid', 'Flexbox', 'Layout'],
     featured: false,
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+    canonicalUrl: 'https://hamzaarya.dev/blog/css-grid-vs-flexbox'
   },
   {
     id: 'typescript-tips-tricks',
     title: 'TypeScript Tips and Tricks for Better Code',
+    slug: 'typescript-tips-tricks',
     excerpt: 'Level up your TypeScript skills with advanced techniques, utility types, and patterns that make your code more robust and maintainable.',
+    summary: 'Advanced TypeScript techniques, utility types, and patterns that make your code more robust and maintainable.',
     content: `
       <p>TypeScript is more than just JavaScript with types. It's a powerful tool for building maintainable, scalable applications.</p>
       
@@ -137,15 +159,20 @@ export const blogPosts = [
     author: 'Hamza Arya',
     date: '2023-12-28',
     readTime: '9 min read',
+    readingTime: 9,
     category: 'TypeScript',
     tags: ['TypeScript', 'JavaScript', 'Types', 'Best Practices'],
     featured: false,
-    image: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=800&auto=format&fit=crop'
+    image: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?q=80&w=800&auto=format&fit=crop',
+    canonicalUrl: 'https://hamzaarya.dev/blog/typescript-tips-tricks'
   },
   {
     id: 'docker-development-workflow',
     title: 'Docker for Development: Streamlining Your Workflow',
+    slug: 'docker-development-workflow',
     excerpt: 'Set up a consistent development environment with Docker. Learn best practices for containerizing applications and managing dependencies.',
+    summary: 'Best practices for setting up a consistent development environment with Docker, containerizing applications, and managing dependencies.',
     content: `
       <p>Docker has revolutionized how we develop, ship, and run applications. For developers, it provides consistency across different environments and simplifies dependency management.</p>
       
@@ -163,9 +190,12 @@ export const blogPosts = [
     author: 'Hamza Arya',
     date: '2023-12-25',
     readTime: '7 min read',
+    readingTime: 7,
     category: 'DevOps',
     tags: ['Docker', 'DevOps', 'Development', 'Containers'],
     featured: false,
-    image: 'https://images.unsplash.com/photo-1605745341112-85968b19335a?q=80&w=800&auto=format&fit=crop'
+    image: 'https://images.unsplash.com/photo-1605745341112-85968b19335a?q=80&w=800&auto=format&fit=crop',
+    cover: 'https://images.unsplash.com/photo-1605745341112-85968b19335a?q=80&w=800&auto=format&fit=crop',
+    canonicalUrl: 'https://hamzaarya.dev/blog/docker-development-workflow'
   }
 ];
