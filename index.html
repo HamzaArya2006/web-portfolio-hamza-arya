@@ -46,7 +46,7 @@
     <!-- Performance hints -->
     <link rel="preload" href="/src/styles/main.css" as="style" />
     <link rel="stylesheet" href="/src/styles/main.css" />
-    <link rel="preload" href="/src/scripts/main.js" as="script" />
+    
 
     <script type="application/ld+json">
       [
@@ -141,6 +141,13 @@
     />
   </head>
   <body class="bg-gray-900 text-gray-100 page-intro-init">
+    <style>
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+        [data-parallax] { transform: none !important; }
+      }
+    </style>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-white focus:text-black focus:px-3 focus:py-2 focus:rounded">Skip to main content</a>
     <div
       id="intro-overlay"
       class="fixed inset-0 z-[9999] flex items-center justify-center"
@@ -360,6 +367,7 @@
       </div>
     </header>
 
+    <main id="main-content" role="main">
     <!-- Hero -->
     <section
       id="top"
@@ -2393,36 +2401,40 @@
             <div class="glass rounded-2xl p-6 sm:p-8 border border-white/10">
               <form data-contact class="grid gap-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <label class="sr-only" for="contact-name">Name</label>
                   <input
                     class="input"
                     type="text"
                     name="name"
+                    id="contact-name"
                     placeholder="Your name"
-                    aria-label="Name"
                     required
                   />
+                  <label class="sr-only" for="contact-email">Email</label>
                   <input
                     class="input"
                     type="email"
                     name="email"
+                    id="contact-email"
                     placeholder="Email"
-                    aria-label="Email"
                     required
                   />
                 </div>
+                <label class="sr-only" for="contact-brief">Project brief</label>
                 <textarea
                   class="input min-h-[160px]"
                   name="brief"
+                  id="contact-brief"
                   placeholder="Project brief (goals, timeline, scope)"
-                  aria-label="Project brief"
                   required
                 ></textarea>
+                <label class="sr-only" for="contact-budget">Budget</label>
                 <input
                   class="input"
                   type="text"
                   name="budget"
+                  id="contact-budget"
                   placeholder="Budget (optional)"
-                  aria-label="Budget"
                 />
                 <!-- Honeypot -->
                 <input
@@ -2452,6 +2464,7 @@
       </div>
     </section>
 
+    </main>
     <!-- Footer -->
     {{> footer}}
 

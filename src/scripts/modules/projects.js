@@ -31,6 +31,7 @@ export function withParam(url, key, value) {
     u.searchParams.set(key, String(value));
     if (!u.searchParams.has('auto')) u.searchParams.set('auto', 'format');
     if (!u.searchParams.has('fit')) u.searchParams.set('fit', 'crop');
+    if (!u.searchParams.has('q')) u.searchParams.set('q', '75');
     return u.toString();
   } catch (_) {
     const joinChar = url.includes('?') ? '&' : '?';
