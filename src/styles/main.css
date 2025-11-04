@@ -630,15 +630,30 @@ section#top [data-hero-bg] .blur-3xl {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
-  /* Testimonial specific hover effects */
+  /* Testimonial cards — match about/service card styling */
   .testimonial-card {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
   }
   .testimonial-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.25);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(248, 250, 252, 0.06) 100%
+    );
   }
   /* Smooth border animation on hover */
   .testimonial-card::before {
@@ -685,7 +700,7 @@ section#top [data-hero-bg] .blur-3xl {
   }
   .testimonial-card:hover::after,
   .testimonial-card.proximity-active::after {
-    opacity: 0.3;
+    opacity: 0.22;
   }
   @keyframes gradient-shift {
     0%,
@@ -699,6 +714,67 @@ section#top [data-hero-bg] .blur-3xl {
   /* Star rating animation */
   .star-rating {
     display: inline-block;
+  }
+  
+  /* Testimonials section background (deep black) */
+  section#testimonials {
+    background: #000;
+  }
+
+  /* Carousel layout refinements */
+  .testimonials-carousel {
+    padding-inline: 0.25rem;
+  }
+  .testimonials-track {
+    column-gap: 1rem;
+    padding-inline: 0.25rem;
+  }
+  @media (min-width: 640px) {
+    .testimonials-track { column-gap: 1.25rem; padding-inline: 0.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .testimonials-track { column-gap: 1.5rem; padding-inline: 0.5rem; }
+  }
+
+  /* Controls and dots styled like minimal ghost buttons */
+  .testimonials-btn {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.85);
+    transition: all 0.2s ease;
+  }
+  .testimonials-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+  }
+  .testimonials-btn:focus-visible {
+    outline: 2px solid rgba(59, 130, 246, 0.8);
+    outline-offset: 2px;
+  }
+  .testimonials-btn.play[aria-pressed="true"] {
+    background: rgba(34, 197, 94, 0.18);
+    border-color: rgba(34, 197, 94, 0.35);
+    color: #34d399;
+  }
+  .testimonials-dots { gap: 6px; }
+  .testimonials-dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .testimonials-dot[aria-current="true"] {
+    background: #60a5fa;
+    border-color: rgba(96, 165, 250, 0.85);
+  }
+
+  /* Respect reduced motion for testimonial animations */
+  @media (prefers-reduced-motion: reduce) {
+    .testimonial-card { transition: none; transform: none; }
+    .testimonial-card:hover { transform: none; }
+    .testimonial-card::before,
+    .testimonial-card::after { animation: none; }
   }
   .star-rating .star {
     display: inline-block;
@@ -1542,10 +1618,10 @@ section#top [data-hero-bg] .blur-3xl {
   .testimonials-track {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 100%;
-    gap: 2rem;
-    overflow-x: auto;
-    overflow-y: hidden;
+    grid-auto-columns: 33.3333%;
+    gap: 1.5rem;
+    overflow-x: hidden;
+    overflow-y: visible;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     scroll-padding-inline: 1rem;
@@ -1553,7 +1629,8 @@ section#top [data-hero-bg] .blur-3xl {
     -ms-overflow-style: none; /* IE/Edge */
     scrollbar-width: none; /* Firefox */
     scrollbar-gutter: stable;
-    contain: layout style paint;
+    width: calc(100% - 1rem);
+    contain: layout style;
     outline: none !important;
     user-select: none;
   }
@@ -1570,86 +1647,17 @@ section#top [data-hero-bg] .blur-3xl {
     display: flex;
     height: 100%;
     padding-inline: 0.5rem;
+    position: relative;
+    z-index: 1;
   }
-  .testimonials-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 1rem;
-  }
-  .testimonials-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 9999px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.9);
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-  .testimonials-btn:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.1);
-  }
-  .testimonials-btn.play[aria-pressed="true"] {
-    background: rgba(34, 197, 94, 0.18);
-    border-color: rgba(34, 197, 94, 0.35);
-    color: #34d399;
-  }
-  .testimonials-dots {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-  .testimonials-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-  .testimonials-dot[aria-current="true"] {
-    background: #60a5fa;
-    border-color: rgba(96, 165, 250, 0.8);
-    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
-  }
+  /* Minimal carousel: no visible controls/dots */
+  .testimonials-controls, .testimonials-dots { display: none; }
 
-  /* Mobile: stacked layout */
-  @media (max-width: 640px) {
-    .testimonials-track {
-      display: block;
-      overflow: visible;
-      scroll-snap-type: none;
-      contain: none;
-    }
-    .testimonial-slide { margin-bottom: 1rem; }
-  }
+  /* Always 3 items visible; no stacked layout */
 
-  /* >= sm: show 2 cards */
-  @media (min-width: 640px) {
-    .testimonials-track {
-      display: grid;
-      grid-auto-flow: column;
-      grid-auto-columns: 50%;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      contain: layout style paint;
-    }
-  }
+  /* Remove alternate column sizing at breakpoints */
 
-  /* >= lg: show 3 cards */
-  @media (min-width: 1024px) {
-    .testimonials-track {
-      grid-auto-columns: 33.3333%;
-    }
-  }
+  /* No breakpoint overrides */
 
   /* Blog Styles */
   .blog-filter-btn {
