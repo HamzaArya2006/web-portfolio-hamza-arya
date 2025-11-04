@@ -40,7 +40,7 @@ export function runModernIntroOverlaySequence() {
     document.body.classList.add('page-ready');
     document.body.classList.remove('page-intro-init');
     overlay.classList.add('intro-exit');
-    setTimeout(() => overlay.remove(), prefersReduced ? 260 : 700);
+    setTimeout(() => overlay.remove(), prefersReduced ? 400 : 1250);
   }, revealDelay);
 }
 

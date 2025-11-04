@@ -47,6 +47,25 @@ window.addEventListener("DOMContentLoaded", () => {
   // Ensure heavy sections begin observing as soon as DOM is ready
   loadHeavySections();
   
+  // Dev-only: make /pages/* links work by mapping to /src/pages/*.html
+  if (import.meta.env && import.meta.env.DEV) {
+    document.addEventListener('click', (e) => {
+      const anchor = e.target && e.target.closest ? e.target.closest('a[href^="/pages/"]') : null;
+      if (!anchor) return;
+      const href = anchor.getAttribute('href') || '';
+      // Allow modifier clicks (new tab, etc.)
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || anchor.target === '_blank') return;
+      e.preventDefault();
+      const url = new URL(href, window.location.origin);
+      let path = url.pathname;
+      if (!path.endsWith('.html')) {
+        path = path.endsWith('/') ? path.slice(0, -1) : path;
+        path = `${path}.html`;
+      }
+      window.location.href = `/src${path}`;
+    }, true);
+  }
+
   // Intro overlay sequence (run if overlay exists)
   const intro = document.getElementById("intro-overlay");
   if (intro) {

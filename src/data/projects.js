@@ -215,7 +215,7 @@ export const projects = [
     features: ['AI writing', 'SEO optimization', 'Content scheduling', 'Analytics'],
     duration: '8 weeks',
     client: 'Content Marketing Co.'
-  }
+  },
 ];
 
 

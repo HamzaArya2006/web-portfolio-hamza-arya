@@ -127,14 +127,18 @@ export function renderProjects() {
               : ''
           }
           <div class="project-actions">
-            <a href="${p.links.live}" class="project-action-btn" title="View Live Demo" target="_blank" rel="noopener">
+            <a href="${
+              p.links.live
+            }" class="project-action-btn" title="View Live Demo" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15,3 21,3 21,9"></polyline>
                 <line x1="10" y1="14" x2="21" y2="3"></line>
               </svg>
             </a>
-            <a href="${p.links.code}" class="project-action-btn" title="View Source Code" target="_blank" rel="noopener">
+            <a href="${
+              p.links.code
+            }" class="project-action-btn" title="View Source Code" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="16,18 22,12 16,6"></polyline>
                 <polyline points="8,6 2,12 8,18"></polyline>
@@ -150,14 +154,26 @@ export function renderProjects() {
           ${metricsHtml}
           ${featuresHtml}
           <div class="project-meta">
-            ${p.duration ? `<span class="project-duration">⏱️ ${p.duration}</span>` : ''}
-            ${p.client ? `<span class="project-client">👤 ${p.client}</span>` : ''}
+            ${
+              p.duration
+                ? `<span class="project-duration">⏱️ ${p.duration}</span>`
+                : ''
+            }
+            ${
+              p.client
+                ? `<span class="project-client">👤 ${p.client}</span>`
+                : ''
+            }
           </div>
           <div class="project-tech">
-            ${techArray.map(tech => `<span class="tech-badge">${tech}</span>`).join('')}
+            ${techArray
+              .map(tech => `<span class="tech-badge">${tech}</span>`)
+              .join('')}
           </div>
           <div class="project-footer">
-            <a href="${p.links.live}" class="project-link primary" target="_blank" rel="noopener">
+            <a href="${
+              p.links.live
+            }" class="project-link primary" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15,3 21,3 21,9"></polyline>
@@ -165,7 +181,9 @@ export function renderProjects() {
               </svg>
               Live Demo
             </a>
-            <a href="${p.links.code}" class="project-link" target="_blank" rel="noopener">
+            <a href="${
+              p.links.code
+            }" class="project-link" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="16,18 22,12 16,6"></polyline>
                 <polyline points="8,6 2,12 8,18"></polyline>

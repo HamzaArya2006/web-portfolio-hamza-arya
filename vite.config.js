@@ -3,7 +3,7 @@ import compression from 'vite-plugin-compression'
 import handlebars from 'vite-plugin-handlebars'
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { readdirSync } from 'fs'
+import { readdirSync, readFileSync } from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = resolve(__filename, '..')
@@ -65,9 +65,24 @@ export default defineConfig({
       name: 'pages-rewrite',
       configureServer(server) {
         return () => {
-          server.middlewares.use((req, _res, next) => {
+          server.middlewares.use(async (req, res, next) => {
             if (req.url && req.url.startsWith('/pages/')) {
-              req.url = `/src${req.url}`;
+              let url = req.url
+              if (!url.endsWith('.html')) {
+                url = url.endsWith('/') ? url.slice(0, -1) : url
+                url = `${url}.html`
+              }
+              const filePath = resolve(__dirname, 'src', url.slice(1))
+              try {
+                const rawHtml = readFileSync(filePath, 'utf-8')
+                const transformed = await server.transformIndexHtml(url, rawHtml)
+                res.statusCode = 200
+                res.setHeader('Content-Type', 'text/html; charset=utf-8')
+                res.end(transformed)
+                return
+              } catch (err) {
+                // fall through to next middleware (likely 404 handler)
+              }
             }
             next();
           });
