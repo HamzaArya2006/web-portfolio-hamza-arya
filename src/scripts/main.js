@@ -24,6 +24,18 @@ import { runModernIntroOverlaySequence } from "./modules/intro.js";
 import { renderProjects } from "./modules/projects.js";
 // Critical: Load immediately
 window.addEventListener("DOMContentLoaded", () => {
+  // Perf-lite: favor ultra-smooth feel on low/medium devices or when user prefers less motion
+  try {
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cores = navigator.hardwareConcurrency || 4;
+    const mem = navigator.deviceMemory || 4;
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+    if (prefersReduced || cores <= 4 || mem <= 4 || isMobile) {
+      document.documentElement.classList.add('perf-lite');
+      window.__PERF_LITE__ = true;
+    }
+  } catch (_) {}
+
   initTheme();
   bindSmoothScroll();
   bindRevealOnScroll();
@@ -106,6 +118,10 @@ function loadHeavySections() {
       load: async () => {
         const { renderTestimonials } = await import("./modules/testimonials.js");
         renderTestimonials();
+        try {
+          const { autoPlayTestimonials } = await import('./modules/testimonialsAuto.js');
+          autoPlayTestimonials();
+        } catch (_) {}
       }
     },
     {

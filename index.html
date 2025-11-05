@@ -46,7 +46,6 @@
     <!-- Performance hints -->
     <link rel="preload" href="/src/styles/main.css" as="style" />
     <link rel="stylesheet" href="/src/styles/main.css" />
-    
 
     <script type="application/ld+json">
       [
@@ -126,7 +125,6 @@
       ]
     </script>
 
-    
     <!-- Preload hero images -->
     <link
       rel="preload"
@@ -138,11 +136,23 @@
   <body class="bg-gray-900 text-gray-100 page-intro-init">
     <style>
       @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-        [data-parallax] { transform: none !important; }
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+        [data-parallax] {
+          transform: none !important;
+        }
       }
     </style>
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-white focus:text-black focus:px-3 focus:py-2 focus:rounded">Skip to main content</a>
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-white focus:text-black focus:px-3 focus:py-2 focus:rounded"
+      >Skip to main content</a
+    >
     <div
       id="intro-overlay"
       class="fixed inset-0 z-[9999] flex items-center justify-center"
@@ -243,7 +253,11 @@
             </div>
           </div>
           <div class="hidden md:flex items-center gap-2">
-            <a href="/pages/services.html" aria-label="Services" class="btn-minimal">
+            <a
+              href="/pages/services.html"
+              aria-label="Services"
+              class="btn-minimal"
+            >
               <svg
                 width="18"
                 height="18"
@@ -329,7 +343,11 @@
           <a href="/pages/services.html" class="nav-link">Services</a>
           <a href="/pages/contact.html" class="nav-link">Contact</a>
           <div class="flex gap-3 pt-2">
-            <a href="/pages/services.html" aria-label="Services" class="btn-ghost">
+            <a
+              href="/pages/services.html"
+              aria-label="Services"
+              class="btn-ghost"
+            >
               <svg
                 width="18"
                 height="18"
@@ -363,1974 +381,172 @@
     </header>
 
     <main id="main-content" role="main">
-    <!-- Hero -->
-    <section
-      id="top"
-      class="relative min-h-[90vh] flex items-center overflow-hidden bg-black text-white hero-anim-off hero-pro"
-      aria-label="Hero introduction"
-    >
-      <!-- VS Code Window Background -->
-      <div
-        class="absolute inset-0 pointer-events-none"
-        aria-hidden="true"
-        data-hero-bg
+      <!-- Hero -->
+      <section
+        id="top"
+        class="relative min-h-[90vh] flex items-center overflow-hidden bg-black text-white hero-anim-off hero-pro"
+        aria-label="Hero introduction"
       >
-        <!-- VS Code Window SVG - Full Screen -->
-        <div class="absolute inset-0">
-          <img
-            src="/src/assets/svg/hero-vscode-bg.svg"
-            alt="Decorative code editor interface"
-            aria-hidden="true"
-            class="opacity-10"
-            style="width: 100%; height: 100%"
-            decoding="async"
-            fetchpriority="low"
-          />
-        </div>
-
-        <!-- Enhanced gradient orbs with professional styling -->
+        <!-- VS Code Window Background -->
         <div
-          data-parallax="0.06"
-          class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-blue-500/20 blur-3xl"
-        ></div>
-        <!-- Professional floating elements -->
-        <div
-          class="absolute top-20 left-20 w-2 h-2 bg-blue-400/35 rounded-full animate-pulse"
-        ></div>
-        <div
-          class="absolute top-40 right-32 w-1 h-1 bg-indigo-400/45 rounded-full animate-pulse"
-          style="animation-delay: 1s"
-        ></div>
-        <div
-          class="absolute bottom-32 left-1/3 w-3 h-3 bg-blue-300/30 rounded-full animate-pulse"
-          style="animation-delay: 2s"
-        ></div>
-        <div
-          class="absolute top-1/2 right-20 w-1.5 h-1.5 bg-indigo-300/35 rounded-full animate-pulse"
-          style="animation-delay: 0.5s"
-        ></div>
-
-        <!-- Professional accent lines -->
-        <div
-          data-parallax="-0.06"
-          class="absolute top-1/3 left-0 w-32 h-px bg-gradient-to-r from-transparent via-blue-500/15 to-transparent"
-        ></div>
-        <div
-          data-parallax="-0.05"
-          class="absolute bottom-1/3 right-0 w-24 h-px bg-gradient-to-l from-transparent via-indigo-500/15 to-transparent"
-        ></div>
-      </div>
-      <div
-        data-hero-spotlight
-        class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300"
-        style="will-change: background"
-      ></div>
-      <div
-        class="container-pro relative z-20 grid gap-16 lg:grid-cols-2 pt-32 pb-16"
-      >
-        <div
-          data-reveal
-          class="opacity-0 translate-y-6 flex flex-col justify-center gap-8"
+          class="absolute inset-0 pointer-events-none"
+          aria-hidden="true"
+          data-hero-bg
         >
-          <!-- Professional status badge -->
+          <!-- VS Code Window SVG - Full Screen -->
+          <div class="absolute inset-0">
+            <img
+              src="/src/assets/svg/hero-vscode-bg.svg"
+              alt="Decorative code editor interface"
+              aria-hidden="true"
+              class="opacity-10"
+              style="width: 100%; height: 100%"
+              decoding="async"
+              loading="lazy"
+              fetchpriority="low"
+            />
+          </div>
+
+          <!-- Enhanced gradient orbs with professional styling -->
           <div
-            class="glass-professional rounded-full px-6 py-3 w-max hover-lift group"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse glow-professional"
-              ></div>
-              <p
-                class="text-sm tracking-wide uppercase text-white/90 font-medium"
-              >
-                Available for freelance & remote
-              </p>
-            </div>
-          </div>
-
-          <!-- Enhanced main heading -->
-          <div class="space-y-4">
-            <h1
-              class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight"
-            >
-              <span class="block">Hamza</span>
-              <span
-                class="block bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent"
-              >
-                Full‑Stack
-              </span>
-              <span
-                class="block bg-gradient-to-r from-blue-300 to-indigo-400 bg-clip-text text-transparent"
-              >
-                Developer
-              </span>
-            </h1>
-          </div>
-
-          <!-- Enhanced description -->
-          <p class="text-white/90 text-xl max-w-2xl leading-relaxed">
-            I build
-            <span class="text-blue-300 font-semibold"
-              >high-performance web applications</span
-            >
-            that drive business growth. Specializing in modern tech stacks with
-            a focus on
-            <span class="text-indigo-300 font-semibold"
-              >clean architecture</span
-            >
-            and
-            <span class="text-cyan-300 font-semibold"
-              >production reliability</span
-            >.
-          </p>
-
-          <!-- Rotating specialties line -->
+            data-parallax="0.06"
+            class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-blue-500/20 blur-3xl"
+          ></div>
+          <!-- Professional floating elements -->
           <div
-            class="hero-rotator mt-2 text-white/80 text-sm"
-            data-allow-motion
-          >
-            <span>SaaS Platforms</span>
-            <span>E‑commerce</span>
-            <span>Data & Analytics</span>
-          </div>
-
-          <!-- Enhanced CTA buttons -->
-          <div class="flex flex-wrap gap-4">
-            <a
-              href="#projects"
-              class="btn-primary text-base px-8 py-4 hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-xl"
-            >
-              View My Work
-            </a>
-            <a
-              href="#contact"
-              class="btn-secondary text-base px-8 py-4 hover:scale-105 transition-transform duration-300"
-            >
-              Start a Project
-            </a>
-            <a
-              href="/pages/about.html"
-              class="btn-ghost text-base px-8 py-4 hover:scale-105 transition-transform duration-300"
-            >
-              Learn More
-            </a>
-          </div>
-
-          <!-- Quick trust badges -->
-          <ul class="hero-badges pt-2">
-            <li class="hero-badge">
-              <span
-                class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse glow-professional"
-              ></span>
-              <span>Free 30‑min discovery call</span>
-            </li>
-            <li class="hero-badge">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  d="M3 11a9 9 0 1 0 18 0A9 9 0 0 0 3 11zm9-5v6l4 2"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <span>Replies within 24h</span>
-            </li>
-            <li class="hero-badge">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1 1 18 0z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <circle
-                  cx="12"
-                  cy="10"
-                  r="3"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-              </svg>
-              <span>Timezone‑friendly (PKT)</span>
-            </li>
-          </ul>
-
-          <!-- Trusted by strip -->
-          <div class="pt-1">
-            <div class="text-[10px] uppercase tracking-[0.2em] text-white/60">
-              Trusted by
-            </div>
-            <div class="mt-2 flex items-center gap-4 opacity-80">
-              <span class="h-2 w-16 rounded-full bg-white/15"></span>
-              <span class="h-2 w-12 rounded-full bg-white/15"></span>
-              <span class="h-2 w-20 rounded-full bg-white/15"></span>
-              <span
-                class="h-2 w-10 rounded-full bg-white/15 hidden sm:inline"
-              ></span>
-            </div>
-          </div>
-
-          <!-- Enhanced tech stack -->
-          <div
-            class="flex flex-wrap items-center gap-6 pt-4 text-white/80 text-sm"
-          >
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-blue-400"></span>
-              <span class="font-medium">Frontend • Backend • DevOps</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-              <span>React • Node • Postgres • AWS</span>
-            </div>
-          </div>
-
-          <!-- Professional credibility indicators -->
-          <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="glass-professional rounded-lg p-4 hover-lift">
-              <div class="flex items-center gap-2 mb-1">
-                <span
-                  class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse glow-professional"
-                ></span>
-                <span class="text-xs font-medium text-emerald-300"
-                  >Trusted Partner</span
-                >
-              </div>
-              <p class="text-xs text-white/80">Startups & founders</p>
-            </div>
-            <div class="glass-professional rounded-lg p-4 hover-lift">
-              <div class="flex items-center gap-2 mb-1">
-                <span
-                  class="h-2 w-2 rounded-full bg-blue-400 animate-pulse glow-professional"
-                ></span>
-                <span class="text-xs font-medium text-blue-300"
-                  >Projects Shipped</span
-                >
-              </div>
-              <p class="text-xs text-white/80">20+ successful launches</p>
-            </div>
-            <div class="glass-professional rounded-lg p-4 hover-lift">
-              <div class="flex items-center gap-2 mb-1">
-                <span
-                  class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse glow-professional"
-                ></span>
-                <span class="text-xs font-medium text-cyan-300"
-                  >Performance</span
-                >
-              </div>
-              <p class="text-xs text-white/80">Core Web Vitals: A</p>
-            </div>
-          </div>
-        </div>
-        <!-- Professional Development Visual -->
-        <div data-reveal class="opacity-0 translate-y-6 relative">
-          <div
-            class="glass-professional rounded-2xl p-8 h-96 sm:h-[28rem] lg:h-[32rem] hover-lift group glow-professional"
-          >
-            <!-- Enhanced Development Dashboard SVG -->
-            <div class="h-full flex items-center justify-center p-4">
-              <svg
-                viewBox="0 0 500 400"
-                class="w-full h-full max-w-lg"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <!-- Main terminal window -->
-                <rect
-                  x="20"
-                  y="20"
-                  width="280"
-                  height="200"
-                  rx="8"
-                  fill="rgba(15, 23, 42, 0.9)"
-                  stroke="rgba(59, 130, 246, 0.4)"
-                  stroke-width="1.5"
-                />
-
-                <!-- Terminal header -->
-                <rect
-                  x="20"
-                  y="20"
-                  width="280"
-                  height="35"
-                  rx="8"
-                  fill="rgba(30, 41, 59, 0.95)"
-                />
-
-                <!-- Terminal controls -->
-                <circle cx="35" cy="37" r="4" fill="#ef4444" />
-                <circle cx="50" cy="37" r="4" fill="#f59e0b" />
-                <circle cx="65" cy="37" r="4" fill="#10b981" />
-
-                <!-- Terminal title -->
-                <text
-                  x="150"
-                  y="42"
-                  text-anchor="middle"
-                  fill="rgba(255, 255, 255, 0.8)"
-                  font-family="monospace"
-                  font-size="11"
-                  font-weight="500"
-                >
-                  hamza-arya@portfolio
-                </text>
-
-                <!-- Code content -->
-                <g
-                  fill="rgba(255, 255, 255, 0.9)"
-                  font-family="monospace"
-                  font-size="10"
-                >
-                  <!-- Line 1 -->
-                  <text x="30" y="70">
-                    <tspan fill="#60a5fa">const</tspan>
-                    <tspan fill="white">developer = {</tspan>
-                  </text>
-
-                  <!-- Line 2 -->
-                  <text x="30" y="85">
-                    <tspan fill="white"></tspan>
-                    <tspan fill="#34d399">name</tspan>
-                    <tspan fill="white">:</tspan>
-                    <tspan fill="#fbbf24">'Hamza Arya'</tspan>
-                    <tspan fill="white">,</tspan>
-                  </text>
-
-                  <!-- Line 3 -->
-                  <text x="30" y="100">
-                    <tspan fill="white"></tspan>
-                    <tspan fill="#34d399">role</tspan>
-                    <tspan fill="white">:</tspan>
-                    <tspan fill="#fbbf24">'Full-Stack Developer'</tspan>
-                    <tspan fill="white">,</tspan>
-                  </text>
-
-                  <!-- Line 4 -->
-                  <text x="30" y="115">
-                    <tspan fill="white"></tspan>
-                    <tspan fill="#34d399">experience</tspan>
-                    <tspan fill="white">:</tspan>
-                    <tspan fill="#a78bfa">5+</tspan>
-                    <tspan fill="white">years</tspan>
-                  </text>
-
-                  <!-- Line 5 -->
-                  <text x="30" y="130">
-                    <tspan fill="white"></tspan>
-                    <tspan fill="#34d399">projects</tspan>
-                    <tspan fill="white">:</tspan>
-                    <tspan fill="#a78bfa">20+</tspan>
-                    <tspan fill="white">shipped</tspan>
-                  </text>
-
-                  <!-- Line 6 -->
-                  <text x="30" y="145">
-                    <tspan fill="white"></tspan>
-                    <tspan fill="#34d399">status</tspan>
-                    <tspan fill="white">:</tspan>
-                    <tspan fill="#10b981">'Available'</tspan>
-                  </text>
-
-                  <!-- Line 7 -->
-                  <text x="30" y="160">
-                    <tspan fill="white">};</tspan>
-                  </text>
-
-                  <!-- Blinking cursor -->
-                  <rect x="32" y="170" width="1.5" height="10" fill="#60a5fa">
-                    <animate
-                      attributeName="opacity"
-                      values="1;0;1"
-                      dur="1.2s"
-                      repeatCount="indefinite"
-                    />
-                  </rect>
-                </g>
-
-                <!-- Skills panel -->
-                <rect
-                  x="320"
-                  y="20"
-                  width="160"
-                  height="200"
-                  rx="8"
-                  fill="rgba(15, 23, 42, 0.8)"
-                  stroke="rgba(34, 197, 94, 0.3)"
-                  stroke-width="1.5"
-                />
-
-                <!-- Skills header -->
-                <rect
-                  x="320"
-                  y="20"
-                  width="160"
-                  height="30"
-                  rx="8"
-                  fill="rgba(20, 83, 45, 0.3)"
-                />
-
-                <text
-                  x="400"
-                  y="38"
-                  text-anchor="middle"
-                  fill="rgba(34, 197, 94, 0.9)"
-                  font-family="monospace"
-                  font-size="11"
-                  font-weight="600"
-                >
-                  SKILLS
-                </text>
-
-                <!-- Skill items -->
-                <g font-family="monospace" font-size="9">
-                  <!-- Frontend -->
-                  <g transform="translate(330, 60)">
-                    <circle cx="0" cy="0" r="3" fill="#61dafb" />
-                    <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
-                      React & Next.js
-                    </text>
-                    <rect
-                      x="0"
-                      y="0"
-                      width="120"
-                      height="1"
-                      fill="rgba(97, 218, 251, 0.3)"
-                    />
-                  </g>
-
-                  <!-- Backend -->
-                  <g transform="translate(330, 80)">
-                    <circle cx="0" cy="0" r="3" fill="#68a063" />
-                    <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
-                      Node.js & Express
-                    </text>
-                    <rect
-                      x="0"
-                      y="0"
-                      width="110"
-                      height="1"
-                      fill="rgba(104, 160, 99, 0.3)"
-                    />
-                  </g>
-
-                  <!-- Database -->
-                  <g transform="translate(330, 100)">
-                    <circle cx="0" cy="0" r="3" fill="#f59e0b" />
-                    <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
-                      PostgreSQL & MongoDB
-                    </text>
-                    <rect
-                      x="0"
-                      y="0"
-                      width="100"
-                      height="1"
-                      fill="rgba(245, 158, 11, 0.3)"
-                    />
-                  </g>
-
-                  <!-- Cloud -->
-                  <g transform="translate(330, 120)">
-                    <circle cx="0" cy="0" r="3" fill="#f97316" />
-                    <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
-                      AWS & Docker
-                    </text>
-                    <rect
-                      x="0"
-                      y="0"
-                      width="90"
-                      height="1"
-                      fill="rgba(249, 115, 22, 0.3)"
-                    />
-                  </g>
-
-                  <!-- Tools -->
-                  <g transform="translate(330, 140)">
-                    <circle cx="0" cy="0" r="3" fill="#8b5cf6" />
-                    <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
-                      Git & CI/CD
-                    </text>
-                    <rect
-                      x="0"
-                      y="0"
-                      width="95"
-                      height="1"
-                      fill="rgba(139, 92, 246, 0.3)"
-                    />
-                  </g>
-
-                  <!-- Performance -->
-                  <g transform="translate(330, 160)">
-                    <circle cx="0" cy="0" r="3" fill="#06b6d4" />
-                    <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
-                      Performance & SEO
-                    </text>
-                    <rect
-                      x="0"
-                      y="0"
-                      width="105"
-                      height="1"
-                      fill="rgba(6, 182, 212, 0.3)"
-                    />
-                  </g>
-                </g>
-
-                <!-- Stats panel -->
-                <rect
-                  x="20"
-                  y="240"
-                  width="460"
-                  height="140"
-                  rx="8"
-                  fill="rgba(15, 23, 42, 0.7)"
-                  stroke="rgba(139, 92, 246, 0.3)"
-                  stroke-width="1.5"
-                />
-
-                <!-- Stats header -->
-                <text
-                  x="250"
-                  y="260"
-                  text-anchor="middle"
-                  fill="rgba(139, 92, 246, 0.9)"
-                  font-family="monospace"
-                  font-size="12"
-                  font-weight="600"
-                >
-                  PROJECT STATISTICS
-                </text>
-
-                <!-- Stats grid -->
-                <g font-family="monospace" font-size="10">
-                  <!-- Projects completed -->
-                  <g transform="translate(50, 285)">
-                    <rect
-                      x="0"
-                      y="0"
-                      width="80"
-                      height="60"
-                      rx="4"
-                      fill="rgba(34, 197, 94, 0.1)"
-                      stroke="rgba(34, 197, 94, 0.3)"
-                      stroke-width="1"
-                    />
-                    <text
-                      x="40"
-                      y="20"
-                      text-anchor="middle"
-                      fill="#22c55e"
-                      font-size="18"
-                      font-weight="bold"
-                    >
-                      20+
-                    </text>
-                    <text
-                      x="40"
-                      y="35"
-                      text-anchor="middle"
-                      fill="rgba(255, 255, 255, 0.8)"
-                    >
-                      Projects
-                    </text>
-                    <text
-                      x="40"
-                      y="48"
-                      text-anchor="middle"
-                      fill="rgba(255, 255, 255, 0.6)"
-                    >
-                      Completed
-                    </text>
-                  </g>
-
-                  <!-- Clients served -->
-                  <g transform="translate(150, 285)">
-                    <rect
-                      x="0"
-                      y="0"
-                      width="80"
-                      height="60"
-                      rx="4"
-                      fill="rgba(59, 130, 246, 0.1)"
-                      stroke="rgba(59, 130, 246, 0.3)"
-                      stroke-width="1"
-                    />
-                    <text
-                      x="40"
-                      y="20"
-                      text-anchor="middle"
-                      fill="#3b82f6"
-                      font-size="18"
-                      font-weight="bold"
-                    >
-                      15+
-                    </text>
-                    <text
-                      x="40"
-                      y="35"
-                      text-anchor="middle"
-                      fill="rgba(255, 255, 255, 0.8)"
-                    >
-                      Happy
-                    </text>
-                    <text
-                      x="40"
-                      y="48"
-                      text-anchor="middle"
-                      fill="rgba(255, 255, 255, 0.6)"
-                    >
-                      Clients
-                    </text>
-                  </g>
-
-                  <!-- Years experience -->
-                  <g transform="translate(250, 285)">
-                    <rect
-                      x="0"
-                      y="0"
-                      width="80"
-                      height="60"
-                      rx="4"
-                      fill="rgba(245, 158, 11, 0.1)"
-                      stroke="rgba(245, 158, 11, 0.3)"
-                      stroke-width="1"
-                    />
-                    <text
-                      x="40"
-                      y="20"
-                      text-anchor="middle"
-                      fill="#f59e0b"
-                      font-size="18"
-                      font-weight="bold"
-                    >
-                      5+
-                    </text>
-                    <text
-                      x="40"
-                      y="35"
-                      text-anchor="middle"
-                      fill="rgba(255, 255, 255, 0.8)"
-                    >
-                      Years
-                    </text>
-                    <text
-                      x="40"
-                      y="48"
-                      text-anchor="middle"
-                      fill="rgba(255, 255, 255, 0.6)"
-                    >
-                      Experience
-                    </text>
-                  </g>
-
-                  <!-- Success rate -->
-                  <g transform="translate(350, 285)">
-                    <rect
-                      x="0"
-                      y="0"
-                      width="80"
-                      height="60"
-                      rx="4"
-                      fill="rgba(139, 92, 246, 0.1)"
-                      stroke="rgba(139, 92, 246, 0.3)"
-                      stroke-width="1"
-                    />
-                    <text
-                      x="40"
-                      y="20"
-                      text-anchor="middle"
-                      fill="#8b5cf6"
-                      font-size="18"
-                      font-weight="bold"
-                    >
-                      100%
-                    </text>
-                    <text
-                      x="40"
-                      y="35"
-                      text-anchor="middle"
-                      fill="rgba(255, 255, 255, 0.8)"
-                    >
-                      Success
-                    </text>
-                    <text
-                      x="40"
-                      y="48"
-                      text-anchor="middle"
-                      fill="rgba(255, 255, 255, 0.6)"
-                    >
-                      Rate
-                    </text>
-                  </g>
-                </g>
-
-                <!-- Floating tech icons with better placement -->
-                <g opacity="0.7">
-                  <!-- React logo - top right -->
-                  <g transform="translate(450, 50)">
-                    <circle
-                      cx="0"
-                      cy="0"
-                      r="12"
-                      fill="none"
-                      stroke="#61dafb"
-                      stroke-width="2"
-                    >
-                      <animateTransform
-                        attributeName="transform"
-                        type="rotate"
-                        values="0;360"
-                        dur="10s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                    <circle
-                      cx="0"
-                      cy="0"
-                      r="8"
-                      fill="none"
-                      stroke="#61dafb"
-                      stroke-width="1.5"
-                    >
-                      <animateTransform
-                        attributeName="transform"
-                        type="rotate"
-                        values="360;0"
-                        dur="7s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                    <circle
-                      cx="0"
-                      cy="0"
-                      r="4"
-                      fill="none"
-                      stroke="#61dafb"
-                      stroke-width="1"
-                    >
-                      <animateTransform
-                        attributeName="transform"
-                        type="rotate"
-                        values="0;360"
-                        dur="5s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                  </g>
-
-                  <!-- Node.js logo - bottom left -->
-                  <g transform="translate(30, 350)">
-                    <ellipse cx="0" cy="0" rx="10" ry="6" fill="#68a063">
-                      <animate
-                        attributeName="opacity"
-                        values="0.6;1;0.6"
-                        dur="4s"
-                        repeatCount="indefinite"
-                      />
-                    </ellipse>
-                    <text
-                      x="0"
-                      y="2"
-                      text-anchor="middle"
-                      fill="white"
-                      font-size="7"
-                      font-weight="bold"
-                    >
-                      JS
-                    </text>
-                  </g>
-
-                  <!-- Database icon - bottom right -->
-                  <g transform="translate(450, 350)">
-                    <rect
-                      x="-6"
-                      y="-4"
-                      width="12"
-                      height="8"
-                      rx="1"
-                      fill="none"
-                      stroke="#f59e0b"
-                      stroke-width="1.5"
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values="0.4;0.8;0.4"
-                        dur="3s"
-                        repeatCount="indefinite"
-                      />
-                    </rect>
-                    <rect
-                      x="-4"
-                      y="-2"
-                      width="8"
-                      height="4"
-                      rx="0.5"
-                      fill="rgba(245, 158, 11, 0.2)"
-                    />
-                    <circle cx="0" cy="0" r="1" fill="#f59e0b" />
-                  </g>
-
-                  <!-- AWS icon - top left -->
-                  <g transform="translate(30, 50)">
-                    <rect
-                      x="-8"
-                      y="-6"
-                      width="16"
-                      height="12"
-                      rx="2"
-                      fill="none"
-                      stroke="#f97316"
-                      stroke-width="1.5"
-                    >
-                      <animate
-                        attributeName="opacity"
-                        values="0.5;0.9;0.5"
-                        dur="3.5s"
-                        repeatCount="indefinite"
-                      />
-                    </rect>
-                    <text
-                      x="0"
-                      y="2"
-                      text-anchor="middle"
-                      fill="#f97316"
-                      font-size="6"
-                      font-weight="bold"
-                    >
-                      AWS
-                    </text>
-                  </g>
-                </g>
-
-                <!-- Enhanced connection lines -->
-                <g
-                  stroke="rgba(96, 165, 250, 0.4)"
-                  stroke-width="1"
-                  fill="none"
-                  opacity="0.6"
-                >
-                  <path d="M 300 120 Q 350 80 450 50" stroke-dasharray="5,5">
-                    <animate
-                      attributeName="stroke-dashoffset"
-                      values="0;10"
-                      dur="2s"
-                      repeatCount="indefinite"
-                    />
-                  </path>
-                  <path d="M 300 140 Q 200 200 30 350" stroke-dasharray="3,3">
-                    <animate
-                      attributeName="stroke-dashoffset"
-                      values="0;6"
-                      dur="1.5s"
-                      repeatCount="indefinite"
-                    />
-                  </path>
-                  <path d="M 300 160 Q 400 250 450 350" stroke-dasharray="4,4">
-                    <animate
-                      attributeName="stroke-dashoffset"
-                      values="0;8"
-                      dur="2.5s"
-                      repeatCount="indefinite"
-                    />
-                  </path>
-                </g>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Enhanced floating elements -->
-          <div
-            data-parallax="0.12"
-            class="absolute -top-4 -right-4 w-6 h-6 rounded-full bg-blue-500/20 blur-sm animate-float"
+            class="absolute top-20 left-20 w-2 h-2 bg-blue-400/35 rounded-full animate-pulse"
           ></div>
           <div
-            data-parallax="0.09"
-            class="absolute -bottom-6 -left-6 w-4 h-4 rounded-full bg-indigo-500/20 blur-sm animate-bounce-slow"
+            class="absolute top-40 right-32 w-1 h-1 bg-indigo-400/45 rounded-full animate-pulse"
+            style="animation-delay: 1s"
           ></div>
           <div
-            data-parallax="0.07"
-            class="absolute top-1/4 -left-8 w-3 h-3 rounded-full bg-cyan-500/30 blur-sm animate-pulse"
+            class="absolute bottom-32 left-1/3 w-3 h-3 bg-blue-300/30 rounded-full animate-pulse"
+            style="animation-delay: 2s"
+          ></div>
+          <div
+            class="absolute top-1/2 right-20 w-1.5 h-1.5 bg-indigo-300/35 rounded-full animate-pulse"
+            style="animation-delay: 0.5s"
+          ></div>
+
+          <!-- Professional accent lines -->
+          <div
+            data-parallax="-0.06"
+            class="absolute top-1/3 left-0 w-32 h-px bg-gradient-to-r from-transparent via-blue-500/15 to-transparent"
+          ></div>
+          <div
+            data-parallax="-0.05"
+            class="absolute bottom-1/3 right-0 w-24 h-px bg-gradient-to-l from-transparent via-indigo-500/15 to-transparent"
           ></div>
         </div>
-      </div>
-      <!-- Enhanced scroll cue -->
-      <a
-        href="#projects"
-        class="absolute bottom-8 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-3 text-white/70 hover:text-white group transition-colors duration-300"
-      >
-        <div class="flex flex-col items-center gap-2">
-          <span class="text-sm font-medium tracking-wide">Explore my work</span>
+        <div
+          data-hero-spotlight
+          class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300"
+          style="will-change: background"
+        ></div>
+        <div
+          class="container-pro relative z-20 grid gap-16 lg:grid-cols-2 pt-32 pb-16"
+        >
           <div
-            class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center group-hover:border-white/50 transition-colors duration-300"
+            data-reveal
+            class="opacity-0 translate-y-6 flex flex-col justify-center gap-8"
           >
+            <!-- Professional status badge -->
             <div
-              class="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce group-hover:bg-white/70 transition-colors duration-300"
-            ></div>
-          </div>
-        </div>
-      </a>
-    </section>
-
-    <!-- Services (moved up for conversion) -->
-    <section
-      id="services"
-      class="py-24 bg-black relative overflow-hidden cv-auto"
-      aria-labelledby="services-heading"
-    >
-      <!-- Background decoration -->
-      <div
-        class="absolute inset-0 bg-grid opacity-20"
-        data-parallax="0.02"
-      ></div>
-      <div
-        class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"
-        data-parallax="0.05"
-      ></div>
-      <div
-        class="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"
-        data-parallax="0.08"
-      ></div>
-
-      <!-- Subtle floating code snippets -->
-      <div
-        class="absolute top-20 left-12 text-xs font-mono text-blue-400/12 animate-float"
-      >
-        <span class="block">&lt;React&gt;</span>
-      </div>
-
-      <div
-        class="absolute top-1/3 right-16 text-xs font-mono text-indigo-400/10 animate-pulse"
-        style="animation-delay: 2s"
-      >
-        <span class="block">const app = express()</span>
-      </div>
-
-      <div
-        class="absolute bottom-1/3 left-16 text-xs font-mono text-cyan-400/8 animate-float"
-        style="animation-delay: 4s"
-      >
-        <span class="block">npm install</span>
-      </div>
-
-      <div
-        class="absolute bottom-20 right-20 text-xs font-mono text-emerald-400/10 animate-pulse"
-        style="animation-delay: 1s"
-      >
-        <span class="block">git commit</span>
-      </div>
-
-      <!-- Minimal technical words -->
-      <div
-        class="absolute top-1/2 right-1/4 text-sm font-semibold text-blue-400/8 animate-float"
-        style="animation-delay: 3s"
-      >
-        <span>TypeScript</span>
-      </div>
-
-      <div
-        class="absolute bottom-1/2 left-1/4 text-sm font-semibold text-indigo-400/6 animate-pulse"
-        style="animation-delay: 2.5s"
-      >
-        <span>Node.js</span>
-      </div>
-
-      <div
-        class="absolute top-1/4 left-1/2 text-sm font-semibold text-cyan-400/7 animate-float"
-        style="animation-delay: 1.5s"
-      >
-        <span>AWS</span>
-      </div>
-
-      <div class="container-pro relative">
-        <div class="text-center mb-16">
-          <h2 id="services-heading" class="text-4xl font-bold mb-4">
-            Services I Provide
-            <span class="text-gradient">For Your Success</span>
-          </h2>
-          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
-            From concept to deployment, I deliver end-to-end solutions that
-            drive real business results.
-          </p>
-          <!-- Section badges -->
-          <ul class="hero-badges justify-center mt-4">
-            <li class="hero-badge">
-              <span class="w-2 h-2 rounded-full bg-blue-400"></span
-              ><span>Fixed‑scope or retainer</span>
-            </li>
-            <li class="hero-badge">
-              <span class="w-2 h-2 rounded-full bg-indigo-400"></span
-              ><span>Kickoff in under 7 days</span>
-            </li>
-            <li class="hero-badge">
-              <span class="w-2 h-2 rounded-full bg-cyan-400"></span
-              ><span>Weekly progress updates</span>
-            </li>
-          </ul>
-        </div>
-
-        <div class="services-grid grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Full-Stack Development -->
-          <div data-reveal class="opacity-0 translate-y-6 service-card group">
-            <div class="service-icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2L2 7l10 5 10-5-10-5z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2 17l10 5 10-5"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2 12l10 5 10-5"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <h3 class="service-title">Full-Stack Development</h3>
-            <p class="service-description">
-              Complete web applications from frontend to backend, with modern
-              architecture and scalable infrastructure.
-            </p>
-            <ul class="service-features">
-              <li>React, Vue, or vanilla JS frontends</li>
-              <li>Node.js, Python, or PHP backends</li>
-              <li>Database design & optimization</li>
-              <li>API development & integration</li>
-            </ul>
-            <div class="service-tech">
-              <span class="tech-tag">React</span>
-              <span class="tech-tag">Node.js</span>
-              <span class="tech-tag">PostgreSQL</span>
-            </div>
-            <div class="mt-4 flex gap-2">
-              <a href="#contact" class="btn-primary px-4 py-2 text-sm"
-                >Get a quote</a
-              >
-              <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
-                >See work</a
-              >
-            </div>
-          </div>
-
-          <!-- Web App Development -->
-          <div data-reveal class="opacity-0 translate-y-6 service-card group">
-            <div class="service-icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="2"
-                  y="3"
-                  width="20"
-                  height="14"
-                  rx="2"
-                  ry="2"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <line
-                  x1="8"
-                  y1="21"
-                  x2="16"
-                  y2="21"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <line
-                  x1="12"
-                  y1="17"
-                  x2="12"
-                  y2="21"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
-            <h3 class="service-title">Web Applications</h3>
-            <p class="service-description">
-              High-performance single-page applications with modern UX patterns
-              and responsive design.
-            </p>
-            <ul class="service-features">
-              <li>Progressive Web Apps (PWA)</li>
-              <li>Real-time features & WebSockets</li>
-              <li>State management & optimization</li>
-              <li>Cross-browser compatibility</li>
-            </ul>
-            <div class="service-tech">
-              <span class="tech-tag">Vite</span>
-              <span class="tech-tag">TypeScript</span>
-              <span class="tech-tag">Tailwind</span>
-            </div>
-            <div class="mt-4 flex gap-2">
-              <a href="#contact" class="btn-primary px-4 py-2 text-sm"
-                >Get a quote</a
-              >
-              <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
-                >See work</a
-              >
-            </div>
-          </div>
-
-          <!-- Performance & SEO -->
-          <div data-reveal class="opacity-0 translate-y-6 service-card group">
-            <div class="service-icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <h3 class="service-title">Performance & SEO</h3>
-            <p class="service-description">
-              Optimize your web presence for speed, search engines, and user
-              experience that converts.
-            </p>
-            <ul class="service-features">
-              <li>Core Web Vitals optimization</li>
-              <li>SEO audit & implementation</li>
-              <li>Code splitting & lazy loading</li>
-              <li>Analytics & monitoring setup</li>
-            </ul>
-            <div class="service-tech">
-              <span class="tech-tag">Lighthouse</span>
-              <span class="tech-tag">Next.js</span>
-              <span class="tech-tag">Vercel</span>
-            </div>
-            <div class="mt-4 flex gap-2">
-              <a href="#contact" class="btn-primary px-4 py-2 text-sm"
-                >Get a quote</a
-              >
-              <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
-                >See work</a
-              >
-            </div>
-          </div>
-
-          <!-- E-commerce Solutions -->
-          <div data-reveal class="opacity-0 translate-y-6 service-card group">
-            <div class="service-icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6 6h15l-1.5 9h-12z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M6 6l-1-2H2"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <circle cx="9" cy="20" r="1.5" fill="currentColor" />
-                <circle cx="18" cy="20" r="1.5" fill="currentColor" />
-              </svg>
-            </div>
-            <h3 class="service-title">E-commerce Solutions</h3>
-            <p class="service-description">
-              Custom online stores with secure payment processing and inventory
-              management systems.
-            </p>
-            <ul class="service-features">
-              <li>Payment gateway integration</li>
-              <li>Inventory & order management</li>
-              <li>Customer accounts & reviews</li>
-              <li>Analytics & reporting</li>
-            </ul>
-            <div class="service-tech">
-              <span class="tech-tag">Stripe</span>
-              <span class="tech-tag">Shopify</span>
-              <span class="tech-tag">WooCommerce</span>
-            </div>
-            <div class="mt-4 flex gap-2">
-              <a href="#contact" class="btn-primary px-4 py-2 text-sm"
-                >Get a quote</a
-              >
-              <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
-                >See work</a
-              >
-            </div>
-          </div>
-
-          <!-- DevOps & Deployment -->
-          <div data-reveal class="opacity-0 translate-y-6 service-card group">
-            <div class="service-icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2L2 7l10 5 10-5-10-5z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2 17l10 5 10-5"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2 12l10 5 10-5"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <h3 class="service-title">DevOps & Deployment</h3>
-            <p class="service-description">
-              Reliable deployment pipelines and cloud infrastructure for
-              scalable, secure applications.
-            </p>
-            <ul class="service-features">
-              <li>CI/CD pipeline setup</li>
-              <li>Cloud infrastructure (AWS, Vercel)</li>
-              <li>Docker containerization</li>
-              <li>Monitoring & logging</li>
-            </ul>
-            <div class="service-tech">
-              <span class="tech-tag">AWS</span>
-              <span class="tech-tag">Docker</span>
-              <span class="tech-tag">GitHub Actions</span>
-            </div>
-            <div class="mt-4 flex gap-2">
-              <a href="#contact" class="btn-primary px-4 py-2 text-sm"
-                >Get a quote</a
-              >
-              <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
-                >See work</a
-              >
-            </div>
-          </div>
-
-          <!-- Consulting & Support -->
-          <div data-reveal class="opacity-0 translate-y-6 service-card group">
-            <div class="service-icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <path
-                  d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <line
-                  x1="12"
-                  y1="17"
-                  x2="12.01"
-                  y2="17"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <h3 class="service-title">Consulting & Support</h3>
-            <p class="service-description">
-              Technical guidance and ongoing support to help your team succeed
-              and scale effectively.
-            </p>
-            <ul class="service-features">
-              <li>Architecture planning & review</li>
-              <li>Code quality & best practices</li>
-              <li>Team training & mentoring</li>
-              <li>Ongoing maintenance & updates</li>
-            </ul>
-            <div class="service-tech">
-              <span class="tech-tag">Code Review</span>
-              <span class="tech-tag">Training</span>
-              <span class="tech-tag">Support</span>
-            </div>
-            <div class="mt-4 flex gap-2">
-              <a href="#contact" class="btn-primary px-4 py-2 text-sm"
-                >Get a quote</a
-              >
-              <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
-                >See work</a
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Call to action -->
-        <div class="text-center mt-16">
-          <div class="glass rounded-2xl p-8 max-w-2xl mx-auto">
-            <h3 class="text-2xl font-bold mb-4">
-              Ready to Start Your Project?
-            </h3>
-            <p class="text-gray-300 mb-6">
-              Let's discuss your requirements and create a solution that drives
-              real business value.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#contact" class="btn-primary">Get Started</a>
-              <a href="#projects" class="btn-secondary">View Portfolio</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- About -->
-    <section
-      id="about"
-      class="py-20 bg-black relative overflow-hidden cv-auto"
-      aria-labelledby="about-heading"
-    >
-      <!-- Background decoration -->
-      <div
-        class="absolute inset-0 bg-grid opacity-20"
-        data-parallax="0.02"
-      ></div>
-      <div
-        class="absolute top-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"
-        data-parallax="0.05"
-      ></div>
-      <div
-        class="absolute bottom-0 right-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl"
-        data-parallax="0.08"
-      ></div>
-
-      <!-- Subtle floating coding blocks -->
-      <div class="absolute top-24 left-12 w-12 h-12 opacity-6 animate-float">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-full h-full text-blue-400"
-        >
-          <rect
-            x="3"
-            y="3"
-            width="18"
-            height="18"
-            rx="2"
-            stroke="currentColor"
-            stroke-width="1.5"
-          />
-          <path
-            d="M8 8h8M8 12h6M8 16h4"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-      </div>
-
-      <div
-        class="absolute top-1/3 right-16 w-10 h-10 opacity-8 animate-pulse"
-        style="animation-delay: 3s"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-full h-full text-indigo-400"
-        >
-          <rect
-            x="2"
-            y="3"
-            width="20"
-            height="14"
-            rx="2"
-            stroke="currentColor"
-            stroke-width="1.5"
-          />
-          <path
-            d="M8 8h8M8 12h5"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-          />
-        </svg>
-      </div>
-
-      <div
-        class="absolute bottom-1/3 left-20 w-8 h-8 opacity-5 animate-float"
-        style="animation-delay: 2s"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-full h-full text-cyan-400"
-        >
-          <path
-            d="M12 2L2 7l10 5 10-5-10-5z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M2 17l10 5 10-5"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M2 12l10 5 10-5"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
-
-      <div
-        class="absolute bottom-20 right-24 w-6 h-6 opacity-7 animate-pulse"
-        style="animation-delay: 1s"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-full h-full text-emerald-400"
-        >
-          <circle
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="1.5"
-          />
-          <path
-            d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <line
-            x1="12"
-            y1="17"
-            x2="12.01"
-            y2="17"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
-
-      <div class="container-pro relative grid gap-12 lg:grid-cols-2">
-        <!-- Copy -->
-        <div data-reveal class="opacity-0 translate-y-6">
-          <h2 id="about-heading" class="text-3xl font-bold text-white mb-4">
-            About
-            <span class="text-gradient">My Expertise</span>
-          </h2>
-          <p class="mt-3 text-gray-300 max-w-prose text-lg leading-relaxed">
-            I'm Hamza, a full‑stack developer who cares about outcomes: clean
-            architecture, strong developer experience, and software that holds
-            up in production.
-          </p>
-          <!-- Value bullets -->
-          <ul class="mt-6 grid gap-4 text-sm">
-            <li class="inline-flex items-center gap-3 text-gray-300">
-              <span
-                class="h-5 w-5 rounded-full bg-emerald-500/20 text-emerald-400 inline-flex items-center justify-center text-xs font-bold"
-                >✓</span
-              >
-              Production‑grade quality, testable and maintainable
-            </li>
-            <li class="inline-flex items-center gap-3 text-gray-300">
-              <span
-                class="h-5 w-5 rounded-full bg-blue-500/20 text-blue-400 inline-flex items-center justify-center text-xs font-bold"
-                >✓</span
-              >
-              Fast delivery without sacrificing reliability
-            </li>
-            <li class="inline-flex items-center gap-3 text-gray-300">
-              <span
-                class="h-5 w-5 rounded-full bg-indigo-500/20 text-indigo-400 inline-flex items-center justify-center text-xs font-bold"
-                >✓</span
-              >
-              Clear communication and measurable results
-            </li>
-          </ul>
-          <!-- Metrics -->
-          <div class="mt-8 grid grid-cols-3 gap-4 text-center">
-            <div class="about-metric-card">
-              <p class="text-2xl font-semibold text-white">
-                4+<span class="text-sm align-top text-gray-400">yrs</span>
-              </p>
-              <p class="text-xs text-gray-400">Experience</p>
-            </div>
-            <div class="about-metric-card">
-              <p class="text-2xl font-semibold text-white">20+</p>
-              <p class="text-xs text-gray-400">Projects shipped</p>
-            </div>
-            <div class="about-metric-card">
-              <p class="text-2xl font-semibold text-white">A</p>
-              <p class="text-xs text-gray-400">Core Web Vitals</p>
-            </div>
-          </div>
-          <!-- Actions -->
-          <div class="mt-8 flex flex-wrap gap-3">
-            <a href="#contact" class="btn-primary">Work with me</a>
-            <a href="/pages/resume.html" class="btn-ghost"
-              >Download Resume</a
+              class="glass-professional rounded-full px-6 py-3 w-max hover-lift group"
             >
-          </div>
-        </div>
-        <!-- Capability cards -->
-        <div data-reveal class="opacity-0 translate-y-6 grid grid-cols-2 gap-4">
-          <div class="about-skill-card group">
+              <div class="flex items-center gap-3">
+                <div
+                  class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse glow-professional"
+                ></div>
+                <p
+                  class="text-sm tracking-wide uppercase text-white/90 font-medium"
+                >
+                  Available for freelance & remote
+                </p>
+              </div>
+            </div>
+
+            <!-- Enhanced main heading -->
+            <div class="space-y-4">
+              <h1
+                class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight"
+              >
+                <span class="block">Hamza</span>
+                <span
+                  class="block bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent"
+                >
+                  Full‑Stack
+                </span>
+                <span
+                  class="block bg-gradient-to-r from-blue-300 to-indigo-400 bg-clip-text text-transparent"
+                >
+                  Developer
+                </span>
+              </h1>
+            </div>
+
+            <!-- Enhanced description -->
+            <p class="text-white/90 text-xl max-w-2xl leading-relaxed">
+              I build
+              <span class="text-blue-300 font-semibold"
+                >high-performance web applications</span
+              >
+              that drive business growth. Specializing in modern tech stacks
+              with a focus on
+              <span class="text-indigo-300 font-semibold"
+                >clean architecture</span
+              >
+              and
+              <span class="text-cyan-300 font-semibold"
+                >production reliability</span
+              >.
+            </p>
+
+            <!-- Rotating specialties line -->
             <div
-              class="about-skill-icon bg-blue-500/10 text-blue-400 border-blue-500/20"
+              class="hero-rotator mt-2 text-white/80 text-sm"
+              data-allow-motion
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2L2 7l10 5 10-5-10-5z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2 17l10 5 10-5"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2 12l10 5 10-5"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <p class="mt-3 text-sm text-gray-400">Front‑end</p>
-            <p class="mt-1 font-semibold text-white">React, Vite, Tailwind</p>
-          </div>
-          <div class="about-skill-card group">
-            <div
-              class="about-skill-icon bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12 2L2 7l10 5 10-5-10-5z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2 17l10 5 10-5"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2 12l10 5 10-5"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <p class="mt-3 text-sm text-gray-400">Back‑end</p>
-            <p class="mt-1 font-semibold text-white">Node, Express, REST</p>
-          </div>
-          <div class="about-skill-card group">
-            <div
-              class="about-skill-icon bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="2"
-                  y="3"
-                  width="20"
-                  height="14"
-                  rx="2"
-                  ry="2"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <line
-                  x1="8"
-                  y1="21"
-                  x2="16"
-                  y2="21"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <line
-                  x1="12"
-                  y1="17"
-                  x2="12"
-                  y2="21"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
-            <p class="mt-3 text-sm text-gray-400">Databases</p>
-            <p class="mt-1 font-semibold text-white">Postgres, MongoDB</p>
-          </div>
-          <div class="about-skill-card group">
-            <div
-              class="about-skill-icon bg-amber-500/10 text-amber-400 border-amber-500/20"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-            <p class="mt-3 text-sm text-gray-400">Deployment</p>
-            <p class="mt-1 font-semibold text-white">AWS, Docker, CI/CD</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section
-      id="projects"
-      class="py-24 bg-black relative overflow-hidden cv-auto"
-      aria-labelledby="projects-heading"
-    >
-      <!-- Background decoration -->
-      <div
-        class="absolute inset-0 bg-grid opacity-20"
-        data-parallax="0.02"
-      ></div>
-      <div
-        class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"
-        data-parallax="0.05"
-      ></div>
-      <div
-        class="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"
-        data-parallax="0.08"
-      ></div>
-
-      <div class="container-pro relative">
-        <!-- Header -->
-        <div class="text-center mb-16">
-          <h2 id="projects-heading" class="text-4xl font-bold mb-4">
-            Featured
-            <span class="text-gradient">Projects</span>
-          </h2>
-          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
-            A showcase of my recent work with measurable business impact and
-            technical excellence.
-          </p>
-        </div>
-
-        <!-- Enhanced Filters -->
-        <div class="flex flex-col items-center gap-6 mb-12">
-          <div
-            class="flex flex-wrap justify-center items-center gap-3"
-            id="projects-filters"
-          >
-            <button data-filter="all" class="project-filter-btn active">
-              <span>All Projects</span>
-              <span class="filter-count" id="count-all">0</span>
-            </button>
-            <button data-filter="web" class="project-filter-btn">
-              <span>Web Apps</span>
-              <span class="filter-count" id="count-web">0</span>
-            </button>
-            <button data-filter="saas" class="project-filter-btn">
               <span>SaaS Platforms</span>
-              <span class="filter-count" id="count-saas">0</span>
-            </button>
-            <button data-filter="commerce" class="project-filter-btn">
-              <span>E-commerce</span>
-              <span class="filter-count" id="count-commerce">0</span>
-            </button>
-            <button data-filter="data" class="project-filter-btn">
+              <span>E‑commerce</span>
               <span>Data & Analytics</span>
-              <span class="filter-count" id="count-data">0</span>
-            </button>
-          </div>
-          <div class="text-sm text-gray-400">
-            Showing
-            <span id="projects-count" class="text-white font-medium">0</span> of
-            <span id="total-projects" class="text-white font-medium">0</span>
-            projects
-          </div>
-        </div>
-
-        <!-- Projects Grid -->
-        <div
-          id="projects-grid"
-          class="projects-grid grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
-        ></div>
-
-        <!-- View More Button -->
-        <div class="text-center mt-16">
-          <a href="#contact" class="btn-primary text-lg px-8 py-4">
-            Start Your Project
-            <svg
-              class="ml-2 w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              ></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Dark Feature Strip -->
-    <section class="py-16 bg-gradient-to-b from-black to-gray-900 text-white">
-      <div class="container-pro grid gap-6 sm:grid-cols-3">
-        <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
-          <p class="text-sm text-white/70">Performance</p>
-          <p class="mt-1 font-semibold">Core Web Vitals A</p>
-        </div>
-        <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
-          <p class="text-sm text-white/70">Security</p>
-          <p class="mt-1 font-semibold">Hardened, OWASP-aware</p>
-        </div>
-        <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
-          <p class="text-sm text-white/70">Deploy</p>
-          <p class="mt-1 font-semibold">CI/CD pipelines</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section
-      id="testimonials"
-      class="py-24 bg-black w-full relative overflow-visible cv-auto"
-      aria-labelledby="testimonials-heading"
-    >
-      <!-- Background decoration -->
-      <div
-        class="absolute inset-0 bg-grid opacity-30"
-        data-parallax="0.02"
-      ></div>
-      <div
-        class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"
-        data-parallax="0.05"
-      ></div>
-
-      <div class="container-pro relative z-10">
-        <div class="text-center mb-16">
-          <h2 id="testimonials-heading" class="text-4xl font-bold mb-4">
-            What Clients Say
-            <span class="text-gradient">About My Work</span>
-          </h2>
-          <p class="text-gray-300 text-lg max-w-2xl mx-auto">
-            Don't just take my word for it. Here's what industry leaders and
-            successful entrepreneurs have to say about working with me.
-          </p>
-        </div>
-
-        <div id="testimonials-grid"></div>
-
-        <!-- Trust indicators -->
-        <div class="mt-16 text-center">
-          <div class="inline-flex items-center gap-8 text-sm text-gray-400">
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span>100% Client Satisfaction</span>
             </div>
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
-              <span>On-Time Delivery</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
-              <span>5-Star Reviews</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Contact -->
-    <section
-      id="contact"
-      class="relative py-24 bg-black overflow-hidden cv-auto"
-      aria-labelledby="contact-heading"
-    >
-      <!-- Background decoration -->
-      <div
-        class="absolute inset-0 bg-grid opacity-20"
-        data-parallax="0.02"
-      ></div>
-      <div
-        class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"
-        data-parallax="0.05"
-      ></div>
-      <div
-        class="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"
-        data-parallax="0.08"
-      ></div>
-
-      <div class="container-pro relative">
-        <div class="grid gap-10 lg:grid-cols-2 items-start">
-          <!-- Left: Copy / Contact details -->
-          <div data-reveal class="opacity-0 translate-y-6">
-            <div
-              class="glass-professional rounded-full px-5 py-2 inline-flex items-center gap-2 w-max mb-6"
-            >
-              <span
-                class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse glow-professional"
-              ></span>
-              <span
-                class="text-xs tracking-wide uppercase text-white/90 font-medium"
-                >Available for new projects</span
+            <!-- Enhanced CTA buttons -->
+            <div class="flex flex-wrap gap-4">
+              <a
+                href="#projects"
+                class="btn-primary text-base px-8 py-4 hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-xl"
               >
+                View My Work
+              </a>
+              <a
+                href="#contact"
+                class="btn-secondary text-base px-8 py-4 hover:scale-105 transition-transform duration-300"
+              >
+                Start a Project
+              </a>
+              <a
+                href="/pages/about.html"
+                class="btn-ghost text-base px-8 py-4 hover:scale-105 transition-transform duration-300"
+              >
+                Learn More
+              </a>
             </div>
-            <h2 id="contact-heading" class="text-4xl font-bold mb-3">
-              Let's build <span class="text-gradient">something great</span>
-            </h2>
-            <p class="text-gray-300 text-lg max-w-prose">
-              Tell me about your idea, timeline, and goals. I typically reply
-              within 24 hours.
-            </p>
 
-            <div class="mt-8 grid gap-4">
-              <div class="inline-flex items-center gap-3 text-gray-300">
+            <!-- Quick trust badges -->
+            <ul class="hero-badges pt-2">
+              <li class="hero-badge">
+                <span
+                  class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse glow-professional"
+                ></span>
+                <span>Free 30‑min discovery call</span>
+              </li>
+              <li class="hero-badge">
                 <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M4 4h16v16H4z"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
-                  <path
-                    d="M22 6l-10 7L2 6"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
-                </svg>
-                <a
-                  class="hover:text-white underline decoration-white/20 underline-offset-4"
-                  href="mailto:contact@hamzaarya.dev"
-                  >contact@hamzaarya.dev</a
-                >
-              </div>
-              <div class="inline-flex items-center gap-3 text-gray-300">
-                <svg
-                  width="18"
-                  height="18"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -2344,12 +560,12 @@
                     stroke-linejoin="round"
                   />
                 </svg>
-                <span>Response time: under 24 hours</span>
-              </div>
-              <div class="inline-flex items-center gap-3 text-gray-300">
+                <span>Replies within 24h</span>
+              </li>
+              <li class="hero-badge">
                 <svg
-                  width="18"
-                  height="18"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -2368,97 +584,1908 @@
                     stroke-width="2"
                   />
                 </svg>
-                <span>Based in Lahore, PK • Remote-friendly</span>
+                <span>Timezone‑friendly (PKT)</span>
+              </li>
+            </ul>
+
+            <!-- Trusted by strip -->
+            <div class="pt-1">
+              <div class="text-[10px] uppercase tracking-[0.2em] text-white/60">
+                Trusted by
+              </div>
+              <div class="mt-2 flex items-center gap-4 opacity-80">
+                <span class="h-2 w-16 rounded-full bg-white/15"></span>
+                <span class="h-2 w-12 rounded-full bg-white/15"></span>
+                <span class="h-2 w-20 rounded-full bg-white/15"></span>
+                <span
+                  class="h-2 w-10 rounded-full bg-white/15 hidden sm:inline"
+                ></span>
               </div>
             </div>
 
-            <div class="mt-8 flex items-center gap-4 text-sm text-gray-300">
-              <a
-                class="hover:text-white"
-                href="https://github.com/hamza"
-                target="_blank"
-                rel="noopener noreferrer"
-                >GitHub</a
-              >
-              <span class="opacity-40">•</span>
-              <a
-                class="hover:text-white"
-                href="https://linkedin.com/in/hamza"
-                target="_blank"
-                rel="noopener noreferrer"
-                >LinkedIn</a
-              >
+            <!-- Enhanced tech stack -->
+            <div
+              class="flex flex-wrap items-center gap-6 pt-4 text-white/80 text-sm"
+            >
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                <span class="font-medium">Frontend • Backend • DevOps</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                <span>React • Node • Postgres • AWS</span>
+              </div>
+            </div>
+
+            <!-- Professional credibility indicators -->
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="glass-professional rounded-lg p-4 hover-lift">
+                <div class="flex items-center gap-2 mb-1">
+                  <span
+                    class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse glow-professional"
+                  ></span>
+                  <span class="text-xs font-medium text-emerald-300"
+                    >Trusted Partner</span
+                  >
+                </div>
+                <p class="text-xs text-white/80">Startups & founders</p>
+              </div>
+              <div class="glass-professional rounded-lg p-4 hover-lift">
+                <div class="flex items-center gap-2 mb-1">
+                  <span
+                    class="h-2 w-2 rounded-full bg-blue-400 animate-pulse glow-professional"
+                  ></span>
+                  <span class="text-xs font-medium text-blue-300"
+                    >Projects Shipped</span
+                  >
+                </div>
+                <p class="text-xs text-white/80">20+ successful launches</p>
+              </div>
+              <div class="glass-professional rounded-lg p-4 hover-lift">
+                <div class="flex items-center gap-2 mb-1">
+                  <span
+                    class="h-2 w-2 rounded-full bg-cyan-400 animate-pulse glow-professional"
+                  ></span>
+                  <span class="text-xs font-medium text-cyan-300"
+                    >Performance</span
+                  >
+                </div>
+                <p class="text-xs text-white/80">Core Web Vitals: A</p>
+              </div>
+            </div>
+          </div>
+          <!-- Professional Development Visual -->
+          <div data-reveal class="opacity-0 translate-y-6 relative">
+            <div
+              class="glass-professional rounded-2xl p-8 h-96 sm:h-[28rem] lg:h-[32rem] hover-lift group glow-professional"
+            >
+              <!-- Enhanced Development Dashboard SVG -->
+              <div class="h-full flex items-center justify-center p-4">
+                <svg
+                  viewBox="0 0 500 400"
+                  class="w-full h-full max-w-lg"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <!-- Main terminal window -->
+                  <rect
+                    x="20"
+                    y="20"
+                    width="280"
+                    height="200"
+                    rx="8"
+                    fill="rgba(15, 23, 42, 0.9)"
+                    stroke="rgba(59, 130, 246, 0.4)"
+                    stroke-width="1.5"
+                  />
+
+                  <!-- Terminal header -->
+                  <rect
+                    x="20"
+                    y="20"
+                    width="280"
+                    height="35"
+                    rx="8"
+                    fill="rgba(30, 41, 59, 0.95)"
+                  />
+
+                  <!-- Terminal controls -->
+                  <circle cx="35" cy="37" r="4" fill="#ef4444" />
+                  <circle cx="50" cy="37" r="4" fill="#f59e0b" />
+                  <circle cx="65" cy="37" r="4" fill="#10b981" />
+
+                  <!-- Terminal title -->
+                  <text
+                    x="150"
+                    y="42"
+                    text-anchor="middle"
+                    fill="rgba(255, 255, 255, 0.8)"
+                    font-family="monospace"
+                    font-size="11"
+                    font-weight="500"
+                  >
+                    hamza-arya@portfolio
+                  </text>
+
+                  <!-- Code content -->
+                  <g
+                    fill="rgba(255, 255, 255, 0.9)"
+                    font-family="monospace"
+                    font-size="10"
+                  >
+                    <!-- Line 1 -->
+                    <text x="30" y="70">
+                      <tspan fill="#60a5fa">const</tspan>
+                      <tspan fill="white">developer = {</tspan>
+                    </text>
+
+                    <!-- Line 2 -->
+                    <text x="30" y="85">
+                      <tspan fill="white"></tspan>
+                      <tspan fill="#34d399">name</tspan>
+                      <tspan fill="white">:</tspan>
+                      <tspan fill="#fbbf24">'Hamza Arya'</tspan>
+                      <tspan fill="white">,</tspan>
+                    </text>
+
+                    <!-- Line 3 -->
+                    <text x="30" y="100">
+                      <tspan fill="white"></tspan>
+                      <tspan fill="#34d399">role</tspan>
+                      <tspan fill="white">:</tspan>
+                      <tspan fill="#fbbf24">'Full-Stack Developer'</tspan>
+                      <tspan fill="white">,</tspan>
+                    </text>
+
+                    <!-- Line 4 -->
+                    <text x="30" y="115">
+                      <tspan fill="white"></tspan>
+                      <tspan fill="#34d399">experience</tspan>
+                      <tspan fill="white">:</tspan>
+                      <tspan fill="#a78bfa">5+</tspan>
+                      <tspan fill="white">years</tspan>
+                    </text>
+
+                    <!-- Line 5 -->
+                    <text x="30" y="130">
+                      <tspan fill="white"></tspan>
+                      <tspan fill="#34d399">projects</tspan>
+                      <tspan fill="white">:</tspan>
+                      <tspan fill="#a78bfa">20+</tspan>
+                      <tspan fill="white">shipped</tspan>
+                    </text>
+
+                    <!-- Line 6 -->
+                    <text x="30" y="145">
+                      <tspan fill="white"></tspan>
+                      <tspan fill="#34d399">status</tspan>
+                      <tspan fill="white">:</tspan>
+                      <tspan fill="#10b981">'Available'</tspan>
+                    </text>
+
+                    <!-- Line 7 -->
+                    <text x="30" y="160">
+                      <tspan fill="white">};</tspan>
+                    </text>
+
+                    <!-- Blinking cursor -->
+                    <rect x="32" y="170" width="1.5" height="10" fill="#60a5fa">
+                      <animate
+                        attributeName="opacity"
+                        values="1;0;1"
+                        dur="1.2s"
+                        repeatCount="indefinite"
+                      />
+                    </rect>
+                  </g>
+
+                  <!-- Skills panel -->
+                  <rect
+                    x="320"
+                    y="20"
+                    width="160"
+                    height="200"
+                    rx="8"
+                    fill="rgba(15, 23, 42, 0.8)"
+                    stroke="rgba(34, 197, 94, 0.3)"
+                    stroke-width="1.5"
+                  />
+
+                  <!-- Skills header -->
+                  <rect
+                    x="320"
+                    y="20"
+                    width="160"
+                    height="30"
+                    rx="8"
+                    fill="rgba(20, 83, 45, 0.3)"
+                  />
+
+                  <text
+                    x="400"
+                    y="38"
+                    text-anchor="middle"
+                    fill="rgba(34, 197, 94, 0.9)"
+                    font-family="monospace"
+                    font-size="11"
+                    font-weight="600"
+                  >
+                    SKILLS
+                  </text>
+
+                  <!-- Skill items -->
+                  <g font-family="monospace" font-size="9">
+                    <!-- Frontend -->
+                    <g transform="translate(330, 60)">
+                      <circle cx="0" cy="0" r="3" fill="#61dafb" />
+                      <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
+                        React & Next.js
+                      </text>
+                      <rect
+                        x="0"
+                        y="0"
+                        width="120"
+                        height="1"
+                        fill="rgba(97, 218, 251, 0.3)"
+                      />
+                    </g>
+
+                    <!-- Backend -->
+                    <g transform="translate(330, 80)">
+                      <circle cx="0" cy="0" r="3" fill="#68a063" />
+                      <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
+                        Node.js & Express
+                      </text>
+                      <rect
+                        x="0"
+                        y="0"
+                        width="110"
+                        height="1"
+                        fill="rgba(104, 160, 99, 0.3)"
+                      />
+                    </g>
+
+                    <!-- Database -->
+                    <g transform="translate(330, 100)">
+                      <circle cx="0" cy="0" r="3" fill="#f59e0b" />
+                      <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
+                        PostgreSQL & MongoDB
+                      </text>
+                      <rect
+                        x="0"
+                        y="0"
+                        width="100"
+                        height="1"
+                        fill="rgba(245, 158, 11, 0.3)"
+                      />
+                    </g>
+
+                    <!-- Cloud -->
+                    <g transform="translate(330, 120)">
+                      <circle cx="0" cy="0" r="3" fill="#f97316" />
+                      <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
+                        AWS & Docker
+                      </text>
+                      <rect
+                        x="0"
+                        y="0"
+                        width="90"
+                        height="1"
+                        fill="rgba(249, 115, 22, 0.3)"
+                      />
+                    </g>
+
+                    <!-- Tools -->
+                    <g transform="translate(330, 140)">
+                      <circle cx="0" cy="0" r="3" fill="#8b5cf6" />
+                      <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
+                        Git & CI/CD
+                      </text>
+                      <rect
+                        x="0"
+                        y="0"
+                        width="95"
+                        height="1"
+                        fill="rgba(139, 92, 246, 0.3)"
+                      />
+                    </g>
+
+                    <!-- Performance -->
+                    <g transform="translate(330, 160)">
+                      <circle cx="0" cy="0" r="3" fill="#06b6d4" />
+                      <text x="8" y="3" fill="rgba(255, 255, 255, 0.8)">
+                        Performance & SEO
+                      </text>
+                      <rect
+                        x="0"
+                        y="0"
+                        width="105"
+                        height="1"
+                        fill="rgba(6, 182, 212, 0.3)"
+                      />
+                    </g>
+                  </g>
+
+                  <!-- Stats panel -->
+                  <rect
+                    x="20"
+                    y="240"
+                    width="460"
+                    height="140"
+                    rx="8"
+                    fill="rgba(15, 23, 42, 0.7)"
+                    stroke="rgba(139, 92, 246, 0.3)"
+                    stroke-width="1.5"
+                  />
+
+                  <!-- Stats header -->
+                  <text
+                    x="250"
+                    y="260"
+                    text-anchor="middle"
+                    fill="rgba(139, 92, 246, 0.9)"
+                    font-family="monospace"
+                    font-size="12"
+                    font-weight="600"
+                  >
+                    PROJECT STATISTICS
+                  </text>
+
+                  <!-- Stats grid -->
+                  <g font-family="monospace" font-size="10">
+                    <!-- Projects completed -->
+                    <g transform="translate(50, 285)">
+                      <rect
+                        x="0"
+                        y="0"
+                        width="80"
+                        height="60"
+                        rx="4"
+                        fill="rgba(34, 197, 94, 0.1)"
+                        stroke="rgba(34, 197, 94, 0.3)"
+                        stroke-width="1"
+                      />
+                      <text
+                        x="40"
+                        y="20"
+                        text-anchor="middle"
+                        fill="#22c55e"
+                        font-size="18"
+                        font-weight="bold"
+                      >
+                        20+
+                      </text>
+                      <text
+                        x="40"
+                        y="35"
+                        text-anchor="middle"
+                        fill="rgba(255, 255, 255, 0.8)"
+                      >
+                        Projects
+                      </text>
+                      <text
+                        x="40"
+                        y="48"
+                        text-anchor="middle"
+                        fill="rgba(255, 255, 255, 0.6)"
+                      >
+                        Completed
+                      </text>
+                    </g>
+
+                    <!-- Clients served -->
+                    <g transform="translate(150, 285)">
+                      <rect
+                        x="0"
+                        y="0"
+                        width="80"
+                        height="60"
+                        rx="4"
+                        fill="rgba(59, 130, 246, 0.1)"
+                        stroke="rgba(59, 130, 246, 0.3)"
+                        stroke-width="1"
+                      />
+                      <text
+                        x="40"
+                        y="20"
+                        text-anchor="middle"
+                        fill="#3b82f6"
+                        font-size="18"
+                        font-weight="bold"
+                      >
+                        15+
+                      </text>
+                      <text
+                        x="40"
+                        y="35"
+                        text-anchor="middle"
+                        fill="rgba(255, 255, 255, 0.8)"
+                      >
+                        Happy
+                      </text>
+                      <text
+                        x="40"
+                        y="48"
+                        text-anchor="middle"
+                        fill="rgba(255, 255, 255, 0.6)"
+                      >
+                        Clients
+                      </text>
+                    </g>
+
+                    <!-- Years experience -->
+                    <g transform="translate(250, 285)">
+                      <rect
+                        x="0"
+                        y="0"
+                        width="80"
+                        height="60"
+                        rx="4"
+                        fill="rgba(245, 158, 11, 0.1)"
+                        stroke="rgba(245, 158, 11, 0.3)"
+                        stroke-width="1"
+                      />
+                      <text
+                        x="40"
+                        y="20"
+                        text-anchor="middle"
+                        fill="#f59e0b"
+                        font-size="18"
+                        font-weight="bold"
+                      >
+                        5+
+                      </text>
+                      <text
+                        x="40"
+                        y="35"
+                        text-anchor="middle"
+                        fill="rgba(255, 255, 255, 0.8)"
+                      >
+                        Years
+                      </text>
+                      <text
+                        x="40"
+                        y="48"
+                        text-anchor="middle"
+                        fill="rgba(255, 255, 255, 0.6)"
+                      >
+                        Experience
+                      </text>
+                    </g>
+
+                    <!-- Success rate -->
+                    <g transform="translate(350, 285)">
+                      <rect
+                        x="0"
+                        y="0"
+                        width="80"
+                        height="60"
+                        rx="4"
+                        fill="rgba(139, 92, 246, 0.1)"
+                        stroke="rgba(139, 92, 246, 0.3)"
+                        stroke-width="1"
+                      />
+                      <text
+                        x="40"
+                        y="20"
+                        text-anchor="middle"
+                        fill="#8b5cf6"
+                        font-size="18"
+                        font-weight="bold"
+                      >
+                        100%
+                      </text>
+                      <text
+                        x="40"
+                        y="35"
+                        text-anchor="middle"
+                        fill="rgba(255, 255, 255, 0.8)"
+                      >
+                        Success
+                      </text>
+                      <text
+                        x="40"
+                        y="48"
+                        text-anchor="middle"
+                        fill="rgba(255, 255, 255, 0.6)"
+                      >
+                        Rate
+                      </text>
+                    </g>
+                  </g>
+
+                  <!-- Floating tech icons with better placement -->
+                  <g opacity="0.7">
+                    <!-- React logo - top right -->
+                    <g transform="translate(450, 50)">
+                      <circle
+                        cx="0"
+                        cy="0"
+                        r="12"
+                        fill="none"
+                        stroke="#61dafb"
+                        stroke-width="2"
+                      >
+                        <animateTransform
+                          attributeName="transform"
+                          type="rotate"
+                          values="0;360"
+                          dur="10s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                      <circle
+                        cx="0"
+                        cy="0"
+                        r="8"
+                        fill="none"
+                        stroke="#61dafb"
+                        stroke-width="1.5"
+                      >
+                        <animateTransform
+                          attributeName="transform"
+                          type="rotate"
+                          values="360;0"
+                          dur="7s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                      <circle
+                        cx="0"
+                        cy="0"
+                        r="4"
+                        fill="none"
+                        stroke="#61dafb"
+                        stroke-width="1"
+                      >
+                        <animateTransform
+                          attributeName="transform"
+                          type="rotate"
+                          values="0;360"
+                          dur="5s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                    </g>
+
+                    <!-- Node.js logo - bottom left -->
+                    <g transform="translate(30, 350)">
+                      <ellipse cx="0" cy="0" rx="10" ry="6" fill="#68a063">
+                        <animate
+                          attributeName="opacity"
+                          values="0.6;1;0.6"
+                          dur="4s"
+                          repeatCount="indefinite"
+                        />
+                      </ellipse>
+                      <text
+                        x="0"
+                        y="2"
+                        text-anchor="middle"
+                        fill="white"
+                        font-size="7"
+                        font-weight="bold"
+                      >
+                        JS
+                      </text>
+                    </g>
+
+                    <!-- Database icon - bottom right -->
+                    <g transform="translate(450, 350)">
+                      <rect
+                        x="-6"
+                        y="-4"
+                        width="12"
+                        height="8"
+                        rx="1"
+                        fill="none"
+                        stroke="#f59e0b"
+                        stroke-width="1.5"
+                      >
+                        <animate
+                          attributeName="opacity"
+                          values="0.4;0.8;0.4"
+                          dur="3s"
+                          repeatCount="indefinite"
+                        />
+                      </rect>
+                      <rect
+                        x="-4"
+                        y="-2"
+                        width="8"
+                        height="4"
+                        rx="0.5"
+                        fill="rgba(245, 158, 11, 0.2)"
+                      />
+                      <circle cx="0" cy="0" r="1" fill="#f59e0b" />
+                    </g>
+
+                    <!-- AWS icon - top left -->
+                    <g transform="translate(30, 50)">
+                      <rect
+                        x="-8"
+                        y="-6"
+                        width="16"
+                        height="12"
+                        rx="2"
+                        fill="none"
+                        stroke="#f97316"
+                        stroke-width="1.5"
+                      >
+                        <animate
+                          attributeName="opacity"
+                          values="0.5;0.9;0.5"
+                          dur="3.5s"
+                          repeatCount="indefinite"
+                        />
+                      </rect>
+                      <text
+                        x="0"
+                        y="2"
+                        text-anchor="middle"
+                        fill="#f97316"
+                        font-size="6"
+                        font-weight="bold"
+                      >
+                        AWS
+                      </text>
+                    </g>
+                  </g>
+
+                  <!-- Enhanced connection lines -->
+                  <g
+                    stroke="rgba(96, 165, 250, 0.4)"
+                    stroke-width="1"
+                    fill="none"
+                    opacity="0.6"
+                  >
+                    <path d="M 300 120 Q 350 80 450 50" stroke-dasharray="5,5">
+                      <animate
+                        attributeName="stroke-dashoffset"
+                        values="0;10"
+                        dur="2s"
+                        repeatCount="indefinite"
+                      />
+                    </path>
+                    <path d="M 300 140 Q 200 200 30 350" stroke-dasharray="3,3">
+                      <animate
+                        attributeName="stroke-dashoffset"
+                        values="0;6"
+                        dur="1.5s"
+                        repeatCount="indefinite"
+                      />
+                    </path>
+                    <path
+                      d="M 300 160 Q 400 250 450 350"
+                      stroke-dasharray="4,4"
+                    >
+                      <animate
+                        attributeName="stroke-dashoffset"
+                        values="0;8"
+                        dur="2.5s"
+                        repeatCount="indefinite"
+                      />
+                    </path>
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Enhanced floating elements -->
+            <div
+              data-parallax="0.12"
+              class="absolute -top-4 -right-4 w-6 h-6 rounded-full bg-blue-500/20 blur-sm animate-float"
+            ></div>
+            <div
+              data-parallax="0.09"
+              class="absolute -bottom-6 -left-6 w-4 h-4 rounded-full bg-indigo-500/20 blur-sm animate-bounce-slow"
+            ></div>
+            <div
+              data-parallax="0.07"
+              class="absolute top-1/4 -left-8 w-3 h-3 rounded-full bg-cyan-500/30 blur-sm animate-pulse"
+            ></div>
+          </div>
+        </div>
+        <!-- Enhanced scroll cue -->
+        <a
+          href="#projects"
+          class="absolute bottom-8 left-1/2 -translate-x-1/2 inline-flex flex-col items-center gap-3 text-white/70 hover:text-white group transition-colors duration-300"
+        >
+          <div class="flex flex-col items-center gap-2">
+            <span class="text-sm font-medium tracking-wide"
+              >Explore my work</span
+            >
+            <div
+              class="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center group-hover:border-white/50 transition-colors duration-300"
+            >
+              <div
+                class="w-1 h-3 bg-white/50 rounded-full mt-2 animate-bounce group-hover:bg-white/70 transition-colors duration-300"
+              ></div>
+            </div>
+          </div>
+        </a>
+      </section>
+
+      <!-- Services (moved up for conversion) -->
+      <section
+        id="services"
+        class="py-24 bg-black relative overflow-hidden cv-auto"
+        aria-labelledby="services-heading"
+      >
+        <!-- Background decoration -->
+        <div
+          class="absolute inset-0 bg-grid opacity-20"
+          data-parallax="0.02"
+        ></div>
+        <div
+          class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"
+          data-parallax="0.05"
+        ></div>
+        <div
+          class="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"
+          data-parallax="0.08"
+        ></div>
+
+        <!-- Subtle floating code snippets -->
+        <div
+          class="absolute top-20 left-12 text-xs font-mono text-blue-400/12 animate-float"
+        >
+          <span class="block">&lt;React&gt;</span>
+        </div>
+
+        <div
+          class="absolute top-1/3 right-16 text-xs font-mono text-indigo-400/10 animate-pulse"
+          style="animation-delay: 2s"
+        >
+          <span class="block">const app = express()</span>
+        </div>
+
+        <div
+          class="absolute bottom-1/3 left-16 text-xs font-mono text-cyan-400/8 animate-float"
+          style="animation-delay: 4s"
+        >
+          <span class="block">npm install</span>
+        </div>
+
+        <div
+          class="absolute bottom-20 right-20 text-xs font-mono text-emerald-400/10 animate-pulse"
+          style="animation-delay: 1s"
+        >
+          <span class="block">git commit</span>
+        </div>
+
+        <!-- Minimal technical words -->
+        <div
+          class="absolute top-1/2 right-1/4 text-sm font-semibold text-blue-400/8 animate-float"
+          style="animation-delay: 3s"
+        >
+          <span>TypeScript</span>
+        </div>
+
+        <div
+          class="absolute bottom-1/2 left-1/4 text-sm font-semibold text-indigo-400/6 animate-pulse"
+          style="animation-delay: 2.5s"
+        >
+          <span>Node.js</span>
+        </div>
+
+        <div
+          class="absolute top-1/4 left-1/2 text-sm font-semibold text-cyan-400/7 animate-float"
+          style="animation-delay: 1.5s"
+        >
+          <span>AWS</span>
+        </div>
+
+        <div class="container-pro relative">
+          <div class="text-center mb-16">
+            <h2 id="services-heading" class="text-4xl font-bold mb-4">
+              Services I Provide
+              <span class="text-gradient">For Your Success</span>
+            </h2>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+              From concept to deployment, I deliver end-to-end solutions that
+              drive real business results.
+            </p>
+            <!-- Section badges -->
+            <ul class="hero-badges justify-center mt-4">
+              <li class="hero-badge">
+                <span class="w-2 h-2 rounded-full bg-blue-400"></span
+                ><span>Fixed‑scope or retainer</span>
+              </li>
+              <li class="hero-badge">
+                <span class="w-2 h-2 rounded-full bg-indigo-400"></span
+                ><span>Kickoff in under 7 days</span>
+              </li>
+              <li class="hero-badge">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span
+                ><span>Weekly progress updates</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="services-grid grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Full-Stack Development -->
+            <div data-reveal class="opacity-0 translate-y-6 service-card group">
+              <div class="service-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2L2 7l10 5 10-5-10-5z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2 17l10 5 10-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2 12l10 5 10-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <h3 class="service-title">Full-Stack Development</h3>
+              <p class="service-description">
+                Complete web applications from frontend to backend, with modern
+                architecture and scalable infrastructure.
+              </p>
+              <ul class="service-features">
+                <li>React, Vue, or vanilla JS frontends</li>
+                <li>Node.js, Python, or PHP backends</li>
+                <li>Database design & optimization</li>
+                <li>API development & integration</li>
+              </ul>
+              <div class="service-tech">
+                <span class="tech-tag">React</span>
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">PostgreSQL</span>
+              </div>
+              <div class="mt-4 flex gap-2">
+                <a href="#contact" class="btn-primary px-4 py-2 text-sm"
+                  >Get a quote</a
+                >
+                <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
+                  >See work</a
+                >
+              </div>
+            </div>
+
+            <!-- Web App Development -->
+            <div data-reveal class="opacity-0 translate-y-6 service-card group">
+              <div class="service-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="2"
+                    y="3"
+                    width="20"
+                    height="14"
+                    rx="2"
+                    ry="2"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="8"
+                    y1="21"
+                    x2="16"
+                    y2="21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="12"
+                    y1="17"
+                    x2="12"
+                    y2="21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <h3 class="service-title">Web Applications</h3>
+              <p class="service-description">
+                High-performance single-page applications with modern UX
+                patterns and responsive design.
+              </p>
+              <ul class="service-features">
+                <li>Progressive Web Apps (PWA)</li>
+                <li>Real-time features & WebSockets</li>
+                <li>State management & optimization</li>
+                <li>Cross-browser compatibility</li>
+              </ul>
+              <div class="service-tech">
+                <span class="tech-tag">Vite</span>
+                <span class="tech-tag">TypeScript</span>
+                <span class="tech-tag">Tailwind</span>
+              </div>
+              <div class="mt-4 flex gap-2">
+                <a href="#contact" class="btn-primary px-4 py-2 text-sm"
+                  >Get a quote</a
+                >
+                <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
+                  >See work</a
+                >
+              </div>
+            </div>
+
+            <!-- Performance & SEO -->
+            <div data-reveal class="opacity-0 translate-y-6 service-card group">
+              <div class="service-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <h3 class="service-title">Performance & SEO</h3>
+              <p class="service-description">
+                Optimize your web presence for speed, search engines, and user
+                experience that converts.
+              </p>
+              <ul class="service-features">
+                <li>Core Web Vitals optimization</li>
+                <li>SEO audit & implementation</li>
+                <li>Code splitting & lazy loading</li>
+                <li>Analytics & monitoring setup</li>
+              </ul>
+              <div class="service-tech">
+                <span class="tech-tag">Lighthouse</span>
+                <span class="tech-tag">Next.js</span>
+                <span class="tech-tag">Vercel</span>
+              </div>
+              <div class="mt-4 flex gap-2">
+                <a href="#contact" class="btn-primary px-4 py-2 text-sm"
+                  >Get a quote</a
+                >
+                <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
+                  >See work</a
+                >
+              </div>
+            </div>
+
+            <!-- E-commerce Solutions -->
+            <div data-reveal class="opacity-0 translate-y-6 service-card group">
+              <div class="service-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 6h15l-1.5 9h-12z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M6 6l-1-2H2"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <circle cx="9" cy="20" r="1.5" fill="currentColor" />
+                  <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+                </svg>
+              </div>
+              <h3 class="service-title">E-commerce Solutions</h3>
+              <p class="service-description">
+                Custom online stores with secure payment processing and
+                inventory management systems.
+              </p>
+              <ul class="service-features">
+                <li>Payment gateway integration</li>
+                <li>Inventory & order management</li>
+                <li>Customer accounts & reviews</li>
+                <li>Analytics & reporting</li>
+              </ul>
+              <div class="service-tech">
+                <span class="tech-tag">Stripe</span>
+                <span class="tech-tag">Shopify</span>
+                <span class="tech-tag">WooCommerce</span>
+              </div>
+              <div class="mt-4 flex gap-2">
+                <a href="#contact" class="btn-primary px-4 py-2 text-sm"
+                  >Get a quote</a
+                >
+                <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
+                  >See work</a
+                >
+              </div>
+            </div>
+
+            <!-- DevOps & Deployment -->
+            <div data-reveal class="opacity-0 translate-y-6 service-card group">
+              <div class="service-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2L2 7l10 5 10-5-10-5z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2 17l10 5 10-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2 12l10 5 10-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <h3 class="service-title">DevOps & Deployment</h3>
+              <p class="service-description">
+                Reliable deployment pipelines and cloud infrastructure for
+                scalable, secure applications.
+              </p>
+              <ul class="service-features">
+                <li>CI/CD pipeline setup</li>
+                <li>Cloud infrastructure (AWS, Vercel)</li>
+                <li>Docker containerization</li>
+                <li>Monitoring & logging</li>
+              </ul>
+              <div class="service-tech">
+                <span class="tech-tag">AWS</span>
+                <span class="tech-tag">Docker</span>
+                <span class="tech-tag">GitHub Actions</span>
+              </div>
+              <div class="mt-4 flex gap-2">
+                <a href="#contact" class="btn-primary px-4 py-2 text-sm"
+                  >Get a quote</a
+                >
+                <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
+                  >See work</a
+                >
+              </div>
+            </div>
+
+            <!-- Consulting & Support -->
+            <div data-reveal class="opacity-0 translate-y-6 service-card group">
+              <div class="service-icon">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <line
+                    x1="12"
+                    y1="17"
+                    x2="12.01"
+                    y2="17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <h3 class="service-title">Consulting & Support</h3>
+              <p class="service-description">
+                Technical guidance and ongoing support to help your team succeed
+                and scale effectively.
+              </p>
+              <ul class="service-features">
+                <li>Architecture planning & review</li>
+                <li>Code quality & best practices</li>
+                <li>Team training & mentoring</li>
+                <li>Ongoing maintenance & updates</li>
+              </ul>
+              <div class="service-tech">
+                <span class="tech-tag">Code Review</span>
+                <span class="tech-tag">Training</span>
+                <span class="tech-tag">Support</span>
+              </div>
+              <div class="mt-4 flex gap-2">
+                <a href="#contact" class="btn-primary px-4 py-2 text-sm"
+                  >Get a quote</a
+                >
+                <a href="#projects" class="btn-secondary px-4 py-2 text-sm"
+                  >See work</a
+                >
+              </div>
             </div>
           </div>
 
-          <!-- Right: Contact form -->
-          <div data-reveal class="opacity-0 translate-y-6">
-            <div class="glass rounded-2xl p-6 sm:p-8 border border-white/10">
-              <form data-contact class="grid gap-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <label class="sr-only" for="contact-name">Name</label>
-                  <input
-                    class="input"
-                    type="text"
-                    name="name"
-                    id="contact-name"
-                    placeholder="Your name"
-                    required
-                  />
-                  <label class="sr-only" for="contact-email">Email</label>
-                  <input
-                    class="input"
-                    type="email"
-                    name="email"
-                    id="contact-email"
-                    placeholder="Email"
-                    required
-                  />
-                </div>
-                <label class="sr-only" for="contact-brief">Project brief</label>
-                <textarea
-                  class="input min-h-[160px]"
-                  name="brief"
-                  id="contact-brief"
-                  placeholder="Project brief (goals, timeline, scope)"
-                  required
-                ></textarea>
-                <label class="sr-only" for="contact-budget">Budget</label>
-                <input
-                  class="input"
-                  type="text"
-                  name="budget"
-                  id="contact-budget"
-                  placeholder="Budget (optional)"
-                />
-                <!-- Honeypot -->
-                <input
-                  type="text"
-                  name="website"
-                  tabindex="-1"
-                  autocomplete="off"
-                  class="hidden"
-                  aria-hidden="true"
-                />
-                <div class="flex items-center gap-3 pt-2">
-                  <button class="btn-primary" type="submit">Send</button>
-                  <a class="btn-ghost" href="mailto:contact@hamzaarya.dev"
-                    >Email me</a
-                  >
-                </div>
-                <p
-                  data-contact-status
-                  role="status"
-                  aria-live="polite"
-                  class="text-sm text-gray-300 hidden"
-                ></p>
-              </form>
+          <!-- Call to action -->
+          <div class="text-center mt-16">
+            <div class="glass rounded-2xl p-8 max-w-2xl mx-auto">
+              <h3 class="text-2xl font-bold mb-4">
+                Ready to Start Your Project?
+              </h3>
+              <p class="text-gray-300 mb-6">
+                Let's discuss your requirements and create a solution that
+                drives real business value.
+              </p>
+              <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#contact" class="btn-primary">Get Started</a>
+                <a href="#projects" class="btn-secondary">View Portfolio</a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
+      <!-- About -->
+      <section
+        id="about"
+        class="py-20 bg-black relative overflow-hidden cv-auto"
+        aria-labelledby="about-heading"
+      >
+        <!-- Background decoration -->
+        <div
+          class="absolute inset-0 bg-grid opacity-20"
+          data-parallax="0.02"
+        ></div>
+        <div
+          class="absolute top-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"
+          data-parallax="0.05"
+        ></div>
+        <div
+          class="absolute bottom-0 right-0 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl"
+          data-parallax="0.08"
+        ></div>
+
+        <!-- Subtle floating coding blocks -->
+        <div class="absolute top-24 left-12 w-12 h-12 opacity-6 animate-float">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-full h-full text-blue-400"
+          >
+            <rect
+              x="3"
+              y="3"
+              width="18"
+              height="18"
+              rx="2"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <path
+              d="M8 8h8M8 12h6M8 16h4"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+
+        <div
+          class="absolute top-1/3 right-16 w-10 h-10 opacity-8 animate-pulse"
+          style="animation-delay: 3s"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-full h-full text-indigo-400"
+          >
+            <rect
+              x="2"
+              y="3"
+              width="20"
+              height="14"
+              rx="2"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <path
+              d="M8 8h8M8 12h5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+
+        <div
+          class="absolute bottom-1/3 left-20 w-8 h-8 opacity-5 animate-float"
+          style="animation-delay: 2s"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-full h-full text-cyan-400"
+          >
+            <path
+              d="M12 2L2 7l10 5 10-5-10-5z"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 17l10 5 10-5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 12l10 5 10-5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <div
+          class="absolute bottom-20 right-24 w-6 h-6 opacity-7 animate-pulse"
+          style="animation-delay: 1s"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-full h-full text-emerald-400"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <path
+              d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <line
+              x1="12"
+              y1="17"
+              x2="12.01"
+              y2="17"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <div class="container-pro relative grid gap-12 lg:grid-cols-2">
+          <!-- Copy -->
+          <div data-reveal class="opacity-0 translate-y-6">
+            <h2 id="about-heading" class="text-3xl font-bold text-white mb-4">
+              About
+              <span class="text-gradient">My Expertise</span>
+            </h2>
+            <p class="mt-3 text-gray-300 max-w-prose text-lg leading-relaxed">
+              I'm Hamza, a full‑stack developer who cares about outcomes: clean
+              architecture, strong developer experience, and software that holds
+              up in production.
+            </p>
+            <!-- Value bullets -->
+            <ul class="mt-6 grid gap-4 text-sm">
+              <li class="inline-flex items-center gap-3 text-gray-300">
+                <span
+                  class="h-5 w-5 rounded-full bg-emerald-500/20 text-emerald-400 inline-flex items-center justify-center text-xs font-bold"
+                  >✓</span
+                >
+                Production‑grade quality, testable and maintainable
+              </li>
+              <li class="inline-flex items-center gap-3 text-gray-300">
+                <span
+                  class="h-5 w-5 rounded-full bg-blue-500/20 text-blue-400 inline-flex items-center justify-center text-xs font-bold"
+                  >✓</span
+                >
+                Fast delivery without sacrificing reliability
+              </li>
+              <li class="inline-flex items-center gap-3 text-gray-300">
+                <span
+                  class="h-5 w-5 rounded-full bg-indigo-500/20 text-indigo-400 inline-flex items-center justify-center text-xs font-bold"
+                  >✓</span
+                >
+                Clear communication and measurable results
+              </li>
+            </ul>
+            <!-- Metrics -->
+            <div class="mt-8 grid grid-cols-3 gap-4 text-center">
+              <div class="about-metric-card">
+                <p class="text-2xl font-semibold text-white">
+                  4+<span class="text-sm align-top text-gray-400">yrs</span>
+                </p>
+                <p class="text-xs text-gray-400">Experience</p>
+              </div>
+              <div class="about-metric-card">
+                <p class="text-2xl font-semibold text-white">20+</p>
+                <p class="text-xs text-gray-400">Projects shipped</p>
+              </div>
+              <div class="about-metric-card">
+                <p class="text-2xl font-semibold text-white">A</p>
+                <p class="text-xs text-gray-400">Core Web Vitals</p>
+              </div>
+            </div>
+            <!-- Actions -->
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a href="#contact" class="btn-primary">Work with me</a>
+              <a href="/pages/resume.html" class="btn-ghost">Download Resume</a>
+            </div>
+          </div>
+          <!-- Capability cards -->
+          <div
+            data-reveal
+            class="opacity-0 translate-y-6 grid grid-cols-2 gap-4"
+          >
+            <div class="about-skill-card group">
+              <div
+                class="about-skill-icon bg-blue-500/10 text-blue-400 border-blue-500/20"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2L2 7l10 5 10-5-10-5z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2 17l10 5 10-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2 12l10 5 10-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <p class="mt-3 text-sm text-gray-400">Front‑end</p>
+              <p class="mt-1 font-semibold text-white">React, Vite, Tailwind</p>
+            </div>
+            <div class="about-skill-card group">
+              <div
+                class="about-skill-icon bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 2L2 7l10 5 10-5-10-5z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2 17l10 5 10-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2 12l10 5 10-5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <p class="mt-3 text-sm text-gray-400">Back‑end</p>
+              <p class="mt-1 font-semibold text-white">Node, Express, REST</p>
+            </div>
+            <div class="about-skill-card group">
+              <div
+                class="about-skill-icon bg-indigo-500/10 text-indigo-400 border-indigo-500/20"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="2"
+                    y="3"
+                    width="20"
+                    height="14"
+                    rx="2"
+                    ry="2"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="8"
+                    y1="21"
+                    x2="16"
+                    y2="21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <line
+                    x1="12"
+                    y1="17"
+                    x2="12"
+                    y2="21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+              </div>
+              <p class="mt-3 text-sm text-gray-400">Databases</p>
+              <p class="mt-1 font-semibold text-white">Postgres, MongoDB</p>
+            </div>
+            <div class="about-skill-card group">
+              <div
+                class="about-skill-icon bg-amber-500/10 text-amber-400 border-amber-500/20"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <p class="mt-3 text-sm text-gray-400">Deployment</p>
+              <p class="mt-1 font-semibold text-white">AWS, Docker, CI/CD</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects -->
+      <section
+        id="projects"
+        class="py-24 bg-black relative overflow-hidden cv-auto"
+        aria-labelledby="projects-heading"
+      >
+        <!-- Background decoration -->
+        <div
+          class="absolute inset-0 bg-grid opacity-20"
+          data-parallax="0.02"
+        ></div>
+        <div
+          class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"
+          data-parallax="0.05"
+        ></div>
+        <div
+          class="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"
+          data-parallax="0.08"
+        ></div>
+
+        <div class="container-pro relative">
+          <!-- Header -->
+          <div class="text-center mb-16">
+            <h2 id="projects-heading" class="text-4xl font-bold mb-4">
+              Featured
+              <span class="text-gradient">Projects</span>
+            </h2>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+              A showcase of my recent work with measurable business impact and
+              technical excellence.
+            </p>
+          </div>
+
+          <!-- Enhanced Filters -->
+          <div class="flex flex-col items-center gap-6 mb-12">
+            <div
+              class="flex flex-wrap justify-center items-center gap-3"
+              id="projects-filters"
+            >
+              <button data-filter="all" class="project-filter-btn active">
+                <span>All Projects</span>
+                <span class="filter-count" id="count-all">0</span>
+              </button>
+              <button data-filter="web" class="project-filter-btn">
+                <span>Web Apps</span>
+                <span class="filter-count" id="count-web">0</span>
+              </button>
+              <button data-filter="saas" class="project-filter-btn">
+                <span>SaaS Platforms</span>
+                <span class="filter-count" id="count-saas">0</span>
+              </button>
+              <button data-filter="commerce" class="project-filter-btn">
+                <span>E-commerce</span>
+                <span class="filter-count" id="count-commerce">0</span>
+              </button>
+              <button data-filter="data" class="project-filter-btn">
+                <span>Data & Analytics</span>
+                <span class="filter-count" id="count-data">0</span>
+              </button>
+            </div>
+            <div class="text-sm text-gray-400">
+              Showing
+              <span id="projects-count" class="text-white font-medium">0</span>
+              of
+              <span id="total-projects" class="text-white font-medium">0</span>
+              projects
+            </div>
+          </div>
+
+          <!-- Projects Grid -->
+          <div
+            id="projects-grid"
+            class="projects-grid grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
+          ></div>
+
+          <!-- View More Button -->
+          <div class="text-center mt-16">
+            <a href="#contact" class="btn-primary text-lg px-8 py-4">
+              Start Your Project
+              <svg
+                class="ml-2 w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                ></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dark Feature Strip -->
+      <section class="py-16 bg-gradient-to-b from-black to-gray-900 text-white">
+        <div class="container-pro grid gap-6 sm:grid-cols-3">
+          <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
+            <p class="text-sm text-white/70">Performance</p>
+            <p class="mt-1 font-semibold">Core Web Vitals A</p>
+          </div>
+          <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
+            <p class="text-sm text-white/70">Security</p>
+            <p class="mt-1 font-semibold">Hardened, OWASP-aware</p>
+          </div>
+          <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
+            <p class="text-sm text-white/70">Deploy</p>
+            <p class="mt-1 font-semibold">CI/CD pipelines</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section
+        id="testimonials"
+        class="py-24 bg-black w-full relative overflow-visible cv-auto"
+        aria-labelledby="testimonials-heading"
+      >
+        <!-- Background decoration -->
+        <div
+          class="absolute inset-0 bg-grid opacity-30"
+          data-parallax="0.02"
+        ></div>
+        <div
+          class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"
+          data-parallax="0.05"
+        ></div>
+
+        <div class="container-pro relative z-10">
+          <div class="text-center mb-16">
+            <h2 id="testimonials-heading" class="text-4xl font-bold mb-4">
+              What Clients Say
+              <span class="text-gradient">About My Work</span>
+            </h2>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+              Don't just take my word for it. Here's what industry leaders and
+              successful entrepreneurs have to say about working with me.
+            </p>
+          </div>
+
+          <div id="testimonials-grid"></div>
+
+          <!-- Trust indicators -->
+          <div class="mt-16 text-center">
+            <div class="inline-flex items-center gap-8 text-sm text-gray-400">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span>100% Client Satisfaction</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                <span>On-Time Delivery</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
+                <span>5-Star Reviews</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section
+        id="contact"
+        class="relative py-24 bg-black overflow-hidden cv-auto"
+        aria-labelledby="contact-heading"
+      >
+        <!-- Background decoration -->
+        <div
+          class="absolute inset-0 bg-grid opacity-20"
+          data-parallax="0.02"
+        ></div>
+        <div
+          class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"
+          data-parallax="0.05"
+        ></div>
+        <div
+          class="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"
+          data-parallax="0.08"
+        ></div>
+
+        <div class="container-pro relative">
+          <div class="grid gap-10 lg:grid-cols-2 items-start">
+            <!-- Left: Copy / Contact details -->
+            <div data-reveal class="opacity-0 translate-y-6">
+              <div
+                class="glass-professional rounded-full px-5 py-2 inline-flex items-center gap-2 w-max mb-6"
+              >
+                <span
+                  class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse glow-professional"
+                ></span>
+                <span
+                  class="text-xs tracking-wide uppercase text-white/90 font-medium"
+                  >Available for new projects</span
+                >
+              </div>
+              <h2 id="contact-heading" class="text-4xl font-bold mb-3">
+                Let's build <span class="text-gradient">something great</span>
+              </h2>
+              <p class="text-gray-300 text-lg max-w-prose">
+                Tell me about your idea, timeline, and goals. I typically reply
+                within 24 hours.
+              </p>
+
+              <div class="mt-8 grid gap-4">
+                <div class="inline-flex items-center gap-3 text-gray-300">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 4h16v16H4z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M22 6l-10 7L2 6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  <a
+                    class="hover:text-white underline decoration-white/20 underline-offset-4"
+                    href="mailto:contact@hamzaarya.dev"
+                    >contact@hamzaarya.dev</a
+                  >
+                </div>
+                <div class="inline-flex items-center gap-3 text-gray-300">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M3 11a9 9 0 1 0 18 0A9 9 0 0 0 3 11zm9-5v6l4 2"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <span>Response time: under 24 hours</span>
+                </div>
+                <div class="inline-flex items-center gap-3 text-gray-300">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1 1 18 0z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <circle
+                      cx="12"
+                      cy="10"
+                      r="3"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  <span>Based in Lahore, PK • Remote-friendly</span>
+                </div>
+              </div>
+
+              <div class="mt-8 flex items-center gap-4 text-sm text-gray-300">
+                <a
+                  class="hover:text-white"
+                  href="https://github.com/hamza"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >GitHub</a
+                >
+                <span class="opacity-40">•</span>
+                <a
+                  class="hover:text-white"
+                  href="https://linkedin.com/in/hamza"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >LinkedIn</a
+                >
+              </div>
+            </div>
+
+            <!-- Right: Contact form -->
+            <div data-reveal class="opacity-0 translate-y-6">
+              <div class="glass rounded-2xl p-6 sm:p-8 border border-white/10">
+                <form data-contact class="grid gap-4">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <label class="sr-only" for="contact-name">Name</label>
+                    <input
+                      class="input"
+                      type="text"
+                      name="name"
+                      id="contact-name"
+                      placeholder="Your name"
+                      required
+                    />
+                    <label class="sr-only" for="contact-email">Email</label>
+                    <input
+                      class="input"
+                      type="email"
+                      name="email"
+                      id="contact-email"
+                      placeholder="Email"
+                      required
+                    />
+                  </div>
+                  <label class="sr-only" for="contact-brief"
+                    >Project brief</label
+                  >
+                  <textarea
+                    class="input min-h-[160px]"
+                    name="brief"
+                    id="contact-brief"
+                    placeholder="Project brief (goals, timeline, scope)"
+                    required
+                  ></textarea>
+                  <label class="sr-only" for="contact-budget">Budget</label>
+                  <input
+                    class="input"
+                    type="text"
+                    name="budget"
+                    id="contact-budget"
+                    placeholder="Budget (optional)"
+                  />
+                  <!-- Honeypot -->
+                  <input
+                    type="text"
+                    name="website"
+                    tabindex="-1"
+                    autocomplete="off"
+                    class="hidden"
+                    aria-hidden="true"
+                  />
+                  <div class="flex items-center gap-3 pt-2">
+                    <button class="btn-primary" type="submit">Send</button>
+                    <a class="btn-ghost" href="mailto:contact@hamzaarya.dev"
+                      >Email me</a
+                    >
+                  </div>
+                  <p
+                    data-contact-status
+                    role="status"
+                    aria-live="polite"
+                    class="text-sm text-gray-300 hidden"
+                  ></p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
     <!-- Footer -->
     {{> footer}}

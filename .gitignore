@@ -1,3 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+coverage/
+lighthouse-report.html
+lighthouse-report.json
+*.br
 # Dependencies
 node_modules/
 

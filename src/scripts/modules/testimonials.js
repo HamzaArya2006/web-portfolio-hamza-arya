@@ -10,8 +10,11 @@ export function renderTestimonials() {
       const avatar = t.avatar || t.author.split(' ').map(n => n[0]).join('');
       const position = `${idx + 1} of ${testimonials.length}`;
       const projectUrl = t.projectSlug ? `/pages/projects/${t.projectSlug}.html` : '';
+      const isFirst = idx === 0;
+      const isLast = idx === testimonials.length - 1;
+      const edgePadding = `${isFirst ? 'padding-left: 1.5rem;' : ''}${isLast ? 'padding-right: 1.5rem;' : ''}`;
       return `
-      <article class="testimonial-slide" role="group" aria-roledescription="slide" aria-label="${position}">
+      <article class="testimonial-slide${isFirst ? ' is-first' : ''}${isLast ? ' is-last' : ''}" role="group" aria-roledescription="slide" aria-label="${position}" style="${edgePadding}">
         <div class="relative h-full glass-professional rounded-2xl p-8 testimonial-card border border-white/10 hover:border-white/20">
           <div class="absolute top-6 right-6 opacity-20 group-hover:opacity-30 transition-opacity" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">

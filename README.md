@@ -29,6 +29,8 @@ npm run build
 npm run preview
 ```
 
+> Note: The repository ignores `node_modules/` and `dist/` via `.gitignore`. Build artifacts should not be committed.
+
 ## Project Structure
 
 ```text
@@ -50,7 +52,7 @@ web-portfolio-hamza-arya/
 │  └─ data/
 │     ├─ projects.js
 │     └─ testimonials.js
-├─ dist/                    # Production build (vite build)
+├─ dist/                    # Production build (vite build) — not committed
 ├─ tailwind.config.js
 ├─ postcss.config.js
 ├─ vite.config.js
@@ -75,6 +77,10 @@ web-portfolio-hamza-arya/
 
 - Any static hosting (Vercel, Netlify, GitHub Pages, S3/CloudFront)
 - Ensure `dist/` is deployed. For frameworks that support static 404s, include `404.html` at project root.
+
+## Notes on Tooling
+
+- Lighthouse local runner was removed from devDependencies to reduce repository size (Chromium downloads). You can still use Lighthouse via Chrome DevTools or install it globally if needed.
 
 ## License
 
