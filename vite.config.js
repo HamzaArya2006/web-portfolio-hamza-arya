@@ -90,6 +90,19 @@ export default defineConfig({
         };
       },
     },
+    {
+      name: 'admin-short-url',
+      configureServer(server) {
+        return () => {
+          server.middlewares.use((req, res, next) => {
+            if (req.url === '/admin' || req.url === '/admin/') {
+              req.url = '/pages/admin.html';
+            }
+            next();
+          });
+        };
+      },
+    },
   ],
   server: {
     port: 3000,

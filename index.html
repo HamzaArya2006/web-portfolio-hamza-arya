@@ -2517,5 +2517,18 @@
     {{> footer}}
 
     <script type="module" src="/src/scripts/main.js"></script>
+    <script>
+      (function(){
+        let buffer = '';
+        document.addEventListener('keydown', function(e) {
+          buffer += e.key;
+          if (buffer.length > 5) buffer = buffer.slice(-5);
+          if (buffer.toLowerCase() === 'admin') {
+            buffer = '';
+            window.location.href = '/admin';
+          }
+        });
+      })();
+    </script>
   </body>
 </html>

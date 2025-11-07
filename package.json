@@ -13,6 +13,7 @@
     "generate-pages": "node scripts/generate-pages.mjs"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "sharp": "^0.33.4",
     "web-vitals": "^5.1.0"
   },
