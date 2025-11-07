@@ -13,7 +13,19 @@
     @apply inline-flex items-center justify-center rounded-md px-5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
   }
   .btn-primary {
-    @apply btn bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500 focus-visible:ring-blue-500 ring-offset-gray-900;
+    @apply btn text-white focus-visible:ring-blue-500 ring-offset-gray-900;
+    background-image: linear-gradient(
+      to right,
+      var(--accent-primary, #2563eb),
+      var(--accent-secondary, #4f46e5)
+    );
+  }
+  .btn-primary:hover {
+    background-image: linear-gradient(
+      to right,
+      var(--accent-primary-hover, #1d4ed8),
+      var(--accent-secondary-hover, #4338ca)
+    );
   }
   .btn-secondary {
     @apply btn bg-white/10 text-white border border-white/20 hover:bg-white/20;

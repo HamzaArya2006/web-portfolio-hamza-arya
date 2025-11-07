@@ -47,7 +47,7 @@ self.addEventListener('activate', (event) => {
               ].includes(cacheName)
             )
             .map(cacheName => {
-              console.log('Deleting old cache:', cacheName);
+              // Silently delete old caches (no logging in production)
               return caches.delete(cacheName);
             })
         );

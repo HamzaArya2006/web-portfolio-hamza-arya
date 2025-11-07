@@ -1,8 +1,13 @@
 // Core behaviors: theme, smooth scroll, reveal-on-scroll
 
+import { initTheme as initThemeSystem, applyTheme, getTheme } from './theme.js';
+
 export function initTheme() {
-  const rootElement = document.documentElement;
-  rootElement.classList.add('dark');
+  // Use the new theme system
+  initThemeSystem();
+  // Ensure dark theme is applied initially if no preference
+  const currentTheme = getTheme();
+  applyTheme(currentTheme);
 }
 
 export function bindSmoothScroll() {

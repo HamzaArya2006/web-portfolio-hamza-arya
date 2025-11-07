@@ -46,6 +46,28 @@
     <!-- Performance hints -->
     <link rel="preload" href="/src/styles/main.css" as="style" />
     <link rel="stylesheet" href="/src/styles/main.css" />
+    
+    <!-- Skip to main content for accessibility -->
+    <style>
+      .skip-to-content {
+        position: absolute;
+        top: -100px;
+        left: 0;
+        z-index: 100;
+        padding: 1rem 1.5rem;
+        background: #3b82f6;
+        color: white;
+        text-decoration: none;
+        border-radius: 0 0 0.5rem 0;
+        font-weight: 600;
+        transition: top 0.2s;
+      }
+      .skip-to-content:focus {
+        top: 0;
+        outline: 2px solid white;
+        outline-offset: 2px;
+      }
+    </style>
 
     <script type="application/ld+json">
       [
@@ -64,8 +86,8 @@
             "addressCountry": "PK"
           },
           "sameAs": [
-            "https://github.com/hamza",
-            "https://linkedin.com/in/hamza"
+            "https://github.com/hamzaarya",
+            "https://linkedin.com/in/hamzaarya"
           ],
           "knowsAbout": [
             "Web Development",
@@ -102,8 +124,8 @@
             "availableLanguage": "English"
           },
           "sameAs": [
-            "https://github.com/hamza",
-            "https://linkedin.com/in/hamza"
+            "https://github.com/hamzaarya",
+            "https://linkedin.com/in/hamzaarya"
           ]
         },
         {
@@ -148,11 +170,6 @@
         }
       }
     </style>
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:bg-white focus:text-black focus:px-3 focus:py-2 focus:rounded"
-      >Skip to main content</a
-    >
     <div
       id="intro-overlay"
       class="fixed inset-0 z-[9999] flex items-center justify-center"
@@ -460,6 +477,7 @@
                   class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse glow-professional"
                 ></div>
                 <p
+                  id="hero-status"
                   class="text-sm tracking-wide uppercase text-white/90 font-medium"
                 >
                   Available for freelance & remote
@@ -470,6 +488,7 @@
             <!-- Enhanced main heading -->
             <div class="space-y-4">
               <h1
+                id="hero-title"
                 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight"
               >
                 <span class="block">Hamza</span>
@@ -487,7 +506,7 @@
             </div>
 
             <!-- Enhanced description -->
-            <p class="text-white/90 text-xl max-w-2xl leading-relaxed">
+            <p id="hero-subtitle" class="text-white/90 text-xl max-w-2xl leading-relaxed">
               I build
               <span class="text-blue-300 font-semibold"
                 >high-performance web applications</span
@@ -503,6 +522,8 @@
               >.
             </p>
 
+            <div data-custom-hero class="space-y-2"></div>
+
             <!-- Rotating specialties line -->
             <div
               class="hero-rotator mt-2 text-white/80 text-sm"
@@ -516,18 +537,21 @@
             <!-- Enhanced CTA buttons -->
             <div class="flex flex-wrap gap-4">
               <a
+                id="hero-primary-cta"
                 href="#projects"
                 class="btn-primary text-base px-8 py-4 hover:scale-105 transition-transform duration-300 shadow-lg hover:shadow-xl"
               >
                 View My Work
               </a>
               <a
+                id="hero-secondary-cta"
                 href="#contact"
                 class="btn-secondary text-base px-8 py-4 hover:scale-105 transition-transform duration-300"
               >
                 Start a Project
               </a>
               <a
+                id="hero-tertiary-cta"
                 href="/pages/about.html"
                 class="btn-ghost text-base px-8 py-4 hover:scale-105 transition-transform duration-300"
               >
@@ -2400,18 +2424,20 @@
 
               <div class="mt-8 flex items-center gap-4 text-sm text-gray-300">
                 <a
-                  class="hover:text-white"
-                  href="https://github.com/hamza"
+                  class="hover:text-white transition-colors"
+                  href="https://github.com/hamzaarya"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="GitHub profile"
                   >GitHub</a
                 >
                 <span class="opacity-40">•</span>
                 <a
-                  class="hover:text-white"
-                  href="https://linkedin.com/in/hamza"
+                  class="hover:text-white transition-colors"
+                  href="https://linkedin.com/in/hamzaarya"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="LinkedIn profile"
                   >LinkedIn</a
                 >
               </div>

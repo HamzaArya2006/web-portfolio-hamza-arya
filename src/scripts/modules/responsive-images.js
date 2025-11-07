@@ -1,3 +1,5 @@
+import { warn } from './logger.js';
+
 /**
  * Responsive image utilities with AVIF/WebP support and blur-up placeholders
  */
@@ -105,7 +107,7 @@ export async function loadImageMetadata(imagePath) {
       original: metadata.original
     };
   } catch (error) {
-    console.warn('Failed to load image metadata:', error);
+    warn('Failed to load image metadata:', error);
     return buildResponsiveImageAttrs(imagePath);
   }
 }
@@ -155,7 +157,7 @@ export function enhanceResponsiveImages() {
         picture.appendChild(img);
       }
     } catch (error) {
-      console.warn('Failed to enhance responsive image:', error);
+      warn('Failed to enhance responsive image:', error);
     }
   });
 }

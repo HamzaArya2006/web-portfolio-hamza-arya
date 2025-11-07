@@ -1,4 +1,6 @@
 import "../styles/main.css";
+import { error } from "./modules/logger.js";
+import { initErrorHandling } from "./modules/error-handler.js";
 import {
   initTheme,
   bindSmoothScroll,
@@ -20,8 +22,14 @@ import {
   registerServiceWorker,
   initPerformanceMonitoring,
 } from "./modules/pwa_perf.js";
+import { initWebVitals } from "./modules/web-vitals.js";
+import { bindThemeToggle } from "./modules/theme.js";
+import { bindViewTransitions, addViewTransitionStyles } from "./modules/view-transitions.js";
+import { initPWAInstall } from "./modules/pwa-install.js";
+import { initNotifications } from "./modules/notifications.js";
 import { runModernIntroOverlaySequence } from "./modules/intro.js";
 import { renderProjects } from "./modules/projects.js";
+import { applySiteCustomizations, mountHeroCustomSlot } from "./modules/siteCustomizations.js";
 // Critical: Load immediately
 window.addEventListener("DOMContentLoaded", () => {
   // Perf-lite: favor ultra-smooth feel on low/medium devices or when user prefers less motion
@@ -36,7 +44,19 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   } catch (_) {}
 
+  // Initialize error handling first
+  initErrorHandling();
+  
+  // Initialize theme system
   initTheme();
+  bindThemeToggle();
+  
+  // Initialize view transitions
+  if (document.startViewTransition) {
+    addViewTransitionStyles();
+    bindViewTransitions();
+  }
+  
   bindSmoothScroll();
   bindRevealOnScroll();
   bindMobileNav();
@@ -48,14 +68,18 @@ window.addEventListener("DOMContentLoaded", () => {
   try { bindParallax(); } catch (_) {}
   registerServiceWorker();
   initPerformanceMonitoring();
+  initPWAInstall();
+  initNotifications();
   bindLazyImages();
   // Eagerly render projects if grid exists to avoid relying solely on intersection
   const grid = document.getElementById('projects-grid');
   if (grid) {
     try {
-      renderProjects();
+      renderProjects().catch(() => {});
     } catch (_) {}
   }
+  mountHeroCustomSlot();
+  applySiteCustomizations();
   // Ensure heavy sections begin observing as soon as DOM is ready
   loadHeavySections();
   
@@ -94,6 +118,11 @@ window.addEventListener("load", () => {
   import("./modules/analytics.js").then(({ initAnalytics }) => {
     initAnalytics();
   });
+  
+  // Initialize Web Vitals monitoring
+  import("./modules/web-vitals.js").then(({ initWebVitals }) => {
+    initWebVitals();
+  });
 });
 
 // Conditionally load heavy sections on viewport intersection
@@ -104,7 +133,8 @@ function loadHeavySections() {
       selector: '#projects, #projects-grid',
       load: async () => {
         const { renderProjects, bindProjectFilters } = await import("./modules/projects.js");
-        renderProjects();
+        renderProjects().catch(() => {});
+        applySiteCustomizations();
         bindProjectFilters();
         // Ensure newly injected lazy images are observed and loaded
         const { bindLazyImages } = await import("./modules/media.js");
@@ -196,7 +226,7 @@ function loadHeavySections() {
         if (sectionConfig && !sectionConfig.loaded) {
           sectionConfig.loaded = true;
           sectionConfig.load().catch(err => {
-            console.error('Failed to load section:', sectionConfig.selector, err);
+            error('Failed to load section:', sectionConfig.selector, err);
           });
         }
         

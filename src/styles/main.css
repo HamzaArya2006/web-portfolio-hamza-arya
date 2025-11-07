@@ -2,6 +2,8 @@
 @import './utilities.css';
 @import './sw-update-toast.css';
 @import './site.css';
+@import './micro-interactions.css';
+@import './notifications.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

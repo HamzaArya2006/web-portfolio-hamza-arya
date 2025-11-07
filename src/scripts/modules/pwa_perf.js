@@ -1,3 +1,6 @@
+import { log, error } from './logger.js';
+import { notify } from './notifications.js';
+
 let updateAvailable = false;
 let registration = null;
 
@@ -6,13 +9,13 @@ export function registerServiceWorker() {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js')
         .then((reg) => {
-          console.log('SW registered: ', reg);
+          log('SW registered: ', reg);
           registration = reg;
           
-          // Check for updates periodically
+          // Check for updates periodically (reduced frequency for better performance)
           setInterval(() => {
             reg.update();
-          }, 60 * 60 * 1000); // Check every hour
+          }, 2 * 60 * 60 * 1000); // Check every 2 hours instead of 1
           
           // Listen for update found
           reg.addEventListener('updatefound', () => {
@@ -22,18 +25,19 @@ export function registerServiceWorker() {
                 // New service worker available
                 updateAvailable = true;
                 showUpdateToast();
+                notify.info('Update available', 'A new version of the site is available. Click reload to update.');
               }
             });
           });
         })
         .catch((registrationError) => {
-          console.log('SW registration failed: ', registrationError);
+          error('SW registration failed: ', registrationError);
         });
       
       // Listen for messages from service worker
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data && event.data.type === 'SW_ACTIVATED') {
-          console.log('Service Worker activated:', event.data.version);
+          log('Service Worker activated:', event.data.version);
         }
       });
       
@@ -95,12 +99,25 @@ export function initPerformanceMonitoring() {
     setTimeout(() => {
       const perfData = performance.getEntriesByType('navigation')[0];
       if (perfData) {
-        console.log('Page Load Time:', perfData.loadEventEnd - perfData.loadEventStart);
-        console.log('DOM Content Loaded:', perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart);
+        const loadTime = perfData.loadEventEnd - perfData.loadEventStart;
+        const domContentTime = perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart;
+        
+        log('Page Load Time:', loadTime);
+        log('DOM Content Loaded:', domContentTime);
+        
+        // Track Web Vitals
         if (performance.getEntriesByType) {
           const paintEntries = performance.getEntriesByType('paint');
           paintEntries.forEach(entry => {
-            console.log(`${entry.name}: ${entry.startTime}ms`);
+            log(`${entry.name}: ${entry.startTime}ms`);
+          });
+        }
+        
+        // Send to analytics if available
+        if (window.gtag && !import.meta.env.DEV) {
+          window.gtag('event', 'page_load', {
+            load_time: loadTime,
+            dom_content_time: domContentTime
           });
         }
       }

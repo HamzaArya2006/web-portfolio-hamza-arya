@@ -1,4 +1,10 @@
-import { projects } from '../../data/projects.js';
+import { projects as localProjects } from '../../data/projects.js';
+
+const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || import.meta.env.VITE_ADMIN_API_URL || '').replace(/\/$/, '');
+
+let projects = [...localProjects];
+let remoteLoaded = false;
+let remoteFailed = false;
 
 let currentFilter = 'all';
 const filterKeywords = {
@@ -53,14 +59,35 @@ export function buildResponsiveImageAttrs(originalUrl) {
   }
 }
 
-export function renderProjects() {
+async function loadProjects(force = false) {
+  if (remoteLoaded && !force) return projects;
+  if (remoteFailed && !force) return projects;
+
+  const endpoint = `${PUBLIC_API_BASE}/api/public/projects`;
+  try {
+    const response = await fetch(endpoint, { cache: 'no-store' });
+    if (!response.ok) throw new Error('Failed to fetch remote projects');
+    const data = await response.json();
+    if (Array.isArray(data) && data.length) {
+      projects = data;
+      remoteLoaded = true;
+    }
+  } catch (error) {
+    console.warn('[projects] Falling back to local data:', error.message);
+    remoteFailed = true;
+  }
+  return projects;
+}
+
+export async function renderProjects() {
   const grid = document.getElementById('projects-grid');
   const count = document.getElementById('projects-count');
   const totalCount = document.getElementById('total-projects');
   if (!grid) return;
-  const filtered = projects.filter(projectMatchesFilter);
+  const data = await loadProjects();
+  const filtered = data.filter(projectMatchesFilter);
   if (count) count.textContent = String(filtered.length);
-  if (totalCount) totalCount.textContent = String(projects.length);
+  if (totalCount) totalCount.textContent = String(data.length);
   grid.innerHTML = filtered
     .map(p => {
       const categories = classifyProject(p);
@@ -230,7 +257,7 @@ export function renderProjects() {
   }
 }
 
-export function bindProjectFilters() {
+export async function bindProjectFilters() {
   const bar = document.getElementById('projects-filters');
   if (!bar) return;
   const buttons = bar.querySelectorAll('button[data-filter]');
@@ -246,7 +273,8 @@ export function bindProjectFilters() {
       b.setAttribute('aria-pressed', String(active));
     });
   };
-  const updateCounts = () => {
+  const updateCounts = async () => {
+    await loadProjects();
     const filterTypes = ['all', 'web', 'saas', 'commerce', 'data'];
     filterTypes.forEach(filter => {
       const countElement = document.getElementById(`count-${filter}`);

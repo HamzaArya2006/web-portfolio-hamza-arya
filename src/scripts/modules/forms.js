@@ -1,3 +1,6 @@
+import { warn, error } from './logger.js';
+import { notify } from './notifications.js';
+
 export function bindContactForm() {
   const form = document.querySelector('form[data-contact]');
   if (!form) return;
@@ -15,7 +18,18 @@ export function bindContactForm() {
     tsField.name = '_ts';
     form.appendChild(tsField);
   }
-  tsField.value = Date.now().toString();
+  // Set timestamp when form is focused (better anti-bot timing)
+  let formFocusTime = null;
+  form.addEventListener('focusin', () => {
+    if (!formFocusTime) {
+      formFocusTime = Date.now();
+      tsField.value = formFocusTime.toString();
+    }
+  }, { once: true });
+  // Fallback: set on page load if form never gets focus
+  if (!formFocusTime) {
+    tsField.value = Date.now().toString();
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -71,17 +85,19 @@ export function bindContactForm() {
           throw new Error(text || 'Request failed');
         }
         showStatus('Thanks! I will get back to you shortly.', 'success');
+        notify.success('Message sent!', 'I will get back to you shortly.');
         form.reset();
         submitting = false;
         return;
       } catch (err) {
-        console.warn('Form endpoint failed, trying background sync.', err);
+        warn('Form endpoint failed, trying background sync.', err);
         
         // Try to store in IndexedDB for background sync
         if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
           try {
             await storeSubmissionForSync(submissionData);
             showStatus('Message queued. Will be sent when connection is restored.', 'info');
+            notify.info('Message queued', 'Will be sent when connection is restored.');
             
             // Register background sync
             const registration = await navigator.serviceWorker.ready;
@@ -91,11 +107,18 @@ export function bindContactForm() {
             submitting = false;
             return;
           } catch (syncErr) {
-            console.error('Background sync setup failed:', syncErr);
+            error('Background sync setup failed:', syncErr);
+            // Handle quota exceeded or other IndexedDB errors
+            if (syncErr.name === 'QuotaExceededError') {
+              showStatus('Storage limit reached. Please try again later or email directly.', 'error');
+              notify.error('Storage limit reached', 'Please try again later or email directly.');
+              submitting = false;
+              return;
+            }
           }
         }
         
-        console.warn('Background sync not available, falling back to email.');
+        warn('Background sync not available, falling back to email.');
       } finally {
         setLoading(false);
       }
@@ -106,6 +129,7 @@ export function bindContactForm() {
       setLoading(true);
       window.location.href = `mailto:contact@hamzaarya.dev?subject=${subject}&body=${body}`;
       showStatus('Opening your email app… If it does not open, email contact@hamzaarya.dev', 'success');
+      notify.info('Opening email app', 'If it does not open, email contact@hamzaarya.dev');
       form.reset();
     } catch (_) {
       showStatus('Could not open email app. Please email contact@hamzaarya.dev', 'error');

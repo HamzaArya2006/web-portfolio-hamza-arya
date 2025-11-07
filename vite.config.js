@@ -38,6 +38,7 @@ function getPageInputs() {
     'pages/resume': resolve(__dirname, 'src/pages/resume.html'),
     'pages/open-source': resolve(__dirname, 'src/pages/open-source.html'),
     'pages/speaking': resolve(__dirname, 'src/pages/speaking.html'),
+    'pages/admin': resolve(__dirname, 'src/pages/admin/index.html'),
   }
 
   // Add dynamically generated blog posts
@@ -101,9 +102,27 @@ export default defineConfig({
     rollupOptions: {
       input: getPageInputs(),
       output: {
-        manualChunks: {
-          'vendor-core': [],
-          'vendor-utils': []
+        manualChunks: (id) => {
+          // Split node_modules into vendor chunks
+          if (id.includes('node_modules')) {
+            // Sharp is a large image processing library
+            if (id.includes('sharp')) {
+              return 'vendor-image';
+            }
+            // All other node_modules go to vendor
+            return 'vendor';
+          }
+          // Split large local modules
+          if (id.includes('src/scripts/modules')) {
+            const moduleName = id.split('modules/')[1]?.split('.')[0];
+            // Group heavy modules together
+            if (['projects', 'blog', 'openSource', 'speaking'].includes(moduleName)) {
+              return 'modules-content';
+            }
+            if (['forms', 'pwa_perf', 'analytics'].includes(moduleName)) {
+              return 'modules-core';
+            }
+          }
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
