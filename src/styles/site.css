@@ -9,29 +9,26 @@
   html {
     @apply scroll-smooth antialiased;
   }
-  
+
   /* Dark theme (default) */
   body {
     @apply bg-gray-900 text-gray-100;
   }
-  
+
   /* Light theme */
   html.light body,
-  html[data-theme="light"] body {
+  html[data-theme='light'] body {
     @apply bg-gray-50 text-gray-900;
   }
-  
+
   html.light .glass,
-  html[data-theme="light"] .glass {
+  html[data-theme='light'] .glass {
     @apply bg-gray-100/80 border-gray-200/50;
   }
-  
+
   html.light .bg-grid,
-  html[data-theme="light"] .bg-grid {
-    background-image: linear-gradient(
-        rgba(0, 0, 0, 0.03) 1px,
-        transparent 1px
-      ),
+  html[data-theme='light'] .bg-grid {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   }
 }
@@ -425,6 +422,9 @@
     box-shadow: none !important;
     border-color: rgba(255, 255, 255, 0.08) !important;
     background: rgba(255, 255, 255, 0.04) !important;
+  }
+  .nav-glass {
+    background-color: rgba(19, 33, 49, 0.7) !important;
   }
   .perf-lite section#top [data-hero-bg] .blur-3xl {
     filter: none !important;
