@@ -77,6 +77,10 @@ let activityLog;
 let statusApi;
 let statusDb;
 let statusSync;
+let projectsFilterInput;
+let projectSearchTerm = '';
+let projectSearchTermRaw = '';
+let projectsEmptyDefaultText = '';
 
 const state = loadInitialState();
 
@@ -115,6 +119,8 @@ function cacheElements() {
   statusApi = document.getElementById('status-api');
   statusDb = document.getElementById('status-db');
   statusSync = document.getElementById('status-sync');
+  projectsFilterInput = document.getElementById('projects-filter');
+  projectsEmptyDefaultText = projectsEmpty?.textContent.trim() || '';
 }
 
 function attachGlobalHandlers() {
@@ -128,13 +134,34 @@ function attachGlobalHandlers() {
     refreshAllData(true);
   });
 
-  const navButtons = document.querySelectorAll('.admin-nav-btn');
+  const navButtons = document.querySelectorAll('.admin-nav-btn[data-panel]');
   navButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       navButtons.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
       switchPanel(btn.dataset.panel);
     });
+  });
+
+  document.querySelector('[data-sidebar-toggle]')?.addEventListener('click', toggleSidebar);
+  document.querySelector('[data-action="sign-out"]')?.addEventListener('click', () => {
+    document.getElementById('admin-logout')?.click();
+  });
+  document.querySelector('[data-action="switch-user"]')?.addEventListener('click', openSwitchUserDialog);
+  document.querySelector('[data-action="create-user"]')?.addEventListener('click', openCreateUserDialog);
+  document.querySelector('[data-action="manage-users"]')?.addEventListener('click', openManageUsersDialog);
+
+  const sidebarQuery = window.matchMedia('(max-width: 1024px)');
+  const handleSidebarViewportChange = (event) => {
+    setSidebarState(event.matches ? 'collapsed' : 'expanded');
+  };
+  handleSidebarViewportChange(sidebarQuery);
+  sidebarQuery.addEventListener('change', handleSidebarViewportChange);
+
+  projectsFilterInput?.addEventListener('input', (event) => {
+    projectSearchTermRaw = event.target.value;
+    projectSearchTerm = projectSearchTermRaw.trim().toLowerCase();
+    renderProjects();
   });
 
   loginForm?.addEventListener('submit', handleLoginSubmit);
@@ -234,73 +261,174 @@ async function refreshAllData(showNotification = false) {
 }
 
 function renderProjects() {
-  const { projects } = getState();
+  const { projects: rawProjects = [] } = getState();
 
-  if (!projects || projects.length === 0) {
-    projectsEmpty.classList.remove('hidden');
-    projectsList.innerHTML = '';
+  const hasProjects = rawProjects.length > 0;
+  const normalized = rawProjects
+    .slice()
+    .sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0));
+
+  const filtered = projectSearchTerm
+    ? normalized.filter(matchesProjectSearch)
+    : normalized;
+
+  projectsList.innerHTML = '';
+
+  if (!hasProjects) {
+    if (projectsEmpty) {
+      projectsEmpty.textContent = projectsEmptyDefaultText || 'No projects found yet. Create one to get started.';
+      projectsEmpty.classList.remove('hidden');
+    }
     return;
   }
 
-  projectsEmpty.classList.add('hidden');
+  if (!filtered.length) {
+    if (projectsEmpty) {
+      const term = projectSearchTermRaw.trim();
+      projectsEmpty.textContent = term
+        ? `No projects match “${term}”.`
+        : 'No projects available.';
+      projectsEmpty.classList.remove('hidden');
+    }
+    return;
+  }
+
+  if (projectsEmpty) {
+    projectsEmpty.textContent = projectsEmptyDefaultText || '';
+    projectsEmpty.classList.add('hidden');
+  }
+
   const fragment = document.createDocumentFragment();
+  filtered.forEach((project) => {
+    fragment.appendChild(createProjectCard(project));
+  });
 
-  projects
-    .slice()
-    .sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0))
-    .forEach((project) => {
-      fragment.appendChild(createProjectCard(project));
-    });
-
-  projectsList.innerHTML = '';
   projectsList.appendChild(fragment);
+}
+
+function matchesProjectSearch(project) {
+  if (!projectSearchTerm) return true;
+  const haystack = [
+    project.title,
+    project.slug,
+    project.category,
+    project.tech,
+    project.description,
+    Array.isArray(project.tags) ? project.tags.join(' ') : '',
+    Array.isArray(project.stack) ? project.stack.join(' ') : '',
+    project.client,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+  return haystack.includes(projectSearchTerm);
 }
 
 function createProjectCard(project, isNew = false) {
   const card = document.createElement('article');
-  card.className = 'group rounded-2xl border border-white/10 bg-slate-900/40 p-4 backdrop-blur';
+  card.className = 'admin-project-card';
   card.dataset.projectId = project.id ?? 'new';
   if (isNew) {
     card.dataset.new = 'true';
   }
 
+  const structuredOpen =
+    Boolean(project.stack?.length) ||
+    Boolean(project.tags?.length) ||
+    Boolean(project.links && Object.keys(project.links).length) ||
+    Boolean(project.metrics && Object.keys(project.metrics).length) ||
+    Boolean(project.features?.length) ||
+    Boolean(project.image);
+
+  const featuredBadge = project.is_featured ? '<span class="project-badge">Featured</span>' : '';
+
   card.innerHTML = `
-    <header class="flex flex-wrap items-center justify-between gap-3">
+    <header class="project-card-header">
       <div>
-        <h4 class="text-base font-semibold text-white">${project.title || 'Untitled project'}</h4>
-        <p class="text-xs text-slate-400">${project.slug || 'project-slug'}</p>
+        <div class="project-primary">
+          <span class="project-name">${project.title || 'Untitled project'}</span>
+          ${featuredBadge}
+        </div>
+        <span class="project-slug">${project.slug || 'project-slug'}</span>
       </div>
-      <div class="flex items-center gap-2">
-        <button data-action="move-up" class="btn-ghost text-xs" title="Move up">▲</button>
-        <button data-action="move-down" class="btn-ghost text-xs" title="Move down">▼</button>
-        <button data-action="customize" class="btn-secondary text-xs">Customize card</button>
-        <button data-action="delete" class="btn-ghost text-xs text-red-400">Delete</button>
+      <div class="project-card-actions">
+        <button data-action="move-up" type="button" class="icon-btn" title="Move project up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 19V5" />
+            <path d="m5 12 7-7 7 7" />
+          </svg>
+        </button>
+        <button data-action="move-down" type="button" class="icon-btn" title="Move project down">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 5v14" />
+            <path d="m19 12-7 7-7-7" />
+          </svg>
+        </button>
+        <button data-action="customize" type="button" class="btn-secondary text-xs">Customise card</button>
+        <button data-action="delete" type="button" class="icon-btn danger" title="Delete project">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 6 3 18h12l3-18" />
+            <path d="M5 6h14" />
+            <path d="M10 11v6" />
+            <path d="M14 11v6" />
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+          </svg>
+        </button>
       </div>
     </header>
 
-    <form data-project-form class="mt-4 grid gap-3 md:grid-cols-2">
-      ${renderInput('Title', 'title', project.title, 'text', true)}
-      ${renderInput('Slug', 'slug', project.slug, 'text', true)}
+    <form data-project-form class="project-form">
+      <div class="form-grid">
+        ${renderInput('Title', 'title', project.title, 'text', true)}
+        ${renderInput('Slug', 'slug', project.slug, 'text', true)}
+      </div>
+
       ${renderTextarea('Description', 'description', project.description, true)}
-      ${renderInput('Category', 'category', project.category)}
-      ${renderInput('Tech summary', 'tech', project.tech)}
-      ${renderInput('Primary image URL', 'image', project.image)}
-      ${renderInput('Duration', 'duration', project.duration)}
-      ${renderInput('Client', 'client', project.client)}
-      ${renderNumber('Display order', 'order_index', project.order_index ?? 0)}
-      ${renderCheckbox('Featured on home', 'is_featured', project.is_featured)}
-      ${renderJSON('Stack (array)', 'stack', project.stack)}
-      ${renderJSON('Tags (array)', 'tags', project.tags)}
-      ${renderJSON('Links (object)', 'links', project.links)}
-      ${renderJSON('Metrics (object)', 'metrics', project.metrics)}
-      ${renderJSON('Features (array)', 'features', project.features)}
+
+      <div class="form-grid">
+        ${renderInput('Category', 'category', project.category)}
+        ${renderInput('Client', 'client', project.client)}
+        ${renderInput('Tech summary', 'tech', project.tech)}
+        ${renderNumber('Display order', 'order_index', project.order_index ?? 0)}
+      </div>
+
+      <div class="form-grid">
+        ${renderCheckbox('Featured on home', 'is_featured', project.is_featured)}
+      </div>
+
+      <details class="form-advanced"${structuredOpen ? ' open' : ''}>
+        <summary>
+          <span>Advanced fields</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </summary>
+        <div class="form-grid">
+          ${renderInput('Primary image URL', 'image', project.image)}
+          ${renderInput('Duration', 'duration', project.duration)}
+        </div>
+        <div class="form-grid">
+          ${renderJSON('Stack (array)', 'stack', project.stack)}
+          ${renderJSON('Tags (array)', 'tags', project.tags)}
+          ${renderJSON('Links (object)', 'links', project.links)}
+          ${renderJSON('Metrics (object)', 'metrics', project.metrics)}
+          ${renderJSON('Features (array)', 'features', project.features)}
+        </div>
+      </details>
     </form>
 
-    <footer class="mt-4 flex items-center justify-between border-t border-white/5 pt-3">
-      <small class="text-xs text-slate-500">Last updated: ${project.updated_at ? new Date(project.updated_at).toLocaleString() : '—'}</small>
-      <div class="flex items-center gap-2">
-        <button data-action="reset" class="btn-ghost text-xs">Reset</button>
-        <button data-action="save" class="btn-primary text-xs">Save changes</button>
+    <footer class="project-card-footer">
+      <small>Last updated: ${project.updated_at ? new Date(project.updated_at).toLocaleString() : '—'}</small>
+      <div class="action-group">
+        <button data-action="reset" type="button" class="icon-btn" title="Reset changes">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v6h6" />
+            <path d="M21 21v-6h-6" />
+            <path d="M3 9a9 9 0 0 1 9-9 9 9 0 0 1 6.36 15.36L21 21" />
+          </svg>
+        </button>
+        <button data-action="save" type="button" class="btn-primary text-xs">Save changes</button>
       </div>
     </footer>
   `;
@@ -310,14 +438,14 @@ function createProjectCard(project, isNew = false) {
 
 function renderInput(label, name, value = '', type = 'text', required = false) {
   return `
-    <label class="flex flex-col gap-1 text-xs text-slate-300">
-      <span class="font-semibold uppercase tracking-wide text-slate-400">${label}</span>
+    <label class="form-field">
+      <span class="form-label">${label}${required ? ' *' : ''}</span>
       <input
         name="${name}"
         type="${type}"
         value="${value ?? ''}"
         ${required ? 'required' : ''}
-        class="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+        class="form-input"
       />
     </label>
   `;
@@ -325,13 +453,13 @@ function renderInput(label, name, value = '', type = 'text', required = false) {
 
 function renderTextarea(label, name, value = '', required = false) {
   return `
-    <label class="md:col-span-2 flex flex-col gap-1 text-xs text-slate-300">
-      <span class="font-semibold uppercase tracking-wide text-slate-400">${label}</span>
+    <label class="form-field md:col-span-2">
+      <span class="form-label">${label}${required ? ' *' : ''}</span>
       <textarea
         name="${name}"
         rows="4"
         ${required ? 'required' : ''}
-        class="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+        class="form-textarea"
       >${value ?? ''}</textarea>
     </label>
   `;
@@ -339,13 +467,13 @@ function renderTextarea(label, name, value = '', required = false) {
 
 function renderNumber(label, name, value = 0) {
   return `
-    <label class="flex flex-col gap-1 text-xs text-slate-300">
-      <span class="font-semibold uppercase tracking-wide text-slate-400">${label}</span>
+    <label class="form-field">
+      <span class="form-label">${label}</span>
       <input
         name="${name}"
         type="number"
         value="${value ?? 0}"
-        class="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+        class="form-input"
       />
     </label>
   `;
@@ -353,9 +481,9 @@ function renderNumber(label, name, value = 0) {
 
 function renderCheckbox(label, name, checked = false) {
   return `
-    <label class="flex items-center gap-2 text-xs text-slate-300">
-      <input type="checkbox" name="${name}" ${checked ? 'checked' : ''} class="rounded border-white/20 bg-slate-950/70" />
-      <span class="font-semibold uppercase tracking-wide text-slate-400">${label}</span>
+    <label class="form-checkbox md:col-span-2">
+      <input type="checkbox" name="${name}" ${checked ? 'checked' : ''} />
+      <span>${label}</span>
     </label>
   `;
 }
@@ -363,16 +491,98 @@ function renderCheckbox(label, name, checked = false) {
 function renderJSON(label, name, value) {
   const pretty = value ? JSON.stringify(value, null, 2) : '';
   return `
-    <label class="md:col-span-2 flex flex-col gap-1 text-xs text-slate-300">
-      <span class="font-semibold uppercase tracking-wide text-slate-400">${label}</span>
+    <label class="form-field md:col-span-2">
+      <span class="form-label">${label}</span>
       <textarea
         name="${name}"
         rows="4"
-        class="font-mono w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-xs text-blue-100 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+        class="form-textarea font-mono"
         spellcheck="false"
       >${pretty}</textarea>
     </label>
   `;
+}
+
+function setSidebarState(state) {
+  const layout = document.getElementById('admin-layout');
+  if (!layout) return;
+  const next = state === 'collapsed' ? 'collapsed' : 'expanded';
+  layout.dataset.sidebarState = next;
+
+  const toggleBtn = document.querySelector('[data-sidebar-toggle]');
+  if (toggleBtn) {
+    toggleBtn.setAttribute('aria-pressed', String(next === 'collapsed'));
+    toggleBtn.setAttribute('aria-label', next === 'collapsed' ? 'Expand sidebar' : 'Collapse sidebar');
+  }
+}
+
+function toggleSidebar() {
+  const layout = document.getElementById('admin-layout');
+  if (!layout) return;
+  const current = layout.dataset.sidebarState === 'collapsed' ? 'collapsed' : 'expanded';
+  const next = current === 'collapsed' ? 'expanded' : 'collapsed';
+  setSidebarState(next);
+}
+
+function openSwitchUserDialog() {
+  const confirmed = window.confirm('Switch to another admin account? This will sign you out of the current session.');
+  if (confirmed) {
+    document.getElementById('admin-logout')?.click();
+  }
+}
+
+function openCreateUserDialog() {
+  const dialog = document.createElement('dialog');
+  dialog.className = 'admin-dialog';
+  dialog.innerHTML = `
+    <form class="admin-dialog__panel">
+      <header class="admin-dialog__header">
+        <h3>Create admin user</h3>
+        <p>Generate credentials for a teammate or a new administrator.</p>
+      </header>
+      <div class="admin-dialog__body">
+        <label class="form-field">
+          <span class="form-label">Email *</span>
+          <input type="email" name="email" class="form-input" required placeholder="admin@example.com" />
+        </label>
+        <label class="form-field">
+          <span class="form-label">Temporary password *</span>
+          <input type="password" name="password" class="form-input" required placeholder="••••••••" />
+        </label>
+        <label class="form-field">
+          <span class="form-label">Role</span>
+          <select name="role" class="form-input">
+            <option value="admin">Administrator</option>
+            <option value="editor">Editor</option>
+            <option value="viewer">Viewer</option>
+          </select>
+        </label>
+        <p class="admin-dialog__note">After creation, share the credentials securely. The user will be prompted to update their password on first login.</p>
+      </div>
+      <footer class="admin-dialog__footer">
+        <button type="button" class="btn-secondary" data-dialog-cancel>Cancel</button>
+        <button type="submit" class="btn-primary">Create user</button>
+      </footer>
+    </form>
+  `;
+
+  const cleanup = () => dialog.remove();
+  dialog.addEventListener('close', cleanup, { once: true });
+  dialog.querySelector('[data-dialog-cancel]')?.addEventListener('click', () => dialog.close('cancel'));
+  dialog.querySelector('form')?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email');
+    notify.info('Create user', `Send a request to your backend to create an account for ${email}.`);
+    dialog.close('submit');
+  });
+
+  document.body.appendChild(dialog);
+  dialog.showModal();
+}
+
+function openManageUsersDialog() {
+  notify.info('Manage users', 'Full user management is coming soon. For now, use your backend interface to update admin accounts.');
 }
 
 function insertNewProjectCard() {
@@ -384,8 +594,9 @@ function insertNewProjectCard() {
   };
   const card = createProjectCard(newProject, true);
   projectsList.prepend(card);
-  projectsEmpty.classList.add('hidden');
+  projectsEmpty?.classList.add('hidden');
   card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.querySelector('input[name="title"]')?.focus();
 }
 
 async function handleProjectListClick(event) {
@@ -412,8 +623,8 @@ async function handleProjectListClick(event) {
 function handleProjectFieldChange(event) {
   const card = event.target.closest('article');
   if (!card) return;
-  const headerTitle = card.querySelector('header h4');
-  const slugEl = card.querySelector('header p');
+  const headerTitle = card.querySelector('.project-name');
+  const slugEl = card.querySelector('.project-slug');
   const formData = new FormData(card.querySelector('footer').previousElementSibling);
   if (headerTitle) {
     headerTitle.textContent = formData.get('title') || 'Untitled project';
@@ -665,19 +876,19 @@ function renderCustomizations() {
 
 function renderCustomizationField(field, value) {
   const base = `
-    <label class="flex flex-col gap-1 text-xs text-slate-300" data-customization-field="${field.key}">
-      <span class="font-semibold uppercase tracking-wide text-slate-400">${field.label}</span>
+    <label class="form-field" data-customization-field="${field.key}">
+      <span class="form-label">${field.label}</span>
   `;
 
   let input;
   if (field.type === 'textarea') {
-    input = `<textarea rows="${field.rows ?? 3}" class="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30">${value ?? ''}</textarea>`;
+    input = `<textarea rows="${field.rows ?? 3}" class="form-textarea">${value ?? ''}</textarea>`;
   } else if (field.type === 'color') {
-    input = `<input type="color" value="${value || '#3b82f6'}" class="h-10 w-full rounded-lg border border-white/10 bg-slate-950/60" />`;
+    input = `<input type="color" value="${value || '#3b82f6'}" class="form-input h-10" />`;
   } else if (field.type === 'number') {
-    input = `<input type="number" value="${value ?? ''}" step="${field.step ?? 1}" min="${field.min ?? ''}" max="${field.max ?? ''}" class="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" />`;
+    input = `<input type="number" value="${value ?? ''}" step="${field.step ?? 1}" min="${field.min ?? ''}" max="${field.max ?? ''}" class="form-input" />`;
   } else {
-    input = `<input type="text" value="${value ?? ''}" placeholder="${field.placeholder ?? ''}" class="w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" />`;
+    input = `<input type="text" value="${value ?? ''}" placeholder="${field.placeholder ?? ''}" class="form-input" />`;
   }
 
   return `${base}${input}</label>`;

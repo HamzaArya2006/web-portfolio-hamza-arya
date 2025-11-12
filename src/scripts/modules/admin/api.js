@@ -20,15 +20,27 @@ async function request(endpoint, { token, method = 'GET', body, headers = {} } =
   const response = await fetch(`${API_BASE}${endpoint}`, config);
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Unknown error' }));
-    const err = new Error(error.error || 'Request failed');
+    let errorPayload;
+    try {
+      errorPayload = await response.json();
+    } catch (parseError) {
+      errorPayload = { error: response.statusText || 'Request failed' };
+    }
+    const err = new Error(errorPayload.error || 'Request failed');
     err.status = response.status;
-    err.details = error;
+    err.details = errorPayload;
     throw err;
   }
 
   if (response.status === 204) return null;
-  return response.json();
+  try {
+    return await response.json();
+  } catch (parseError) {
+    const err = new Error('Invalid JSON response');
+    err.status = response.status;
+    err.details = { error: 'Invalid JSON response' };
+    throw err;
+  }
 }
 
 export async function login(email, password) {
@@ -50,7 +62,7 @@ export async function changePassword(token, currentPassword, newPassword) {
   });
 }
 
-// Projects
+// --- CRUD now enabled ---
 export async function fetchProjects(token) {
   return request('/api/projects', { token });
 }
@@ -77,44 +89,47 @@ export async function deleteProjectApi(token, projectId) {
     method: 'DELETE',
   });
 }
+// --- ---
 
 export async function updateProjectOrder(token, order) {
-  return request('/api/projects/order', {
-    token,
-    method: 'POST',
-    body: { order },
-  });
+  throw new Error('Projects reordering is not available in this configuration.');
 }
 
 export async function fetchCustomizations(token) {
-  return request('/api/customizations', { token });
+  try {
+    return await request('/api/customizations', { token });
+  } catch (error) {
+    if (error.status === 404 || error.status === 501) {
+      console.warn('[customizations] API not available, using defaults.');
+      return [];
+    }
+    throw error;
+  }
 }
 
 export async function updateCustomization(token, key, value, type = 'string') {
-  return request(`/api/customizations/key/${encodeURIComponent(key)}`, {
-    token,
-    method: 'PUT',
-    body: { value, type },
-  });
+  throw new Error('Customization API is not available in this configuration.');
 }
 
 export async function fetchProjectCustomization(token, projectId) {
-  return request(`/api/customizations/projects/${projectId}`, { token });
+  try {
+    return await request(`/api/customizations/projects/${projectId}`, { token });
+  } catch (error) {
+    if (error.status === 404 || error.status === 501) {
+      return { project_id: Number(projectId), settings: {} };
+    }
+    throw error;
+  }
 }
 
 export async function updateProjectCustomization(token, projectId, settings) {
-  return request(`/api/customizations/projects/${projectId}`, {
-    token,
-    method: 'PUT',
-    body: { settings },
-  });
+  throw new Error('Customization API is not available in this configuration.');
 }
 
 export async function fetchActivity(token) {
   try {
     return request('/api/customizations/activity', { token });
   } catch (error) {
-    // Endpoint may not exist yet; return empty list
     if (error.status === 404) {
       return { logs: [] };
     }

@@ -4,6 +4,7 @@
 @import './site.css';
 @import './micro-interactions.css';
 @import './notifications.css';
+@import './admin.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
