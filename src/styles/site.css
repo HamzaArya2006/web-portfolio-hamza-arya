@@ -385,24 +385,6 @@
   .brand-logo:hover {
     transform: scale(1.05);
   }
-
-  .brand-logo::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(135deg, #3b82f6, #6366f1, #8b5cf6);
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-  }
-
-  .brand-logo:hover::before {
-    opacity: 0.3;
-  }
 }
 
 @layer utilities {
