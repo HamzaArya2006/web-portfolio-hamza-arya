@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build": "npx vite build",
     "prebuild": "node scripts/optimize-images.mjs && node scripts/generate-pages.mjs",
-    "build": "vite build",
     "preview": "vite preview",
     "lh:build": "vite build",
     "lh:serve": "vite preview --port 4173 --strictPort --open=false",
