@@ -1,0 +1,251 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-label="Modern code editor mockup">
+  <defs>
+    <!-- Shared colors/styles -->
+    <style>
+      .bg { fill: url(#bgGrad); }
+      .vignette { fill: url(#vGrad); opacity:0.5; pointer-events:none; }
+      .grain { filter: url(#grain); opacity:0.06; }
+      .titlebar { fill:#17181b; }
+      .tab { fill:var(--tab-bg,#15161a); rx:6; }
+      .tab-active { fill:url(#tabActive); }
+      .sidebar { fill:#0f1113; }
+      .editor { fill:#0b0d10; }
+      .gutter { fill:#0d1116; }
+      .line-num { fill:#4b5563; font:12px/1 "ui-monospace","SFMono-Regular",Consolas,monospace; }
+      .code { font:14px/1.4 "ui-monospace","SFMono-Regular",Consolas,monospace; fill:#d7dbe0; }
+      .kw { fill:#82aaff; } /* keywords */
+      .typ { fill:#b39df3; } /* types */
+      .str { fill:#f7c177; } /* strings */
+      .num { fill:#ffb454; } /* numbers */
+      .comment { fill:#6b7280; } /* comments */
+      .func { fill:#8bd5a9; } /* functions/identifiers */
+      .active-line { fill:#314b7a; opacity:0.08; }
+      .caret { fill:#e6f0ff; }
+      .status { fill:#9aa3b2; font:12px/1 "ui-monospace","SFMono-Regular",Consolas,monospace; }
+      :root { --accent:#3b82f6; }
+    </style>
+
+    <!-- Gradients -->
+    <linearGradient id="bgGrad" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#0b1223"/>
+      <stop offset="1" stop-color="#070912"/>
+    </linearGradient>
+    <radialGradient id="vGrad" cx="50%" cy="55%" r="70%">
+      <stop offset="60%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.5"/>
+    </radialGradient>
+    <linearGradient id="tabActive" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#294b8e"/>
+      <stop offset="1" stop-color="#123059"/>
+    </linearGradient>
+
+    <!-- Light drop shadow for active tab -->
+    <filter id="shadow" x="-20%" y="-30%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+
+    <!-- Low-cost grain (very subtle) -->
+    <filter id="grain" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence baseFrequency="0.8" numOctaves="1" stitchTiles="stitch" type="fractalNoise"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.015"/>
+      </feComponentTransfer>
+    </filter>
+
+    <!-- Reusable small icon (close) -->
+    <symbol id="close-icon" viewBox="0 0 16 16">
+      <path d="M4 4 L12 12 M12 4 L4 12" stroke="#a5adbf" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <!-- Clip for editor content (keep lines inside) -->
+    <clipPath id="editorClip"><rect x="336" y="70" width="1476" height="980"/></clipPath>
+  </defs>
+
+  <!-- Background layers -->
+  <rect width="100%" height="100%" class="bg"/>
+  <rect width="100%" height="100%" class="vignette"/>
+  <!-- Removed grain filter layer to avoid full-screen feTurbulence cost -->
+
+  <!-- Title bar -->
+  <rect x="0" y="0" width="1920" height="36" class="titlebar"/>
+  <g transform="translate(14,6)" opacity="0.98">
+    <circle cx="12" cy="12" r="6" fill="#ff5f56"/>
+    <circle cx="38" cy="12" r="6" fill="#ffbd2e"/>
+    <circle cx="64" cy="12" r="6" fill="#27ca3f"/>
+    <rect x="92" y="8" width="160" height="16" rx="4" fill="#1f2328"/>
+  </g>
+
+  <!-- Tabs row -->
+  <rect x="0" y="36" width="1920" height="40" fill="#131419"/>
+  <!-- Active tab -->
+  <g transform="translate(220,40)" filter="url(#shadow)">
+    <rect x="0" y="0" width="220" height="32" class="tab-active"/>
+    <rect x="0" y="30" width="220" height="2" fill="var(--accent)"/>
+    <text x="16" y="21" class="code" style="font-size:13px; fill:#e6f0ff;">main.cpp</text>
+    <use href="#close-icon" x="196" y="8" width="16" height="16"/>
+  </g>
+  <!-- inactive tabs -->
+  <rect x="440" y="40" width="170" height="32" class="tab"/>
+  <rect x="620" y="40" width="140" height="32" class="tab"/>
+
+  <!-- Left sidebar (icons + file list) -->
+  <rect x="0" y="76" width="280" height="980" class="sidebar"/>
+  <g transform="translate(18,96)" opacity="0.95">
+    <rect width="40" height="40" rx="8" fill="#15161a"/>
+    <rect y="56" width="40" height="40" rx="8" fill="#15161a"/>
+    <rect y="112" width="40" height="40" rx="8" fill="#15161a"/>
+    <rect y="168" width="40" height="40" rx="8" fill="#15161a"/>
+  </g>
+
+  <!-- Explorer list simplified -->
+  <g transform="translate(66,96)" fill="#1b1d21" opacity="0.98">
+    <rect width="190" height="20" rx="4"/>
+    <rect y="28" width="170" height="16" rx="4"/>
+    <rect y="50" width="150" height="16" rx="4"/>
+    <rect y="72" width="160" height="16" rx="4"/>
+    <rect y="94" width="120" height="16" rx="4"/>
+  </g>
+
+  <!-- Editor area -->
+  <rect x="280" y="76" width="1540" height="980" class="editor" rx="2"/>
+  <!-- Gutter -->
+  <rect x="280" y="76" width="56" height="980" class="gutter"/>
+
+  <!-- Top sheen -->
+  <rect x="280" y="76" width="1540" height="72" fill="#ffffff" opacity="0.02" rx="2"/>
+
+  <!-- Active line highlight (single rect for perf) -->
+  <rect x="336" y="312" width="1080" height="22" class="active-line" clip-path="url(#editorClip)"/>
+
+  <!-- Line numbers: generate only first 30 lines visible - compact group -->
+  <g transform="translate(300,96)" aria-hidden="true">
+    <text class="line-num" x="0" y="0">1</text>
+    <text class="line-num" x="0" y="24">2</text>
+    <text class="line-num" x="0" y="48">3</text>
+    <text class="line-num" x="0" y="72">4</text>
+    <text class="line-num" x="0" y="96">5</text>
+    <text class="line-num" x="0" y="120">6</text>
+    <text class="line-num" x="0" y="144">7</text>
+    <text class="line-num" x="0" y="168">8</text>
+    <text class="line-num" x="0" y="192">9</text>
+    <text class="line-num" x="0" y="216">10</text>
+    <text class="line-num" x="0" y="240">11</text>
+    <text class="line-num" x="0" y="264">12</text>
+    <text class="line-num" x="0" y="288">13</text>
+    <text class="line-num" x="0" y="312">14</text>
+    <text class="line-num" x="0" y="336">15</text>
+    <text class="line-num" x="0" y="360">16</text>
+    <text class="line-num" x="0" y="384">17</text>
+    <text class="line-num" x="0" y="408">18</text>
+    <text class="line-num" x="0" y="432">19</text>
+    <text class="line-num" x="0" y="456">20</text>
+  </g>
+
+  <!-- Syntax-colored code block (kept to a reasonable # of nodes) -->
+  <g class="code" transform="translate(336,88)" clip-path="url(#editorClip)" aria-label="code">
+    <!-- Use single <text> per line, and classes for tokens to avoid many tspans -->
+    <!-- Line 1 -->
+    <text x="0" y="24">
+      <tspan class="kw">#include</tspan><tspan> </tspan><tspan class="str">&lt;vector&gt;</tspan><tspan> </tspan>
+      <tspan class="kw">#include</tspan><tspan> </tspan><tspan class="str">&lt;string&gt;</tspan>
+    </text>
+
+    <!-- Line 2 -->
+    <text x="0" y="48">
+      <tspan class="kw">#include</tspan><tspan> </tspan><tspan class="str">&lt;optional&gt;</tspan>
+    </text>
+
+    <!-- Line 3 -->
+    <text x="0" y="72">
+      <tspan class="kw">template</tspan><tspan>&lt;</tspan><tspan class="kw">typename</tspan><tspan> T&gt;</tspan>
+    </text>
+
+    <!-- Line 4 -->
+    <text x="0" y="96">
+      <tspan class="kw">concept</tspan><tspan> </tspan><tspan class="typ">Hashable</tspan><tspan> = </tspan>
+      <tspan class="kw">requires</tspan><tspan>(T a)</tspan>
+    </text>
+
+    <!-- Line 5 -->
+    <text x="0" y="120">
+      <tspan>{ std::hash&lt;T&gt;{}(a) -&gt; std::convertible_to&lt;std::size_t&gt;; }</tspan>
+    </text>
+
+    <!-- Line 6 -->
+    <text x="0" y="144">
+      <tspan class="kw">struct</tspan><tspan> </tspan><tspan class="typ">Node</tspan><tspan> { </tspan>
+      <tspan class="typ">int</tspan><tspan> id; </tspan><tspan class="typ">std::string</tspan><tspan> name; </tspan>
+    </text>
+
+    <!-- Line 7 -->
+    <text x="0" y="168">
+      <tspan class="typ">std::vector&lt;std::unique_ptr&lt;Node&gt;&gt; children;</tspan>
+    </text>
+
+    <!-- Line 8 -->
+    <text x="0" y="192">
+      <tspan>};</tspan>
+    </text>
+
+    <!-- Line 9 - function -->
+    <text x="0" y="216">
+      <tspan class="kw">template</tspan><tspan>&lt;</tspan><tspan class="kw">class</tspan><tspan> R&gt; </tspan>
+      <tspan class="kw">auto</tspan><tspan> sum(R&amp;&amp; r) -&gt; </tspan>
+      <tspan class="typ">std::ranges::range_value_t&lt;R&gt;</tspan><tspan> {</tspan>
+    </text>
+
+    <!-- Line 10 -->
+    <text x="16" y="240">
+      <tspan class="kw">using</tspan> V = std::ranges::range_value_t&lt;R&gt;; V acc{}; for (auto&amp;&amp; x : r) acc += x; <tspan class="kw">return</tspan> acc;
+    </text>
+
+    <!-- Line 11 -->
+    <text x="0" y="264">}</text>
+
+    <!-- Line 12 -->
+    <text x="0" y="288">
+      <tspan class="kw">int</tspan><tspan> main() { </tspan>
+      <tspan class="typ">std::vector&lt;int&gt;</tspan><tspan> v{1, 2, 3, 4}; </tspan>
+      <tspan class="kw">auto</tspan><tspan> s = sum(v); std::println("sum = {}", s); </tspan>
+      <tspan class="kw">return</tspan> <tspan class="num">0</tspan>; }
+    </text>
+
+    <!-- Line 13 - comment -->
+    <text x="0" y="312" class="comment">// compact, readable, modern C++ example</text>
+  </g>
+
+  <!-- Caret (blinking simulated by an <animate> for demo) -->
+  <rect x="344" y="312" width="2.6" height="18" class="caret" clip-path="url(#editorClip)">
+    <animate attributeName="opacity" values="0.9;0;0.9" dur="1s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Minimap (simplified rectangles - lightweight) -->
+  <g transform="translate(1812,76)">
+    <rect width="48" height="980" fill="#0c0e12" rx="2"/>
+    <!-- small blocks representing code density -->
+    <g fill="#203047" opacity="0.9">
+      <rect x="6" y="28" width="36" height="4" rx="2"/>
+      <rect x="6" y="48" width="28" height="4" rx="2"/>
+      <rect x="6" y="68" width="40" height="4" rx="2"/>
+      <rect x="6" y="88" width="34" height="4" rx="2"/>
+      <rect x="6" y="108" width="20" height="4" rx="2"/>
+    </g>
+    <!-- viewport -->
+    <rect x="0" y="120" width="48" height="220" fill="var(--accent)" opacity="0.14" rx="2"/>
+  </g>
+
+  <!-- Status bar -->
+  <rect x="0" y="1056" width="1920" height="24" fill="#07070a"/>
+  <g transform="translate(16,1072)">
+    <text class="status">main.cpp</text>
+    <text class="status" x="120">UTF-8</text>
+    <text class="status" x="188">LF</text>
+    <text class="status" x="224">C++23</text>
+    <text class="status" x="304"> main</text>
+    <g transform="translate(496,-8)"><circle cx="8" cy="10" r="6" fill="#10b981" opacity="0.85"/></g>
+  </g>
+
+  <!-- Optional: small performance note text (non-intrusive) -->
+  <text x="336" y="1064" class="status" style="font-size:11px; fill:#6b7280;">Optimized: fewer DOM nodes · single grain filter · shared defs</text>
+</svg>

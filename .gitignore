@@ -1,5 +1,4 @@
 node_modules/
-dist/
 .DS_Store
 *.log
 coverage/
@@ -10,7 +9,6 @@ lighthouse-report.json
 node_modules/
 
 # Production build
-/dist/
 
 # Env files
 .env
