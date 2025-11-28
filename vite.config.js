@@ -3,7 +3,7 @@ import compression from 'vite-plugin-compression'
 import handlebars from 'vite-plugin-handlebars'
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
-import { readdirSync, readFileSync, existsSync, mkdirSync, copyFileSync } from 'fs'
+import { readdirSync, readFileSync, existsSync, mkdirSync, copyFileSync, unlinkSync, rmdirSync } from 'fs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = resolve(__filename, '..')
@@ -153,6 +153,109 @@ export default defineConfig({
           }
         } catch (error) {
           console.warn('[admin-html-handler] Failed to copy admin build output:', error);
+        }
+      },
+    },
+    {
+      name: 'pages-output-reorganizer',
+      writeBundle() {
+        // Move pages from dist/src/pages/ to dist/pages/
+        const srcPagesDir = resolve(__dirname, 'dist/src/pages');
+        const targetPagesDir = resolve(__dirname, 'dist/pages');
+        
+        if (!existsSync(srcPagesDir)) {
+          return;
+        }
+
+        try {
+          // Recursively copy all files from src/pages to pages
+          function copyRecursive(src, dest) {
+            if (!existsSync(dest)) {
+              mkdirSync(dest, { recursive: true });
+            }
+            
+            const entries = readdirSync(src, { withFileTypes: true });
+            for (const entry of entries) {
+              const srcPath = resolve(src, entry.name);
+              const destPath = resolve(dest, entry.name);
+              
+              if (entry.isDirectory()) {
+                // Skip admin directory (handled by admin-html-handler)
+                if (entry.name === 'admin') {
+                  continue;
+                }
+                copyRecursive(srcPath, destPath);
+              } else if (entry.isFile()) {
+                // Copy file and .br compressed version if it exists
+                copyFileSync(srcPath, destPath);
+                const brPath = srcPath + '.br';
+                if (existsSync(brPath)) {
+                  copyFileSync(brPath, destPath + '.br');
+                }
+              }
+            }
+          }
+
+          copyRecursive(srcPagesDir, targetPagesDir);
+          
+          // Clean up the source directory after copying (except admin which is handled separately)
+          function removeRecursive(dir) {
+            if (!existsSync(dir)) return;
+            try {
+              const entries = readdirSync(dir, { withFileTypes: true });
+              for (const entry of entries) {
+                const fullPath = resolve(dir, entry.name);
+                if (entry.isDirectory()) {
+                  // Skip admin directory
+                  if (entry.name === 'admin') {
+                    continue;
+                  }
+                  removeRecursive(fullPath);
+                  // Try to remove empty directory
+                  try {
+                    const subEntries = readdirSync(fullPath);
+                    if (subEntries.length === 0) {
+                      rmdirSync(fullPath);
+                    }
+                  } catch {
+                    // Directory not empty or already removed
+                  }
+                } else {
+                  try {
+                    unlinkSync(fullPath);
+                    // Also remove .br file if it exists
+                    const brPath = fullPath + '.br';
+                    if (existsSync(brPath)) {
+                      unlinkSync(brPath);
+                    }
+                  } catch (err) {
+                    // File might have been removed or doesn't exist
+                  }
+                }
+              }
+              // Try to remove the directory itself if it's empty or only contains admin
+              try {
+                const remainingEntries = readdirSync(dir);
+                if (remainingEntries.length === 0 || (remainingEntries.length === 1 && remainingEntries[0] === 'admin')) {
+                  // Don't remove if admin is the only thing left
+                  if (remainingEntries.length === 0) {
+                    rmdirSync(dir);
+                  }
+                }
+              } catch {
+                // Directory not empty or already removed
+              }
+            } catch (err) {
+              // Directory might not exist or be accessible
+            }
+          }
+          
+          // Remove copied files from src/pages
+          removeRecursive(srcPagesDir);
+          
+          console.log('[pages-output-reorganizer] Successfully reorganized pages output');
+        } catch (error) {
+          console.warn('[pages-output-reorganizer] Failed to reorganize pages:', error);
         }
       },
     },

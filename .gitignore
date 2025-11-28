@@ -1,14 +1,11 @@
-node_modules/
-.DS_Store
-*.log
-coverage/
-lighthouse-report.html
-lighthouse-report.json
-*.br
 # Dependencies
 node_modules/
+**/node_modules/
 
 # Production build
+dist/
+build/
+*.br
 
 # Env files
 .env
@@ -17,19 +14,33 @@ node_modules/
 # Editors/IDEs
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
 # OS junk
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Logs
+*.log
 npm-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
+
+# Coverage / reports
+coverage/
+lighthouse-report.html
+lighthouse-report.json
+.nyc_output
 
 # Hosting providers
 .vercel/
 .netlify/
 
-# Coverage / reports
-coverage/
+# Backup files
+*.backup
+*.bak
+*.tmp
