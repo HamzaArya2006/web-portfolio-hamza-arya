@@ -143,7 +143,54 @@ function attachGlobalHandlers() {
     });
   });
 
+  // Sidebar toggle handlers
   document.querySelector('[data-sidebar-toggle]')?.addEventListener('click', toggleSidebar);
+  
+  // Mobile menu toggle
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  
+  mobileMenuToggle?.addEventListener('click', () => {
+    const layout = document.getElementById('admin-layout');
+    if (!layout) return;
+    const isExpanded = layout.dataset.sidebarState === 'expanded';
+    setSidebarState(isExpanded ? 'collapsed' : 'expanded');
+    
+    // Update overlay
+    if (sidebarOverlay) {
+      sidebarOverlay.classList.toggle('active', !isExpanded);
+    }
+    
+    // Update button state
+    mobileMenuToggle.setAttribute('aria-pressed', String(!isExpanded));
+  });
+  
+  // Close sidebar when overlay is clicked
+  sidebarOverlay?.addEventListener('click', () => {
+    setSidebarState('collapsed');
+    sidebarOverlay.classList.remove('active');
+    if (mobileMenuToggle) {
+      mobileMenuToggle.setAttribute('aria-pressed', 'false');
+    }
+  });
+  
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    const layout = document.getElementById('admin-layout');
+    const sidebar = document.getElementById('admin-sidebar');
+    const isMobile = window.matchMedia('(max-width: 1024px)').matches;
+    
+    if (isMobile && layout?.dataset.sidebarState === 'expanded' && sidebar) {
+      if (!sidebar.contains(e.target) && !mobileMenuToggle?.contains(e.target)) {
+        setSidebarState('collapsed');
+        sidebarOverlay?.classList.remove('active');
+        if (mobileMenuToggle) {
+          mobileMenuToggle.setAttribute('aria-pressed', 'false');
+        }
+      }
+    }
+  });
+  
   document.querySelector('[data-action="sign-out"]')?.addEventListener('click', () => {
     document.getElementById('admin-logout')?.click();
   });
@@ -151,9 +198,18 @@ function attachGlobalHandlers() {
   document.querySelector('[data-action="create-user"]')?.addEventListener('click', openCreateUserDialog);
   document.querySelector('[data-action="manage-users"]')?.addEventListener('click', openManageUsersDialog);
 
+  // Handle sidebar state based on viewport
   const sidebarQuery = window.matchMedia('(max-width: 1024px)');
   const handleSidebarViewportChange = (event) => {
-    setSidebarState(event.matches ? 'collapsed' : 'expanded');
+    const isMobile = event.matches;
+    // On mobile, sidebar starts collapsed
+    setSidebarState(isMobile ? 'collapsed' : 'expanded');
+    if (sidebarOverlay) {
+      sidebarOverlay.classList.remove('active');
+    }
+    if (mobileMenuToggle) {
+      mobileMenuToggle.setAttribute('aria-pressed', 'false');
+    }
   };
   handleSidebarViewportChange(sidebarQuery);
   sidebarQuery.addEventListener('change', handleSidebarViewportChange);
@@ -519,9 +575,16 @@ function setSidebarState(state) {
 function toggleSidebar() {
   const layout = document.getElementById('admin-layout');
   if (!layout) return;
+  const isMobile = window.matchMedia('(max-width: 1024px)').matches;
   const current = layout.dataset.sidebarState === 'collapsed' ? 'collapsed' : 'expanded';
   const next = current === 'collapsed' ? 'expanded' : 'collapsed';
   setSidebarState(next);
+  
+  // Handle overlay on mobile
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  if (isMobile && sidebarOverlay) {
+    sidebarOverlay.classList.toggle('active', next === 'expanded');
+  }
 }
 
 function openSwitchUserDialog() {

@@ -1,6 +1,31 @@
 import { notify } from './notifications.js';
+import { warn } from './logger.js';
 
 const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || import.meta.env.VITE_ADMIN_API_URL || '').replace(/\/$/, '');
+
+// Basic HTML sanitizer to prevent XSS attacks
+// Note: For production, consider using DOMPurify library (npm install dompurify) for more robust sanitization
+function sanitizeHTML(html) {
+  if (!html) return '';
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  
+  // Remove script tags and their contents
+  const scripts = div.querySelectorAll('script');
+  scripts.forEach(script => script.remove());
+  
+  // Remove event handlers from all elements
+  const allElements = div.querySelectorAll('*');
+  allElements.forEach(el => {
+    Array.from(el.attributes).forEach(attr => {
+      if (attr.name.startsWith('on') || attr.name === 'href' && attr.value.startsWith('javascript:')) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+  
+  return div.innerHTML;
+}
 
 const APPLIERS = {
   'hero.title': (value) => updateHTML('hero-title', value),
@@ -37,7 +62,7 @@ export async function applySiteCustomizations() {
     });
     applied = true;
   } catch (error) {
-    console.warn('[customizations] Using default values:', error.message);
+    warn('[customizations] Using default values:', error.message);
   }
 }
 
@@ -50,7 +75,10 @@ function updateText(id, value) {
 function updateHTML(id, value) {
   if (!value) return;
   const el = document.getElementById(id);
-  if (el) el.innerHTML = value;
+  if (el) {
+    // Sanitize HTML before inserting to prevent XSS attacks
+    el.innerHTML = sanitizeHTML(value);
+  }
 }
 
 function setColorVariable(variable, value) {
@@ -75,7 +103,8 @@ function injectStyle(id, css) {
 function injectHeroHTML(html) {
   const target = document.querySelector('[data-custom-hero]');
   if (!target) return;
-  target.innerHTML = html || '';
+  // Sanitize HTML before inserting to prevent XSS attacks
+  target.innerHTML = html ? sanitizeHTML(html) : '';
 }
 
 function updateDocumentTitle(value) {

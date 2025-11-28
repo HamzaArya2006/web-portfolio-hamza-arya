@@ -1,4 +1,5 @@
 import { projects as localProjects } from '../../data/projects.js';
+import { warn } from './logger.js';
 
 const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || import.meta.env.VITE_ADMIN_API_URL || '').replace(/\/$/, '');
 
@@ -73,7 +74,7 @@ async function loadProjects(force = false) {
       remoteLoaded = true;
     }
   } catch (error) {
-    console.warn('[projects] Falling back to local data:', error.message);
+    warn('[projects] Falling back to local data:', error.message);
     remoteFailed = true;
   }
   return projects;

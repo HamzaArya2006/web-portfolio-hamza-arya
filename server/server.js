@@ -32,6 +32,26 @@ const authLimiter = rateLimit({
 app.use('/api/auth', authLimiter);
 app.use('/api/auth', authRoutes);
 
+// Public routes (no authentication required)
+app.get('/api/public/projects', async (req, res, next) => {
+  try {
+    const projects = await loadProjects();
+    res.json(projects);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/public/customizations', async (req, res, next) => {
+  try {
+    // Return empty customizations array for now
+    // Can be extended to load from a file or database
+    res.json({ customizations: [] });
+  } catch (error) {
+    next(error);
+  }
+});
+
 async function loadProjects() {
   const fileUrl = pathToFileURL(PROJECTS_PATH).href + `?v=${Date.now()}`;
   const module = await import(fileUrl);

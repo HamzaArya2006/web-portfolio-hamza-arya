@@ -47,7 +47,7 @@ export async function getProfile(req, res, next) {
     } catch (err) {
       return res.status(500).json({ error: 'Cannot read admin users database.' });
     }
-    const admin = admins.find((u) => u.id == adminId);
+    const admin = admins.find((u) => u.id === adminId);
     if (!admin) return res.status(404).json({ error: 'Admin not found' });
     res.json({ id: admin.id, email: admin.email });
   } catch (error) {

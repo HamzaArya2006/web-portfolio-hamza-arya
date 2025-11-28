@@ -67,6 +67,96 @@ export default defineConfig({
       partialDirectory: resolve(__dirname, 'src/partials')
     }),
     {
+      name: 'admin-html-handler',
+      enforce: 'pre', // Run before other plugins
+      configureServer(server) {
+        // Register middleware immediately to intercept /admin routes early
+        const adminHandler = async (req, res, next) => {
+          // Skip non-GET requests immediately
+          if (req.method !== 'GET' && req.method !== 'HEAD') {
+            next();
+            return;
+          }
+
+          if (!req.url) {
+            next();
+            return;
+          }
+
+          // More robust URL parsing
+          let pathname = '/';
+          try {
+            // Remove query string and hash
+            const pathOnly = req.url.split('?')[0].split('#')[0];
+            // Normalize trailing slashes
+            pathname = pathOnly.endsWith('/') && pathOnly.length > 1 
+              ? pathOnly.slice(0, -1) 
+              : pathOnly;
+            // Ensure it starts with /
+            if (!pathname.startsWith('/')) {
+              pathname = '/' + pathname;
+            }
+          } catch (err) {
+            // Fallback parsing
+            pathname = req.url.split('?')[0].split('#')[0];
+          }
+
+          // Check if this is an admin path
+          const normalizedPath = pathname.toLowerCase();
+          const isAdminPath = normalizedPath === '/admin' || 
+                             normalizedPath === '/admin/' ||
+                             normalizedPath.startsWith('/admin/index');
+
+          if (!isAdminPath) {
+            next();
+            return;
+          }
+
+          // Handle admin route
+          try {
+            const adminHtmlPath = resolve(__dirname, 'src/pages/admin/index.html');
+            
+            // Check if file exists
+            if (!existsSync(adminHtmlPath)) {
+              console.error(`[admin-html-handler] Admin file not found at: ${adminHtmlPath}`);
+              res.statusCode = 404;
+              res.end('Admin page not found');
+              return;
+            }
+
+            const rawHtml = readFileSync(adminHtmlPath, 'utf-8');
+            const transformed = await server.transformIndexHtml('/admin/index.html', rawHtml);
+            
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/html; charset=utf-8');
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Pragma', 'no-cache');
+            res.setHeader('Expires', '0');
+            res.end(transformed);
+          } catch (error) {
+            console.error('[admin-html-handler] Error serving admin page:', error);
+            res.statusCode = 500;
+            res.end('Error loading admin page');
+          }
+        };
+
+        // Register middleware at the beginning
+        server.middlewares.use(adminHandler);
+      },
+      writeBundle() {
+        const builtAdminPath = resolve(__dirname, 'dist/src/pages/admin/index.html');
+        const targetDir = resolve(__dirname, 'dist/admin');
+        try {
+          if (existsSync(builtAdminPath)) {
+            mkdirSync(targetDir, { recursive: true });
+            copyFileSync(builtAdminPath, resolve(targetDir, 'index.html'));
+          }
+        } catch (error) {
+          console.warn('[admin-html-handler] Failed to copy admin build output:', error);
+        }
+      },
+    },
+    {
       name: 'pages-rewrite',
       configureServer(server) {
         return () => {
@@ -103,50 +193,6 @@ export default defineConfig({
             next();
           });
         };
-      },
-    },
-    {
-      name: 'admin-html-handler',
-      configureServer(server) {
-        return () => {
-          server.middlewares.use(async (req, res, next) => {
-            if (req.method !== 'GET') {
-              next();
-              return;
-            }
-
-            const { pathname } = new URL(req.url || '/', 'http://localhost');
-            const adminPaths = new Set(['/admin', '/admin/', '/admin/index', '/admin/index.html']);
-
-            if (!adminPaths.has(pathname)) {
-              next();
-              return;
-            }
-
-            try {
-              const adminHtmlPath = resolve(__dirname, 'src/pages/admin/index.html');
-              const rawHtml = readFileSync(adminHtmlPath, 'utf-8');
-              const transformed = await server.transformIndexHtml('/admin/index.html', rawHtml);
-              res.statusCode = 200;
-              res.setHeader('Content-Type', 'text/html; charset=utf-8');
-              res.end(transformed);
-            } catch (error) {
-              next(error);
-            }
-          });
-        };
-      },
-      writeBundle() {
-        const builtAdminPath = resolve(__dirname, 'dist/src/pages/admin/index.html');
-        const targetDir = resolve(__dirname, 'dist/admin');
-        try {
-          if (existsSync(builtAdminPath)) {
-            mkdirSync(targetDir, { recursive: true });
-            copyFileSync(builtAdminPath, resolve(targetDir, 'index.html'));
-          }
-        } catch (error) {
-          console.warn('[admin-html-handler] Failed to copy admin build output:', error);
-        }
       },
     },
   ],

@@ -43,20 +43,59 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Form submitted too quickly' });
   }
 
+  // Validate required fields
   if (!name || !email || !brief) {
     return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const trimmedEmail = String(email).trim();
+  if (!emailRegex.test(trimmedEmail)) {
+    return res.status(400).json({ error: 'Invalid email address' });
+  }
+
+  // Validate input lengths to prevent DoS
+  const MAX_LENGTHS = {
+    name: 100,
+    email: 255,
+    brief: 5000,
+    budget: 100
+  };
+
+  const trimmedName = String(name).trim();
+  const trimmedBrief = String(brief).trim();
+  const trimmedBudget = budget ? String(budget).trim() : '';
+
+  if (trimmedName.length > MAX_LENGTHS.name) {
+    return res.status(400).json({ error: 'Name is too long' });
+  }
+  if (trimmedEmail.length > MAX_LENGTHS.email) {
+    return res.status(400).json({ error: 'Email is too long' });
+  }
+  if (trimmedBrief.length > MAX_LENGTHS.brief) {
+    return res.status(400).json({ error: 'Brief is too long' });
+  }
+  if (trimmedBudget && trimmedBudget.length > MAX_LENGTHS.budget) {
+    return res.status(400).json({ error: 'Budget is too long' });
   }
 
   // Optional: forward to a webhook (Slack, Discord, Make/Zapier, etc.)
   const webhook = process.env.FORMS_WEBHOOK_URL;
   if (webhook) {
     try {
+      // Sanitize values before sending to webhook
+      const sanitizedName = String(name).trim().substring(0, 100);
+      const sanitizedEmail = trimmedEmail;
+      const sanitizedBrief = trimmedBrief.substring(0, 5000);
+      const sanitizedBudget = trimmedBudget ? trimmedBudget.substring(0, 100) : null;
+      
       const payload = {
-        text: `New Inquiry\nName: ${name}\nEmail: ${email}\nBudget: ${budget || '-'}\nBrief: ${brief}`,
-        name,
-        email,
-        budget: budget || null,
-        brief,
+        text: `New Inquiry\nName: ${sanitizedName}\nEmail: ${sanitizedEmail}\nBudget: ${sanitizedBudget || '-'}\nBrief: ${sanitizedBrief}`,
+        name: sanitizedName,
+        email: sanitizedEmail,
+        budget: sanitizedBudget,
+        brief: sanitizedBrief,
         ip,
         userAgent: req.headers['user-agent'] || '',
         submittedAt: new Date().toISOString(),
