@@ -79,6 +79,12 @@ self.addEventListener('fetch', (event) => {
 
   // Navigation requests: network-first with offline fallback
   if (request.mode === 'navigate') {
+    // Skip service worker caching for admin routes - always fetch from network
+    if (url.pathname.startsWith('/admin')) {
+      event.respondWith(fetch(request));
+      return;
+    }
+    
     event.respondWith(
       (async () => {
         try {
