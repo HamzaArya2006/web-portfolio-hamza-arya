@@ -1767,7 +1767,12 @@
   .testimonials-carousel {
     position: relative;
     overflow: hidden; /* clip to viewport */
-    padding-inline: 1.25rem; /* horizontal gutter */
+    padding-inline: 0; /* Remove padding on mobile to allow 95% width */
+  }
+  @media (min-width: 1024px) {
+    .testimonials-carousel {
+      padding-inline: 1.25rem; /* Restore horizontal gutter on desktop */
+    }
   }
   .testimonials-track {
     display: grid;
@@ -1811,14 +1816,30 @@
     scroll-snap-stop: always;
     display: flex;
     height: 100%;
-    padding-inline: 0.75rem; /* extra horizontal space around each card */
+    padding-inline: 0.5rem; /* reduced padding for mobile to accommodate 95% width */
     position: relative;
     z-index: 2;
     margin-block: 0.25rem; /* ensure hover glows/shadows are not clipped by track */
     pointer-events: auto; /* re-enable interactivity on slides/cards */
+    width: 100%; /* Ensure full width of grid column */
+  }
+  
+  .testimonial-slide > .testimonial-card {
+    width: 100%; /* Ensure card fills the slide container */
+    flex: 1; /* Take full available space */
+  }
+  @media (min-width: 1024px) {
+    .testimonial-slide {
+      padding-inline: 0.75rem; /* Restore original padding on desktop */
+    }
   }
   .testimonial-slide:last-child {
-    padding-right: 1.5rem; /* ensure last card's right shadow is not clipped */
+    padding-right: 0.5rem; /* reduced padding for mobile */
+  }
+  @media (min-width: 1024px) {
+    .testimonial-slide:last-child {
+      padding-right: 1.5rem; /* Restore original padding on desktop */
+    }
   }
   /* Minimal carousel: no visible controls/dots */
   .testimonials-controls,
