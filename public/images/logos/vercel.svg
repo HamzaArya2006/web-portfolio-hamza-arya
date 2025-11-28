@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 36" width="160" height="36" role="img" aria-label="Vercel style badge">
+  <rect width="160" height="36" fill="transparent" rx="6"/>
+  <g transform="translate(12,6)">
+    <!-- triangle mark -->
+    <polygon points="10,22 36,2 62,22" fill="url(#vgrad)"/>
+    <defs>
+      <linearGradient id="vgrad" x1="0" x2="1">
+        <stop offset="0" stop-color="#38bdf8"/>
+        <stop offset="1" stop-color="#7c3aed"/>
+      </linearGradient>
+    </defs>
+    <text x="76" y="17" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#0f172a">Vercel</text>
+  </g>
+</svg>

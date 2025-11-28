@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <!-- AWS Text -->
+  <g fill="#232F3E" font-family="Arial, Helvetica, sans-serif" font-weight="700">
+    <text x="10" y="50" font-size="48">AWS</text>
+  </g>
+
+  <!-- Orange Smile -->
+  <path d="M35 60c25 20 80 20 110 0" fill="none" stroke="#FF9900" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Right tip accent -->
+  <path d="M145 60c3 3 6 7 8 11" fill="none" stroke="#FF9900" stroke-width="6" stroke-linecap="round"/>
+</svg>

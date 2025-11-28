@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 40" width="150" height="40">
+  <rect width="150" height="40" fill="transparent"/>
+  <g transform="translate(10,8)">
+    <text x="0" y="20" font-size="24" font-family="Arial, Helvetica, sans-serif"
+      font-weight="700" fill="#635AFF">stripe</text>
+    <rect x="72" y="5" width="60" height="3" rx="2" fill="#635AFF"/>
+  </g>
+</svg>
