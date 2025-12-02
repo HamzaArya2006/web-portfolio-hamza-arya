@@ -1,7 +1,7 @@
 import { projects as localProjects } from '../../data/projects.js';
 import { warn } from './logger.js';
 
-const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || import.meta.env.VITE_ADMIN_API_URL || '').replace(/\/$/, '');
+const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || '').replace(/\/$/, '');
 
 let projects = [...localProjects];
 let remoteLoaded = false;

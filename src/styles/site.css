@@ -1,5 +1,6 @@
 @layer base {
   :root {
+    /* Tight, consistent accent palette */
     --accent-primary: #2563eb;
     --accent-secondary: #4f46e5;
     --accent-primary-hover: #1d4ed8;
@@ -12,7 +13,8 @@
 
   /* Dark theme (default) */
   body {
-    @apply bg-gray-900 text-gray-100;
+    /* Single, deep neutral background + readable text */
+    @apply bg-slate-950 text-gray-100;
   }
 
   /* Light theme */
@@ -35,10 +37,11 @@
 
 @layer components {
   .container-pro {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
   }
   .glass {
-    @apply bg-white/5 backdrop-blur-xs border border-white/10 shadow-sm;
+    /* Use glass only for a few key surfaces */
+    @apply bg-white/5 backdrop-blur-sm border border-white/10 shadow-sm;
   }
   .glass-testimonial {
     @apply bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300;
@@ -47,17 +50,17 @@
     @apply inline-flex items-center justify-center rounded-md px-5 py-2.5 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:pointer-events-none;
   }
   .btn-primary {
-    @apply btn bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500;
+    @apply btn bg-gradient-to-r from-[color:var(--accent-primary)] to-[color:var(--accent-secondary)] text-white hover:from-[color:var(--accent-primary-hover)] hover:to-[color:var(--accent-secondary-hover)];
   }
   .btn-secondary {
-    @apply btn bg-white/10 text-white border border-white/20 hover:bg-white/20;
+    @apply btn bg-white/5 text-white border border-white/10 hover:bg-white/15;
   }
   .btn-ghost {
-    @apply btn border border-white/15 bg-transparent hover:bg-white/10 text-gray-100 hover:text-white;
+    @apply btn border border-white/10 bg-transparent hover:bg-white/10 text-gray-100 hover:text-white;
     font-weight: 500;
   }
   .btn-minimal {
-    @apply inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-100 hover:text-white hover:bg-white/10 transition-all duration-300 border border-transparent;
+    @apply inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm text-gray-100 hover:text-white hover:bg-white/10 transition-all duration-200 border border-transparent;
     position: relative;
     overflow: hidden;
     font-weight: 500;
@@ -234,22 +237,23 @@
   }
   /* Enhanced Navbar Styles (neutralized background and scroll effects) */
   header[data-sticky] {
-    background: transparent;
-    backdrop-filter: none;
-    border-bottom: none;
-    transition: transform 0.3s ease;
+    /* Solid but soft background by default, aligned with dark sections */
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+    transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   }
 
-  /* Remove scroll-based state visuals */
   header[data-sticky].scrolled {
-    background: transparent;
-    box-shadow: none;
-    border-bottom: none;
+    /* Slightly stronger separation when scrolled */
+    background: rgba(0, 0, 0, 0.96);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+    border-bottom: 1px solid rgba(15, 23, 42, 0.9);
   }
   header[data-sticky].scrolled nav {
-    background: transparent;
-    box-shadow: none;
-    border: none;
+    background: rgba(15, 23, 42, 0.95);
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.22);
   }
 
   /* Disable shimmer overlay */
@@ -259,21 +263,21 @@
 
   /* Navbar container uses original utilities (transparent) */
   header[data-sticky] nav {
-    /* ensure consistent spacing and avoid crowding */
-    gap: 0.5rem;
+    /* Compact, premium pill nav */
+    gap: 0.75rem;
     position: relative;
     z-index: 1;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    transition: none;
+    background: rgba(6, 12, 26, 0.94);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 12px 40px rgba(15, 23, 42, 0.8);
+    transition: background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   }
 
   /* Remove hover background on entire nav container */
   header[data-sticky] nav:hover {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: none;
+    background: rgba(15, 23, 42, 0.96);
+    border-color: rgba(148, 163, 184, 0.28);
+    box-shadow: 0 16px 55px rgba(15, 23, 42, 0.9);
   }
 
   header[data-sticky] nav > * {
@@ -296,7 +300,7 @@
     }
   }
   .nav-link {
-    @apply inline-flex items-center px-3 py-2 rounded-md transition-all duration-300 text-gray-100 hover:text-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400;
+    @apply inline-flex items-center px-3 py-2 rounded-md transition-all duration-200 text-gray-200 hover:text-white hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400;
     position: relative;
     overflow: hidden;
     transform: translateY(0);
@@ -313,10 +317,10 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.08) 50%,
       transparent 100%
     );
-    transition: left 0.5s ease;
+    transition: left 0.35s ease-out;
   }
 
   .nav-link:hover::before {
@@ -342,12 +346,8 @@
 
   .nav-link:hover {
     transform: translateY(-1px);
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.18) 100%
-    );
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: rgba(15, 23, 42, 0.9);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.8);
     color: #ffffff;
   }
 
@@ -359,12 +359,9 @@
 
   .nav-link.active {
     color: #ffffff;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.2) 0%,
-      rgba(99, 102, 241, 0.2) 100%
-    );
-    border: 1px solid rgba(59, 130, 246, 0.4);
+    background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.24), transparent 55%),
+      rgba(15, 23, 42, 0.98);
+    border: 1px solid rgba(37, 99, 235, 0.7);
     font-weight: 600;
   }
 
@@ -378,7 +375,8 @@
     @apply w-full rounded-md border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-gray-100 placeholder:text-gray-400 focus:outline focus:outline-2 focus:outline-blue-400 focus:border-blue-400;
   }
   .card {
-    @apply rounded-xl border border-white/10 bg-white/5 shadow-sm;
+    /* Unified card appearance across the site */
+    @apply rounded-xl border border-white/5 bg-slate-900/60 shadow-md;
   }
 
   /* Enhanced Dropdown Menu */
@@ -478,7 +476,7 @@
     background: rgba(15, 23, 42, 0.98) !important;
   }
   .nav-glass {
-    background-color: rgba(15, 23, 42, 0.95) !important;
+    background-color: rgba(6, 12, 26, 0.96) !important;
     backdrop-filter: blur(8px) saturate(120%);
     -webkit-backdrop-filter: blur(8px) saturate(120%);
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -516,8 +514,10 @@
 
   /* Hero spotlight visual polish */
   [data-hero-spotlight] {
-    mix-blend-mode: soft-light;
-    transition: opacity 200ms ease;
+    /* Normal blend so accent-colored gradient is clearly visible */
+    mix-blend-mode: normal;
+    /* Faster response for a snappier “haptic” feel */
+    transition: opacity 140ms ease-out;
     contain: paint; /* isolate repaint region to reduce overdraw */
   }
   /* Reduce motion for parallax and spotlight when user prefers reduced motion */
@@ -637,18 +637,6 @@
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 20px 20px;
     color: rgba(255, 255, 255, 0.1);
-  }
-
-  .admin-nav-btn {
-    @apply flex items-center justify-between rounded-lg border border-white/5 bg-slate-900/40 px-3 py-2 text-left font-medium text-slate-300 transition-all duration-200 hover:border-blue-500/50 hover:text-white;
-  }
-
-  .admin-nav-btn.active {
-    @apply border-blue-500 bg-blue-500/10 text-white shadow-lg shadow-blue-500/10;
-  }
-
-  .admin-panel {
-    @apply rounded-2xl border border-white/10 bg-slate-900/30 p-4 backdrop-blur;
   }
 
   .loader {

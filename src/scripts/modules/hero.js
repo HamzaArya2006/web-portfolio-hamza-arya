@@ -33,7 +33,7 @@ export function bindHeroSpotlight() {
   }
   overlay.style.pointerEvents = 'none';
   overlay.style.opacity = '1';
-  const getBaseRadius = () => Math.max(220, Math.min(360, Math.floor(window.innerWidth * 0.18)));
+  const getBaseRadius = () => Math.max(200, Math.min(320, Math.floor(window.innerWidth * 0.18)));
   let baseRadius = getBaseRadius();
   let featherWidth = Math.floor(baseRadius * 1.6);
   const centerAlpha = 0.10;
@@ -51,8 +51,11 @@ export function bindHeroSpotlight() {
   const setGradient = (x, y, extra = 0) => {
     const inner = baseRadius + extra;
     const outer = inner + featherWidth;
-    // Single radial gradient (no blend mode) to reduce repaint cost
-    overlay.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0,0,0,${centerAlpha}) 0px, rgba(0,0,0,${midAlpha}) ${inner}px, rgba(0,0,0,${outsideAlpha}) ${outer}px)`;
+    // Softer, more subtle accent spotlight
+    overlay.style.background = `radial-gradient(circle at ${x}px ${y}px,
+      rgba(37, 99, 235, 0.22) 0px,
+      rgba(37, 99, 235, 0.10) ${inner}px,
+      rgba(15, 23, 42, 0.0) ${outer}px)`;
   };
   let rafId = 0;
   let active = false;

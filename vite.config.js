@@ -28,10 +28,8 @@ function getHtmlFiles(dir, basePath = '') {
 
 // Collect all page inputs dynamically
 function getPageInputs() {
-  // Manually specify admin to force dist/admin/index.html
   const inputs = {
     main: resolve(__dirname, 'index.html'),
-    'admin/index': resolve(__dirname, 'src/pages/admin/index.html'),
     'pages/about': resolve(__dirname, 'src/pages/about.html'),
     'pages/blog': resolve(__dirname, 'src/pages/blog.html'),
     'pages/case-studies': resolve(__dirname, 'src/pages/case-studies.html'),
@@ -42,21 +40,18 @@ function getPageInputs() {
     'pages/speaking': resolve(__dirname, 'src/pages/speaking.html'),
   };
 
-  // Collect blog posts - ignore any admin page by path
+  // Collect blog posts
   const blogPosts = getHtmlFiles(resolve(__dirname, 'src/pages/blog'), 'pages/blog/');
   blogPosts.forEach(({ name, path }) => {
     inputs[name] = path;
   });
 
-  // Collect project pages - ignore any admin page by path
+  // Collect project pages
   const projects = getHtmlFiles(resolve(__dirname, 'src/pages/projects'), 'pages/projects/');
   projects.forEach(({ name, path }) => {
     inputs[name] = path;
   });
 
-  // DO NOT loop over src/pages in a way that would add src/pages/admin/index.html as 'pages/admin/index'
-  // Any other dynamic loader (like one for miscellaneous pages) should filter or .filter(x => !x.path.includes('/admin/'))
-  
   return inputs;
 }
 
@@ -66,96 +61,6 @@ export default defineConfig({
     handlebars({
       partialDirectory: resolve(__dirname, 'src/partials')
     }),
-    {
-      name: 'admin-html-handler',
-      enforce: 'pre', // Run before other plugins
-      configureServer(server) {
-        // Register middleware immediately to intercept /admin routes early
-        const adminHandler = async (req, res, next) => {
-          // Skip non-GET requests immediately
-          if (req.method !== 'GET' && req.method !== 'HEAD') {
-            next();
-            return;
-          }
-
-          if (!req.url) {
-            next();
-            return;
-          }
-
-          // More robust URL parsing
-          let pathname = '/';
-          try {
-            // Remove query string and hash
-            const pathOnly = req.url.split('?')[0].split('#')[0];
-            // Normalize trailing slashes
-            pathname = pathOnly.endsWith('/') && pathOnly.length > 1 
-              ? pathOnly.slice(0, -1) 
-              : pathOnly;
-            // Ensure it starts with /
-            if (!pathname.startsWith('/')) {
-              pathname = '/' + pathname;
-            }
-          } catch (err) {
-            // Fallback parsing
-            pathname = req.url.split('?')[0].split('#')[0];
-          }
-
-          // Check if this is an admin path
-          const normalizedPath = pathname.toLowerCase();
-          const isAdminPath = normalizedPath === '/admin' || 
-                             normalizedPath === '/admin/' ||
-                             normalizedPath.startsWith('/admin/index');
-
-          if (!isAdminPath) {
-            next();
-            return;
-          }
-
-          // Handle admin route
-          try {
-            const adminHtmlPath = resolve(__dirname, 'src/pages/admin/index.html');
-            
-            // Check if file exists
-            if (!existsSync(adminHtmlPath)) {
-              console.error(`[admin-html-handler] Admin file not found at: ${adminHtmlPath}`);
-              res.statusCode = 404;
-              res.end('Admin page not found');
-              return;
-            }
-
-            const rawHtml = readFileSync(adminHtmlPath, 'utf-8');
-            const transformed = await server.transformIndexHtml('/admin/index.html', rawHtml);
-            
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'text/html; charset=utf-8');
-            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-            res.setHeader('Pragma', 'no-cache');
-            res.setHeader('Expires', '0');
-            res.end(transformed);
-          } catch (error) {
-            console.error('[admin-html-handler] Error serving admin page:', error);
-            res.statusCode = 500;
-            res.end('Error loading admin page');
-          }
-        };
-
-        // Register middleware at the beginning
-        server.middlewares.use(adminHandler);
-      },
-      writeBundle() {
-        const builtAdminPath = resolve(__dirname, 'dist/src/pages/admin/index.html');
-        const targetDir = resolve(__dirname, 'dist/admin');
-        try {
-          if (existsSync(builtAdminPath)) {
-            mkdirSync(targetDir, { recursive: true });
-            copyFileSync(builtAdminPath, resolve(targetDir, 'index.html'));
-          }
-        } catch (error) {
-          console.warn('[admin-html-handler] Failed to copy admin build output:', error);
-        }
-      },
-    },
     {
       name: 'pages-output-reorganizer',
       writeBundle() {
@@ -179,11 +84,7 @@ export default defineConfig({
               const srcPath = resolve(src, entry.name);
               const destPath = resolve(dest, entry.name);
               
-              if (entry.isDirectory()) {
-                // Skip admin directory (handled by admin-html-handler)
-                if (entry.name === 'admin') {
-                  continue;
-                }
+                if (entry.isDirectory()) {
                 copyRecursive(srcPath, destPath);
               } else if (entry.isFile()) {
                 // Copy file and .br compressed version if it exists
@@ -206,10 +107,6 @@ export default defineConfig({
               for (const entry of entries) {
                 const fullPath = resolve(dir, entry.name);
                 if (entry.isDirectory()) {
-                  // Skip admin directory
-                  if (entry.name === 'admin') {
-                    continue;
-                  }
                   removeRecursive(fullPath);
                   // Try to remove empty directory
                   try {
@@ -233,14 +130,11 @@ export default defineConfig({
                   }
                 }
               }
-              // Try to remove the directory itself if it's empty or only contains admin
+              // Try to remove the directory itself if it's empty
               try {
                 const remainingEntries = readdirSync(dir);
-                if (remainingEntries.length === 0 || (remainingEntries.length === 1 && remainingEntries[0] === 'admin')) {
-                  // Don't remove if admin is the only thing left
-                  if (remainingEntries.length === 0) {
-                    rmdirSync(dir);
-                  }
+                if (remainingEntries.length === 0) {
+                  rmdirSync(dir);
                 }
               } catch {
                 // Directory not empty or already removed

@@ -1,7 +1,7 @@
 import { notify } from './notifications.js';
 import { warn } from './logger.js';
 
-const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || import.meta.env.VITE_ADMIN_API_URL || '').replace(/\/$/, '');
+const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || '').replace(/\/$/, '');
 
 // Basic HTML sanitizer to prevent XSS attacks
 // Note: For production, consider using DOMPurify library (npm install dompurify) for more robust sanitization

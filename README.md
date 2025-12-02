@@ -69,16 +69,6 @@ web-portfolio-hamza-arya/
 - SEO basics: meta tags, Open Graph/Twitter, robots.txt, sitemap.xml
 - Performance-minded: lazy images, content-visibility utilities, minimal JS
 
-## Admin Control Center
-
-An optional admin area is available for managing content and theme customizations.
-
-- **Backend:** Express + MySQL (`/server` directory)
-- **Frontend:** `/pages/admin/index.html`
-- **Features:** project CRUD, card customization, site-wide copy updates, custom CSS/HTML injection, activity feed
-
-See `/server/README.md` for setup instructions.
-
 ## Environment Variables (optional)
 
 - `VITE_FORM_ENDPOINT` — Optional endpoint for contact form submissions (JSON POST)

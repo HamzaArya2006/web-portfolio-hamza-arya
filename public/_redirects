@@ -1,6 +1,0 @@
-# Handle admin route
-/admin    /admin/index.html   200
-/admin/    /admin/index.html   200
-
-# Fallback to index.html for SPA routing
-/*    /index.html   200
