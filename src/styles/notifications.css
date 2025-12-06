@@ -48,15 +48,6 @@
               opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Light theme support */
-html.light .notification,
-html[data-theme="light"] .notification {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 
-    0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(0, 0, 0, 0.05) inset;
-}
 
 .notification-enter {
   transform: translateX(0);
@@ -106,10 +97,6 @@ html[data-theme="light"] .notification {
   margin-bottom: 0.25rem;
 }
 
-html.light .notification-title,
-html[data-theme="light"] .notification-title {
-  color: rgb(17, 24, 39);
-}
 
 .notification-message {
   font-size: 0.875rem;
@@ -117,10 +104,6 @@ html[data-theme="light"] .notification-title {
   color: rgba(255, 255, 255, 0.8);
 }
 
-html.light .notification-message,
-html[data-theme="light"] .notification-message {
-  color: rgba(17, 24, 39, 0.7);
-}
 
 .notification-close {
   flex-shrink: 0;
@@ -139,21 +122,12 @@ html[data-theme="light"] .notification-message {
   margin: -0.25rem -0.25rem -0.25rem 0;
 }
 
-html.light .notification-close,
-html[data-theme="light"] .notification-close {
-  color: rgba(17, 24, 39, 0.6);
-}
 
 .notification-close:hover {
   background: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 1);
 }
 
-html.light .notification-close:hover,
-html[data-theme="light"] .notification-close:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: rgba(17, 24, 39, 1);
-}
 
 .notification-close:focus {
   outline: 2px solid rgba(59, 130, 246, 0.5);
@@ -214,10 +188,6 @@ html[data-theme="light"] .notification-close:hover {
   animation: notification-progress linear forwards;
 }
 
-html.light .notification-progress,
-html[data-theme="light"] .notification-progress {
-  background: rgba(0, 0, 0, 0.1);
-}
 
 @keyframes notification-progress {
   from {
@@ -236,12 +206,6 @@ html[data-theme="light"] .notification-progress {
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
 }
 
-html.light .notification:hover,
-html[data-theme="light"] .notification:hover {
-  box-shadow: 
-    0 15px 35px -5px rgba(0, 0, 0, 0.15),
-    0 0 0 1px rgba(0, 0, 0, 0.1) inset;
-}
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {

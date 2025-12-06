@@ -1,14 +1,4 @@
-// Core behaviors: theme, smooth scroll, reveal-on-scroll
-
-import { initTheme as initThemeSystem, applyTheme, getTheme } from './theme.js';
-
-export function initTheme() {
-  // Use the new theme system
-  initThemeSystem();
-  // Ensure dark theme is applied initially if no preference
-  const currentTheme = getTheme();
-  applyTheme(currentTheme);
-}
+// Core behaviors: smooth scroll, reveal-on-scroll
 
 export function bindSmoothScroll() {
   const links = document.querySelectorAll('a[href^="#"]');

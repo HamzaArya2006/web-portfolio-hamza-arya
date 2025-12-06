@@ -2,7 +2,6 @@ import "../styles/main.css";
 import { error } from "./modules/logger.js";
 import { initErrorHandling } from "./modules/error-handler.js";
 import {
-  initTheme,
   bindSmoothScroll,
   bindRevealOnScroll,
 } from "./modules/core.js";
@@ -23,7 +22,6 @@ import {
   initPerformanceMonitoring,
 } from "./modules/pwa_perf.js";
 import { initWebVitals } from "./modules/web-vitals.js";
-import { bindThemeToggle } from "./modules/theme.js";
 import { bindViewTransitions, addViewTransitionStyles } from "./modules/view-transitions.js";
 import { initPWAInstall } from "./modules/pwa-install.js";
 import { initNotifications } from "./modules/notifications.js";
@@ -48,9 +46,7 @@ window.addEventListener("DOMContentLoaded", () => {
   // Initialize error handling first
   initErrorHandling();
   
-  // Initialize theme system
-  initTheme();
-  bindThemeToggle();
+  // Theme always dark - no toggle needed
   
   // Initialize view transitions
   if (document.startViewTransition) {
