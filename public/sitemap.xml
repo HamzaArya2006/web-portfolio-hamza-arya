@@ -4,42 +4,54 @@
     <loc>https://hamzaarya.dev/</loc>
     <priority>1.0</priority>
     <changefreq>weekly</changefreq>
-    <lastmod>2025-10-10</lastmod>
+    <lastmod>2025-01-27</lastmod>
   </url>
   <url>
-    <loc>https://hamzaarya.dev/about</loc>
+    <loc>https://hamzaarya.dev/pages/about.html</loc>
     <priority>0.9</priority>
     <changefreq>monthly</changefreq>
-    <lastmod>2025-10-10</lastmod>
+    <lastmod>2025-01-27</lastmod>
   </url>
   <url>
-    <loc>https://hamzaarya.dev/blog</loc>
+    <loc>https://hamzaarya.dev/pages/blog.html</loc>
     <priority>0.8</priority>
     <changefreq>weekly</changefreq>
-    <lastmod>2025-10-10</lastmod>
+    <lastmod>2025-01-27</lastmod>
   </url>
   <url>
-    <loc>https://hamzaarya.dev/case-studies</loc>
+    <loc>https://hamzaarya.dev/pages/case-studies.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
-    <lastmod>2025-10-10</lastmod>
+    <lastmod>2025-01-27</lastmod>
   </url>
   <url>
-    <loc>https://hamzaarya.dev/services</loc>
+    <loc>https://hamzaarya.dev/pages/services.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
-    <lastmod>2025-10-10</lastmod>
+    <lastmod>2025-01-27</lastmod>
   </url>
   <url>
-    <loc>https://hamzaarya.dev/contact</loc>
+    <loc>https://hamzaarya.dev/pages/contact.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
-    <lastmod>2025-10-10</lastmod>
+    <lastmod>2025-01-27</lastmod>
   </url>
   <url>
-    <loc>https://hamzaarya.dev/resume</loc>
+    <loc>https://hamzaarya.dev/pages/resume.html</loc>
     <priority>0.6</priority>
     <changefreq>yearly</changefreq>
-    <lastmod>2025-10-10</lastmod>
+    <lastmod>2025-01-27</lastmod>
+  </url>
+  <url>
+    <loc>https://hamzaarya.dev/pages/open-source.html</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2025-01-27</lastmod>
+  </url>
+  <url>
+    <loc>https://hamzaarya.dev/pages/speaking.html</loc>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+    <lastmod>2025-01-27</lastmod>
   </url>
 </urlset>

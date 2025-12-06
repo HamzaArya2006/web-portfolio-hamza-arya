@@ -30,6 +30,7 @@ import { initNotifications } from "./modules/notifications.js";
 import { runModernIntroOverlaySequence } from "./modules/intro.js";
 import { renderProjects } from "./modules/projects.js";
 import { applySiteCustomizations, mountHeroCustomSlot } from "./modules/siteCustomizations.js";
+import { initAssistant } from "./modules/assistant.js";
 // Critical: Load immediately
 window.addEventListener("DOMContentLoaded", () => {
   // Perf-lite: favor ultra-smooth feel on low/medium devices or when user prefers less motion
@@ -71,6 +72,7 @@ window.addEventListener("DOMContentLoaded", () => {
   initPWAInstall();
   initNotifications();
   bindLazyImages();
+  initAssistant();
   // Eagerly render projects if grid exists to avoid relying solely on intersection
   const grid = document.getElementById('projects-grid');
   if (grid) {
