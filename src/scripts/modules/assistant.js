@@ -1,9 +1,296 @@
 /**
  * Advanced AI Assistant - Intelligent, Conversational, Voice-Enabled
  * Features: Smart responses, jokes, website touring, text-to-speech, voice input
+ * Enhanced with: NLP algorithms, sentiment analysis, intent classification, fuzzy matching
  */
 
 import { log } from './logger.js';
+
+// ============================================
+// Advanced NLP Algorithms
+// ============================================
+
+/**
+ * Calculate Levenshtein distance (edit distance) between two strings
+ * Used for fuzzy string matching
+ */
+function levenshteinDistance(str1, str2) {
+  const matrix = [];
+  const len1 = str1.length;
+  const len2 = str2.length;
+
+  for (let i = 0; i <= len2; i++) {
+    matrix[i] = [i];
+  }
+
+  for (let j = 0; j <= len1; j++) {
+    matrix[0][j] = j;
+  }
+
+  for (let i = 1; i <= len2; i++) {
+    for (let j = 1; j <= len1; j++) {
+      if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+
+  return matrix[len2][len1];
+}
+
+/**
+ * Calculate similarity score between two strings (0-1)
+ */
+function stringSimilarity(str1, str2) {
+  const maxLen = Math.max(str1.length, str2.length);
+  if (maxLen === 0) return 1.0;
+  const distance = levenshteinDistance(str1.toLowerCase(), str2.toLowerCase());
+  return 1 - (distance / maxLen);
+}
+
+/**
+ * Tokenize text into words, removing stop words
+ */
+function tokenize(text) {
+  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'should', 'could', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'what', 'which', 'who', 'whom', 'whose', 'where', 'when', 'why', 'how']);
+  return text.toLowerCase()
+    .replace(/[^\w\s]/g, ' ')
+    .split(/\s+/)
+    .filter(word => word.length > 2 && !stopWords.has(word));
+}
+
+/**
+ * Calculate TF-IDF score for a term in a document
+ */
+function calculateTFIDF(term, document, allDocuments) {
+  // Term Frequency
+  const termCount = (document.match(new RegExp(term, 'gi')) || []).length;
+  const totalTerms = document.split(/\s+/).length;
+  const tf = termCount / totalTerms;
+
+  // Inverse Document Frequency
+  const docsWithTerm = allDocuments.filter(doc => 
+    doc.toLowerCase().includes(term.toLowerCase())
+  ).length;
+  const idf = Math.log(allDocuments.length / (1 + docsWithTerm));
+
+  return tf * idf;
+}
+
+/**
+ * Calculate cosine similarity between two vectors
+ */
+function cosineSimilarity(vec1, vec2) {
+  if (vec1.length !== vec2.length) return 0;
+  
+  let dotProduct = 0;
+  let mag1 = 0;
+  let mag2 = 0;
+
+  for (let i = 0; i < vec1.length; i++) {
+    dotProduct += vec1[i] * vec2[i];
+    mag1 += vec1[i] * vec1[i];
+    mag2 += vec2[i] * vec2[i];
+  }
+
+  const magnitude = Math.sqrt(mag1) * Math.sqrt(mag2);
+  return magnitude === 0 ? 0 : dotProduct / magnitude;
+}
+
+/**
+ * Advanced Sentiment Analysis with intensity scoring
+ */
+function analyzeSentiment(text) {
+  const positiveWords = {
+    strong: ['love', 'adore', 'fantastic', 'amazing', 'perfect', 'excellent', 'brilliant', 'outstanding', 'phenomenal'],
+    medium: ['good', 'great', 'nice', 'awesome', 'wonderful', 'happy', 'pleased', 'satisfied', 'glad'],
+    light: ['okay', 'fine', 'alright', 'decent', 'acceptable']
+  };
+  
+  const negativeWords = {
+    strong: ['hate', 'terrible', 'awful', 'horrible', 'worst', 'disgusting', 'horrendous', 'atrocious'],
+    medium: ['bad', 'poor', 'disappointed', 'frustrated', 'annoyed', 'upset', 'sad'],
+    light: ['not great', 'could be better', 'meh', 'boring']
+  };
+  
+  const lowerText = text.toLowerCase();
+  let positiveScore = 0;
+  let negativeScore = 0;
+  let intensity = 0;
+
+  // Weighted sentiment scoring
+  Object.entries(positiveWords).forEach(([strength, words]) => {
+    const weight = strength === 'strong' ? 3 : strength === 'medium' ? 2 : 1;
+    words.forEach(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      const matches = (lowerText.match(regex) || []).length;
+      positiveScore += matches * weight;
+      intensity += matches * weight;
+    });
+  });
+
+  Object.entries(negativeWords).forEach(([strength, words]) => {
+    const weight = strength === 'strong' ? 3 : strength === 'medium' ? 2 : 1;
+    words.forEach(word => {
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      const matches = (lowerText.match(regex) || []).length;
+      negativeScore += matches * weight;
+      intensity += matches * weight;
+    });
+  });
+
+  // Check for negation (e.g., "not good" = negative)
+  const negationPatterns = /\b(not|no|never|don't|doesn't|isn't|aren't|wasn't|weren't)\s+\w+/gi;
+  const negations = (lowerText.match(negationPatterns) || []).length;
+  if (negations > 0 && positiveScore > 0) {
+    positiveScore *= 0.3; // Reduce positive score if negated
+    negativeScore += negations * 2;
+  }
+
+  // Exclamation marks indicate intensity
+  const exclamations = (text.match(/!/g) || []).length;
+  intensity += exclamations * 0.5;
+
+  const sentiment = positiveScore > negativeScore ? 'positive' : 
+                   negativeScore > positiveScore ? 'negative' : 'neutral';
+  
+  return {
+    sentiment,
+    intensity: Math.min(intensity / 10, 1), // Normalize to 0-1
+    confidence: Math.abs(positiveScore - negativeScore) / (positiveScore + negativeScore + 1),
+    positiveScore,
+    negativeScore
+  };
+}
+
+/**
+ * Extract entities from text (simple entity recognition)
+ */
+function extractEntities(text) {
+  const entities = {
+    technologies: [],
+    topics: [],
+    actions: []
+  };
+
+  const techKeywords = ['react', 'vue', 'javascript', 'typescript', 'node', 'python', 'html', 'css', 'api', 'database', 'aws', 'docker', 'git', 'github'];
+  const topicKeywords = ['service', 'project', 'skill', 'contact', 'about', 'blog', 'price', 'experience', 'portfolio', 'work'];
+  const actionKeywords = ['show', 'tell', 'explain', 'help', 'guide', 'navigate', 'go', 'scroll', 'find', 'search'];
+
+  const lowerText = text.toLowerCase();
+  
+  techKeywords.forEach(tech => {
+    if (lowerText.includes(tech)) entities.technologies.push(tech);
+  });
+
+  topicKeywords.forEach(topic => {
+    if (lowerText.includes(topic)) entities.topics.push(topic);
+  });
+
+  actionKeywords.forEach(action => {
+    if (lowerText.includes(action)) entities.actions.push(action);
+  });
+
+  return entities;
+}
+
+/**
+ * Intent Classification - Advanced multi-layer intent detection
+ */
+function classifyIntent(text, context) {
+  const intents = {
+    greeting: ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'good night', 'sup', 'howdy'],
+    question: ['what', 'how', 'why', 'when', 'where', 'who', 'which', '?', 'tell me', 'explain'],
+    request: ['show', 'tell', 'explain', 'give', 'provide', 'can you', 'could you', 'please', 'help me', 'i need', 'i want'],
+    navigation: ['go to', 'navigate', 'scroll', 'show me', 'take me', 'visit', 'open', 'jump to'],
+    appreciation: ['thanks', 'thank you', 'appreciate', 'great', 'awesome', 'perfect', 'excellent'],
+    clarification: ['what do you mean', 'i don\'t understand', 'explain', 'clarify', 'more details', 'elaborate', 'can you explain'],
+    comparison: ['compare', 'difference', 'vs', 'versus', 'better', 'best', 'which is better', 'what\'s the difference'],
+    information: ['tell me about', 'what is', 'what are', 'information', 'details', 'describe', 'elaborate on'],
+    command: ['do', 'make', 'create', 'build', 'generate', 'find', 'search', 'look for'],
+    confirmation: ['yes', 'yeah', 'yep', 'sure', 'ok', 'okay', 'correct', 'right', 'exactly'],
+    negation: ['no', 'nope', 'not', 'don\'t', 'never', 'nothing', 'none'],
+    continuation: ['more', 'continue', 'and', 'also', 'additionally', 'furthermore', 'what else'],
+    urgency: ['urgent', 'asap', 'quickly', 'fast', 'immediately', 'now', 'right now']
+  };
+
+  const lowerText = text.toLowerCase();
+  const scores = {};
+  const tokens = tokenize(text);
+
+  // Multi-layer scoring
+  for (const [intent, keywords] of Object.entries(intents)) {
+    scores[intent] = 0;
+    
+    // Layer 1: Direct keyword matching
+    keywords.forEach(keyword => {
+      if (lowerText.includes(keyword)) {
+        const weight = keyword.length > 3 ? 3 : 1.5;
+        scores[intent] += weight;
+      }
+    });
+    
+    // Layer 2: Token-based matching (more accurate)
+    keywords.forEach(keyword => {
+      const keywordTokens = tokenize(keyword);
+      keywordTokens.forEach(kwToken => {
+        if (tokens.includes(kwToken)) {
+          scores[intent] += 2;
+        }
+      });
+    });
+    
+    // Layer 3: Fuzzy matching for variations
+    keywords.forEach(keyword => {
+      tokens.forEach(token => {
+        const similarity = stringSimilarity(token, keyword);
+        if (similarity > 0.8) {
+          scores[intent] += similarity * 1.5;
+        }
+      });
+    });
+  }
+
+  // Context-aware boosting
+  if (context.lastTopic && lowerText.includes(context.lastTopic)) {
+    scores.question += 2;
+    scores.information += 1.5;
+  }
+  
+  if (context.lastIntent === 'question' && lowerText.length < 20) {
+    scores.confirmation += 1.5;
+    scores.negation += 1.5;
+  }
+  
+  if (context.conversationFlow && context.conversationFlow.length > 0) {
+    const lastMessage = context.conversationFlow[context.conversationFlow.length - 1];
+    if (lastMessage.intent === 'question' && !lowerText.includes('?')) {
+      scores.continuation += 2;
+    }
+  }
+
+  // Find highest scoring intent with confidence
+  const maxScore = Math.max(...Object.values(scores));
+  const primaryIntent = Object.keys(scores).find(key => scores[key] === maxScore);
+  const totalScore = Object.values(scores).reduce((a, b) => a + b, 0);
+  const confidence = totalScore > 0 ? maxScore / totalScore : 0;
+  
+  return {
+    primary: primaryIntent || 'general',
+    confidence: Math.min(confidence, 1), // Normalize to 0-1
+    allScores: scores,
+    secondary: Object.entries(scores)
+      .sort((a, b) => b[1] - a[1])
+      .slice(1, 3)
+      .map(([intent]) => intent)
+  };
+}
 
 // Get time-based greeting
 function getTimeBasedGreeting() {
@@ -296,6 +583,9 @@ class AIAssistant {
     this.isSpeaking = false;
     this.userName = null;
     this.isTyping = false;
+    this.sessionId = this.generateSessionId();
+    this.apiBaseUrl = window.location.origin; // Will work with Netlify
+    this.syncEnabled = true; // Enable cloud sync
     this.context = {
       lastSection: null,
       lastTopic: null,
@@ -303,17 +593,52 @@ class AIAssistant {
       userPreferences: {},
       conversationFlow: [],
       mentionedTopics: [],
-      userMood: 'neutral'
+      userMood: 'neutral',
+      sentimentHistory: [],
+      lastIntent: null,
+      intentConfidence: 0,
+      learningData: {}, // For adaptive learning
+      conversationMemory: [], // Long-term memory
+      userProfile: {
+        interests: [],
+        expertise: 'unknown',
+        communicationStyle: 'balanced',
+        preferredTopics: []
+      },
+      reasoningChain: [], // For multi-step reasoning
+      attentionWeights: {}, // Attention mechanism simulation
+      globalAnalytics: null // Analytics from all users
     };
     this.init();
   }
 
-  init() {
+  /**
+   * Generate unique session ID
+   */
+  generateSessionId() {
+    // Try to get existing session from localStorage
+    let sessionId = localStorage.getItem('nova-session-id');
+    if (sessionId) return sessionId;
+    
+    // Generate new session ID
+    sessionId = `nova-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
+    localStorage.setItem('nova-session-id', sessionId);
+    return sessionId;
+  }
+
+  async init() {
     this.initSpeechRecognition();
     this.createUI();
     this.bindEvents();
     this.loadContext();
-    log('[assistant] Initialized with advanced features');
+    
+    // Load conversations from cloud
+    if (this.syncEnabled) {
+      await this.loadConversationsFromCloud();
+      await this.loadGlobalAnalytics();
+    }
+    
+    log('[assistant] Initialized with advanced features and cloud sync');
   }
 
   initSpeechRecognition() {
@@ -460,8 +785,8 @@ class AIAssistant {
 
     // Append to body - ensure body exists
     if (document.body) {
-      document.body.appendChild(button);
-      document.body.appendChild(popup);
+    document.body.appendChild(button);
+    document.body.appendChild(popup);
     } else {
       // Fallback: wait for DOM to be ready
       document.addEventListener('DOMContentLoaded', () => {
@@ -721,7 +1046,7 @@ class AIAssistant {
     observer.observe(popup, { attributes: true });
   }
 
-  handleUserMessage(message) {
+  async handleUserMessage(message) {
     this.hideSuggestions();
     this.addMessage(message, 'user');
     this.conversationHistory.push({ role: 'user', content: message });
@@ -731,6 +1056,10 @@ class AIAssistant {
     
     // Check for navigation commands
     if (this.handleNavigation(message)) {
+      // Save navigation action
+      if (this.syncEnabled) {
+        this.saveConversationToCloud(message, 'Navigation action', this.context);
+      }
       return;
     }
     
@@ -740,11 +1069,17 @@ class AIAssistant {
     // Simulate thinking delay with variable timing for more natural feel
     const thinkingTime = this.calculateThinkingTime(message);
     
-    setTimeout(() => {
+    setTimeout(async () => {
       this.hideTypingIndicator();
-      const response = this.generateResponse(message);
+      // Use enhanced response generation with global learning
+      const response = this.generateResponseWithGlobalLearning(message);
       this.addMessage(response, 'assistant', true);
       this.conversationHistory.push({ role: 'assistant', content: response });
+      
+      // Save conversation to cloud
+      if (this.syncEnabled) {
+        await this.saveConversationToCloud(message, response, this.context);
+      }
       
       // Speak the response if voice is enabled
       if (this.voiceEnabled) {
@@ -754,54 +1089,323 @@ class AIAssistant {
   }
 
   calculateThinkingTime(message) {
-    // More complex questions get longer thinking time
+    // Advanced complexity calculation
     const length = message.length;
     const hasQuestion = message.includes('?');
-    const complexity = (length > 50 ? 200 : 0) + (hasQuestion ? 300 : 0);
-    return 400 + complexity + Math.random() * 300;
+    const tokens = tokenize(message);
+    const uniqueTokens = new Set(tokens).size;
+    const intent = classifyIntent(message, this.context);
+    
+    // Base time
+    let complexity = 300;
+    
+    // Length factor
+    complexity += length > 50 ? 200 : 0;
+    complexity += length > 100 ? 150 : 0;
+    
+    // Question factor
+    if (hasQuestion) complexity += 250;
+    
+    // Vocabulary complexity (more unique words = more complex)
+    complexity += uniqueTokens * 10;
+    
+    // Intent complexity
+    if (intent.primary === 'question') complexity += 200;
+    if (intent.primary === 'clarification') complexity += 150;
+    
+    // Context complexity (if switching topics)
+    if (this.context.lastTopic && this.detectTopic(message) !== this.context.lastTopic) {
+      complexity += 100;
+    }
+    
+    // Add randomness for natural feel
+    const randomFactor = 200 + Math.random() * 300;
+    
+    return Math.min(complexity + randomFactor, 2000); // Cap at 2 seconds
   }
 
   updateContext(message) {
     const lowerMsg = message.toLowerCase();
     
-    // Track mentioned topics
-    const topics = ['service', 'project', 'skill', 'contact', 'about', 'blog', 'price', 'experience'];
-    topics.forEach(topic => {
-      if (lowerMsg.includes(topic) && !this.context.mentionedTopics.includes(topic)) {
+    // Advanced entity extraction
+    const entities = extractEntities(message);
+    entities.topics.forEach(topic => {
+      if (!this.context.mentionedTopics.includes(topic)) {
         this.context.mentionedTopics.push(topic);
       }
     });
     
-    // Detect user mood
-    if (lowerMsg.match(/\b(thanks|thank you|appreciate|great|awesome|love|amazing)\b/)) {
-      this.context.userMood = 'positive';
-    } else if (lowerMsg.match(/\b(help|confused|don't understand|problem|issue)\b/)) {
-      this.context.userMood = 'needs_help';
-    }
-    
-    // Track conversation flow
-    this.context.conversationFlow.push({
+    // Enhanced sentiment analysis with intensity
+    const sentimentData = analyzeSentiment(message);
+    this.context.userMood = sentimentData.sentiment;
+    this.context.sentimentHistory = this.context.sentimentHistory || [];
+    this.context.sentimentHistory.push({
+      sentiment: sentimentData.sentiment,
+      intensity: sentimentData.intensity,
+      confidence: sentimentData.confidence,
       timestamp: Date.now(),
-      message: message.substring(0, 50),
-      topic: this.detectTopic(message)
+      message: message.substring(0, 30)
     });
     
-    // Keep only last 10 interactions
-    if (this.context.conversationFlow.length > 10) {
+    // Keep sentiment history (last 10 for better analysis)
+    if (this.context.sentimentHistory.length > 10) {
+      this.context.sentimentHistory.shift();
+    }
+    
+    // Advanced intent classification
+    const intent = classifyIntent(message, this.context);
+    this.context.lastIntent = intent.primary;
+    this.context.intentConfidence = intent.confidence;
+    
+    // Build user profile
+    this.updateUserProfile(message, entities, intent);
+    
+    // Attention mechanism - weight important information
+    this.updateAttentionWeights(message, entities, intent);
+    
+    // Track conversation flow with comprehensive details
+    const flowEntry = {
+      timestamp: Date.now(),
+      message: message.substring(0, 50),
+      topic: this.detectTopic(message),
+      intent: intent.primary,
+      intentSecondary: intent.secondary,
+      sentiment: sentimentData.sentiment,
+      sentimentIntensity: sentimentData.intensity,
+      entities: entities,
+      tokens: tokenize(message),
+      length: message.length
+    };
+    
+    this.context.conversationFlow.push(flowEntry);
+    
+    // Keep last 20 interactions for deep context
+    if (this.context.conversationFlow.length > 20) {
       this.context.conversationFlow.shift();
     }
+    
+    // Long-term memory for important information
+    if (intent.confidence > 0.7 || sentimentData.intensity > 0.7) {
+      this.context.conversationMemory.push({
+        ...flowEntry,
+        importance: intent.confidence * sentimentData.intensity
+      });
+      
+      // Keep only most important memories (top 30)
+      this.context.conversationMemory.sort((a, b) => b.importance - a.importance);
+      if (this.context.conversationMemory.length > 30) {
+        this.context.conversationMemory = this.context.conversationMemory.slice(0, 30);
+      }
+    }
+    
+    // Track user preferences with decay (recent interactions weighted more)
+    if (!this.context.userPreferences) {
+      this.context.userPreferences = {};
+    }
+    
+    entities.topics.forEach(topic => {
+      this.context.userPreferences[topic] = (this.context.userPreferences[topic] || 0) * 0.95 + 1; // Decay old preferences
+    });
+    
+    // Multi-step reasoning chain
+    this.updateReasoningChain(message, intent, entities);
     
     this.saveContext();
   }
 
-  detectTopic(message) {
-    const lowerMsg = message.toLowerCase();
-    for (const [category] of Object.entries(KNOWLEDGE_BASE)) {
-      if (category !== 'default' && KNOWLEDGE_BASE[category].patterns.some(p => lowerMsg.includes(p))) {
-        return category;
+  /**
+   * Update user profile based on interactions
+   */
+  updateUserProfile(message, entities, intent) {
+    const profile = this.context.userProfile;
+    
+    // Detect interests
+    entities.topics.forEach(topic => {
+      if (!profile.interests.includes(topic)) {
+        profile.interests.push(topic);
+      }
+    });
+    
+    // Detect expertise level based on vocabulary and question complexity
+    const tokens = tokenize(message);
+    const uniqueTokens = new Set(tokens).size;
+    const avgWordLength = tokens.reduce((sum, token) => sum + token.length, 0) / (tokens.length || 1);
+    
+    if (uniqueTokens > 8 && avgWordLength > 5 && message.length > 50) {
+      profile.expertise = 'advanced';
+    } else if (uniqueTokens > 5 && message.length > 30) {
+      profile.expertise = 'intermediate';
+    } else {
+      profile.expertise = 'beginner';
+    }
+    
+    // Detect communication style
+    const sentiment = analyzeSentiment(message);
+    if (sentiment.intensity > 0.7) {
+      profile.communicationStyle = 'enthusiastic';
+    } else if (message.length < 20) {
+      profile.communicationStyle = 'concise';
+    } else if (message.length > 100) {
+      profile.communicationStyle = 'detailed';
+    }
+    
+    // Track preferred topics
+    entities.topics.forEach(topic => {
+      if (!profile.preferredTopics.includes(topic)) {
+        profile.preferredTopics.push(topic);
+      }
+    });
+  }
+
+  /**
+   * Attention mechanism - weight important information
+   */
+  updateAttentionWeights(message, entities, intent) {
+    const weights = this.context.attentionWeights;
+    
+    // Higher weight for high-confidence intents
+    if (intent.confidence > 0.7) {
+      weights[intent.primary] = (weights[intent.primary] || 0) + intent.confidence;
+    }
+    
+    // Weight entities based on frequency
+    entities.topics.forEach(topic => {
+      weights[topic] = (weights[topic] || 0) + 1;
+    });
+    
+    // Decay old weights
+    Object.keys(weights).forEach(key => {
+      weights[key] *= 0.9;
+      if (weights[key] < 0.1) delete weights[key];
+    });
+  }
+
+  /**
+   * Multi-step reasoning chain
+   */
+  updateReasoningChain(message, intent, entities) {
+    const chain = this.context.reasoningChain;
+    
+    // Add reasoning step
+    chain.push({
+      step: chain.length + 1,
+      input: message.substring(0, 40),
+      intent: intent.primary,
+      entities: entities.topics,
+      timestamp: Date.now()
+    });
+    
+    // Keep last 5 reasoning steps
+    if (chain.length > 5) {
+      chain.shift();
+    }
+    
+    // Detect reasoning patterns
+    if (chain.length >= 2) {
+      const lastTwo = chain.slice(-2);
+      if (lastTwo[0].intent === 'question' && lastTwo[1].intent === 'clarification') {
+        // User is seeking clarification - adjust response style
+        this.context.needsClarification = true;
       }
     }
-    return 'general';
+  }
+
+  /**
+   * Advanced reasoning system - simulates multi-step thought process
+   */
+  performAdvancedReasoning(message, context) {
+    const steps = [];
+    const intent = classifyIntent(message, context);
+    const sentiment = analyzeSentiment(message);
+    const entities = extractEntities(message);
+    
+    // Step 1: Understand the query
+    steps.push({
+      step: 1,
+      reasoning: 'Understanding user intent',
+      conclusion: `User intent: ${intent.primary} (confidence: ${(intent.confidence * 100).toFixed(1)}%)`
+    });
+    
+    // Step 2: Analyze context
+    if (context.lastTopic) {
+      steps.push({
+        step: 2,
+        reasoning: 'Contextual analysis',
+        conclusion: `Previous topic: ${context.lastTopic}, Current sentiment: ${sentiment.sentiment}`
+      });
+    }
+    
+    // Step 3: Entity extraction reasoning
+    if (entities.topics.length > 0) {
+      steps.push({
+        step: 3,
+        reasoning: 'Entity recognition',
+        conclusion: `Detected topics: ${entities.topics.join(', ')}`
+      });
+    }
+    
+    // Step 4: Memory retrieval
+    if (context.conversationMemory && context.conversationMemory.length > 0) {
+      const relevantMemories = context.conversationMemory
+        .filter(m => entities.topics.some(t => m.entities?.includes(t)))
+        .slice(0, 2);
+      
+      if (relevantMemories.length > 0) {
+        steps.push({
+          step: 4,
+          reasoning: 'Memory retrieval',
+          conclusion: `Found ${relevantMemories.length} relevant memories`
+        });
+      }
+    }
+    
+    // Step 5: Response strategy
+    let strategy = 'direct';
+    if (intent.primary === 'clarification') strategy = 'detailed';
+    if (sentiment.intensity > 0.7) strategy = 'empathetic';
+    if (context.userProfile?.expertise === 'advanced') strategy = 'technical';
+    
+    steps.push({
+      step: 5,
+      reasoning: 'Response strategy',
+      conclusion: `Strategy: ${strategy} (based on user profile and context)`
+    });
+    
+    return steps;
+  }
+
+  detectTopic(message) {
+    const lowerMsg = message.toLowerCase();
+    const tokens = tokenize(message);
+    let bestTopic = 'general';
+    let bestScore = 0;
+    
+    // Enhanced topic detection with fuzzy matching
+    for (const [category, data] of Object.entries(KNOWLEDGE_BASE)) {
+      if (category === 'default') continue;
+      
+      let score = 0;
+      data.patterns.forEach(pattern => {
+        const patternLower = pattern.toLowerCase();
+        if (lowerMsg.includes(patternLower)) {
+          score += 5;
+        }
+        // Fuzzy matching
+        tokens.forEach(token => {
+          const similarity = stringSimilarity(token, patternLower);
+          if (similarity > 0.7) {
+            score += similarity * 3;
+          }
+        });
+      });
+      
+      if (score > bestScore) {
+        bestScore = score;
+        bestTopic = category;
+      }
+    }
+    
+    return bestTopic;
   }
 
   showTypingIndicator() {
@@ -888,77 +1492,341 @@ class AIAssistant {
   generateResponse(message) {
     const lowerMessage = message.toLowerCase();
     const context = this.context;
+    const tokens = tokenize(message);
     
-    // Enhanced pattern matching with context awareness and fuzzy matching
-    let bestMatch = null;
-    let bestScore = 0;
+    // Advanced reasoning: Multi-step thought process
+    const reasoningSteps = this.performAdvancedReasoning(message, context);
+    
+    // Advanced multi-algorithm matching system with reasoning integration
+    const matches = [];
     
     for (const [category, data] of Object.entries(KNOWLEDGE_BASE)) {
       if (category === 'default') continue;
       
       let score = 0;
       const words = lowerMessage.split(/\s+/);
+      const patternTexts = data.patterns.join(' ');
       
-      // Calculate match score
+      // Algorithm 1: Exact phrase matching (highest weight)
       data.patterns.forEach(pattern => {
         const patternLower = pattern.toLowerCase();
-        const patternWords = patternLower.split(/\s+/);
-        
-        // Exact phrase match (highest score)
         if (lowerMessage.includes(patternLower)) {
-          score += 10;
+          score += 15; // High weight for exact matches
         }
-        
-        // Word matches
+      });
+      
+      // Algorithm 2: Fuzzy string matching using Levenshtein distance
+      data.patterns.forEach(pattern => {
+        const similarity = stringSimilarity(lowerMessage, pattern);
+        if (similarity > 0.7) {
+          score += similarity * 10;
+        }
+      });
+      
+      // Algorithm 3: TF-IDF based scoring
+      const allPatterns = Object.values(KNOWLEDGE_BASE)
+        .flatMap(d => d.patterns)
+        .join(' ');
+      tokens.forEach(token => {
+        const tfidf = calculateTFIDF(token, patternTexts, [allPatterns]);
+        score += tfidf * 5;
+      });
+      
+      // Algorithm 4: Word-level matching with weights
+      data.patterns.forEach(pattern => {
+        const patternWords = pattern.toLowerCase().split(/\s+/);
         patternWords.forEach(pWord => {
           words.forEach(word => {
-            if (word === pWord) score += 3;
-            else if (word.includes(pWord) || pWord.includes(word)) score += 1;
+            if (word === pWord) score += 4;
+            else if (word.includes(pWord) || pWord.includes(word)) {
+              const sim = stringSimilarity(word, pWord);
+              score += sim * 2;
+            }
           });
         });
       });
       
-      // Boost score if topic was mentioned before
+      // Algorithm 5: Context-aware boosting
       if (this.context.mentionedTopics.includes(category)) {
+        score += 3; // Boost for previously mentioned topics
+      }
+      
+      if (this.context.lastTopic === category) {
+        score += 2.5; // Boost for continuation of topic
+      }
+      
+      // Algorithm 6: User preference boosting
+      if (this.context.userPreferences[category]) {
+        score += Math.log(this.context.userPreferences[category] + 1) * 1.5;
+      }
+      
+      // Algorithm 7: Intent-based matching
+      const intent = classifyIntent(message, context);
+      if (intent.primary === 'question' && category !== 'greeting') {
         score += 2;
       }
       
-      // Boost score if last topic matches
-      if (this.context.lastTopic === category) {
-        score += 1.5;
+      // Algorithm 8: Sentiment-aware matching
+      const sentimentData = analyzeSentiment(message);
+      if (sentimentData.sentiment === 'positive' && category === 'thanks') {
+        score += 3;
+      }
+      if (sentimentData.intensity > 0.7) {
+        score += sentimentData.intensity * 2; // Boost for high-intensity sentiment
       }
       
-      if (score > bestScore) {
-        bestScore = score;
-        bestMatch = { category, data };
-      }
+      matches.push({ category, data, score });
     }
     
-    // Use best match if score is significant
-    if (bestMatch && bestScore >= 3) {
+    // Sort matches by score (descending)
+    matches.sort((a, b) => b.score - a.score);
+    
+    // Use best match if score is significant (lowered threshold for better matching)
+    if (matches.length > 0 && matches[0].score >= 2) {
+      const bestMatch = matches[0];
       const responses = typeof bestMatch.data.responses === 'function' 
         ? bestMatch.data.responses(context) 
         : bestMatch.data.responses;
       
-      let response = responses[Math.floor(Math.random() * responses.length)];
+      // Intelligent response selection based on context with advanced personalization
+      let response = this.selectBestResponse(responses, message, context);
       
-      // Add contextual follow-ups
+      // Apply user profile-based customization
+      response = this.customizeResponseForUser(response, context);
+      
+      // Add contextual follow-ups with reasoning
       response = this.addContextualFollowUp(response, bestMatch.category, message);
       
+      // Add sentiment-aware closing with advanced personalization
+      response = this.addSentimentAwareClosing(response, context);
+      
+      // Add memory-based insights
+      response = this.addMemoryBasedInsights(response, context, bestMatch.category);
+      
       this.context.lastTopic = bestMatch.category;
-      this.saveContext();
+      
+      // Learning: Track successful matches
+      if (!this.context.learningData[bestMatch.category]) {
+        this.context.learningData[bestMatch.category] = { matches: 0, avgScore: 0 };
+      }
+      this.context.learningData[bestMatch.category].matches++;
+      this.context.learningData[bestMatch.category].avgScore = 
+        (this.context.learningData[bestMatch.category].avgScore + bestMatch.score) / 2;
+      
+        this.saveContext();
+        return response;
+    }
+    
+    // Enhanced default response with intelligent suggestions
+    const defaultResponses = KNOWLEDGE_BASE.default.responses(context);
+    let response = this.selectBestResponse(defaultResponses, message, context);
+    
+    // Add smart suggestions based on conversation history and user preferences
+    const suggestions = this.generateIntelligentSuggestions();
+    if (suggestions) {
+      response += `\n\n${suggestions}`;
+    }
+    
+    return response;
+  }
+
+  /**
+   * Select best response from array based on context and message - Advanced version
+   */
+  selectBestResponse(responses, message, context) {
+    if (responses.length === 0) return "I'm not sure how to respond to that.";
+    if (responses.length === 1) return responses[0];
+    
+    // Score each response based on multiple factors
+    const scoredResponses = responses.map((response, index) => {
+      let score = 0;
+      const responseLower = response.toLowerCase();
+      const messageLower = message.toLowerCase();
+      
+      // Factor 1: Keyword overlap with TF-IDF weighting
+      const messageTokens = tokenize(message);
+      const responseTokens = tokenize(response);
+      const overlap = messageTokens.filter(token => responseTokens.includes(token)).length;
+      score += overlap * 2.5;
+      
+      // Factor 2: Context topic relevance
+      if (context.mentionedTopics.length > 0) {
+        context.mentionedTopics.forEach(topic => {
+          if (responseLower.includes(topic)) {
+            const topicWeight = context.userPreferences[topic] || 1;
+            score += 3 * Math.log(topicWeight + 1);
+          }
+        });
+      }
+      
+      // Factor 3: Sentiment alignment
+      const sentimentData = analyzeSentiment(message);
+      if (sentimentData.sentiment === 'positive' && (responseLower.includes('great') || responseLower.includes('awesome'))) {
+        score += 2.5;
+      }
+      if (sentimentData.sentiment === 'negative' && (responseLower.includes('help') || responseLower.includes('clarify'))) {
+        score += 3; // Higher boost for helpful responses to negative sentiment
+      }
+      
+      // Factor 4: User profile matching
+      if (context.userProfile) {
+        if (context.userProfile.expertise === 'advanced' && response.length > 150) {
+          score += 2; // Advanced users prefer detailed responses
+        }
+        if (context.userProfile.communicationStyle === 'concise' && response.length < 100) {
+          score += 1.5; // Concise users prefer shorter responses
+        }
+        if (context.userProfile.communicationStyle === 'detailed' && response.length > 200) {
+          score += 2; // Detailed users prefer longer responses
+        }
+      }
+      
+      // Factor 5: Intent matching
+      const intent = classifyIntent(message, context);
+      if (intent.primary === 'question' && response.includes('?')) {
+        score -= 1; // Don't answer questions with questions
+      }
+      if (intent.primary === 'clarification' && (response.includes('explain') || response.includes('clarify'))) {
+        score += 2.5;
+      }
+      
+      // Factor 6: Response completeness
+      const hasStructure = response.includes('\n') || response.includes('•') || response.includes('**');
+      if (message.length > 40 && hasStructure) {
+        score += 1.5; // Structured responses for complex queries
+      }
+      
+      // Factor 7: Memory relevance
+      if (context.conversationMemory) {
+        const memoryRelevance = context.conversationMemory.filter(m => {
+          const memoryText = m.message?.toLowerCase() || '';
+          return responseTokens.some(token => memoryText.includes(token));
+        }).length;
+        score += memoryRelevance * 1.2;
+      }
+      
+      // Factor 8: Attention weights
+      responseTokens.forEach(token => {
+        if (context.attentionWeights[token]) {
+          score += context.attentionWeights[token] * 1.5;
+        }
+      });
+      
+      return { response, score, index };
+    });
+    
+    // Sort by score and return top response
+    scoredResponses.sort((a, b) => b.score - a.score);
+    
+    // If top two are very close, add some randomness for variety
+    if (scoredResponses.length > 1) {
+      const topScore = scoredResponses[0].score;
+      const secondScore = scoredResponses[1].score;
+      if (topScore - secondScore < 2 && Math.random() > 0.7) {
+        return scoredResponses[1].response; // Sometimes use second best for variety
+      }
+    }
+    
+    return scoredResponses[0].response;
+  }
+
+  /**
+   * Customize response based on user profile
+   */
+  customizeResponseForUser(response, context) {
+    if (!context.userProfile) return response;
+    
+    const profile = context.userProfile;
+    
+    // Adjust for expertise level
+    if (profile.expertise === 'beginner') {
+      // Simplify technical terms
+      response = response.replace(/\bAPI\b/g, 'Application Programming Interface (API)');
+      response = response.replace(/\bPWA\b/g, 'Progressive Web App (PWA)');
+    }
+    
+    // Adjust for communication style
+    if (profile.communicationStyle === 'concise') {
+      // Remove extra fluff
+      response = response.replace(/\n\n+/g, '\n\n');
+      if (response.split('\n\n').length > 3) {
+        const parts = response.split('\n\n');
+        response = parts.slice(0, 3).join('\n\n');
+      }
+    } else if (profile.communicationStyle === 'detailed') {
+      // Add more context if needed
+      if (response.length < 150 && !response.includes('**')) {
+        // Could add more details, but keeping it simple for now
+      }
+    }
+    
+    return response;
+  }
+
+  /**
+   * Add insights based on conversation memory
+   */
+  addMemoryBasedInsights(response, context, category) {
+    if (!context.conversationMemory || context.conversationMemory.length === 0) {
       return response;
     }
     
-    // Default response with context-aware suggestions
-    const defaultResponses = KNOWLEDGE_BASE.default.responses(context);
-    let response = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+    // Find related memories
+    const relatedMemories = context.conversationMemory
+      .filter(m => m.topic === category || m.entities?.includes(category))
+      .slice(0, 2);
     
-    // Add smart suggestions based on conversation history
-    if (this.context.mentionedTopics.length > 0) {
-      const suggestions = this.generateSmartSuggestions();
-      if (suggestions) {
-        response += `\n\n${suggestions}`;
+    if (relatedMemories.length > 0 && Math.random() > 0.6) {
+      const memory = relatedMemories[0];
+      if (memory.importance > 0.5) {
+        // Add subtle reference to previous conversation
+        const insights = [
+          '\n\n💭 Based on our earlier conversation, I thought you might find this relevant!',
+          '\n\n🔗 This relates to what we discussed earlier.',
+          '\n\n✨ Building on what you mentioned before...'
+        ];
+        if (Math.random() > 0.7) {
+          response += insights[Math.floor(Math.random() * insights.length)];
+        }
+      }
+    }
+    
+    return response;
+  }
+
+  /**
+   * Add sentiment-aware closing to responses with advanced personalization
+   */
+  addSentimentAwareClosing(response, context) {
+    const sentimentHistory = context.sentimentHistory || [];
+    const recentSentiment = sentimentHistory.length > 0 ? sentimentHistory[sentimentHistory.length - 1] : null;
+    
+    if (context.userMood === 'positive') {
+      const intensity = recentSentiment?.intensity || 0.5;
+      if (intensity > 0.7) {
+        const closings = ['\n\nGlad I could help! 😊', '\n\nHappy to assist! ✨', '\n\nAnytime! 😄', '\n\nYou\'re very welcome! 🎉'];
+        response += closings[Math.floor(Math.random() * closings.length)];
+      } else if (Math.random() > 0.7) {
+        const closings = ['\n\nGlad I could help! 😊', '\n\nHappy to assist! ✨'];
+        response += closings[Math.floor(Math.random() * closings.length)];
+      }
+    } else if (context.userMood === 'negative') {
+      if (!response.includes('help') && !response.includes('assist') && !response.includes('clarify')) {
+        response += '\n\nI\'m here to help clarify anything. Feel free to ask more questions!';
+      }
+    } else if (context.userMood === 'neutral' && context.needsClarification) {
+      response += '\n\nDoes this help clarify things? Let me know if you need more details!';
+      context.needsClarification = false;
+    }
+    
+    // Personalize based on user profile
+    if (context.userProfile?.communicationStyle === 'concise') {
+      // Keep closings short
+      if (response.length > 200 && response.includes('\n\n')) {
+        const parts = response.split('\n\n');
+        if (parts.length > 1) {
+          response = parts[0] + '\n\n' + parts[parts.length - 1];
+        }
       }
     }
     
@@ -984,23 +1852,66 @@ class AIAssistant {
     return response;
   }
 
-  generateSmartSuggestions() {
+  generateIntelligentSuggestions() {
     const mentioned = this.context.mentionedTopics;
     const suggestions = [];
+    const preferences = this.context.userPreferences || {};
     
-    if (!mentioned.includes('projects') && (mentioned.includes('services') || mentioned.includes('skills'))) {
-      suggestions.push("💡 Want to see these in action? Ask about **projects**!");
+    // Algorithm: Suggest based on topic relationships
+    const topicRelations = {
+      'services': ['projects', 'skills', 'contact'],
+      'projects': ['services', 'skills', 'experience'],
+      'skills': ['projects', 'experience', 'services'],
+      'contact': ['services', 'pricing'],
+      'pricing': ['contact', 'services'],
+      'experience': ['projects', 'skills']
+    };
+    
+    // Find most mentioned topic
+    let topTopic = null;
+    let maxMentions = 0;
+    Object.entries(preferences).forEach(([topic, count]) => {
+      if (count > maxMentions) {
+        maxMentions = count;
+        topTopic = topic;
+      }
+    });
+    
+    // Suggest related topics
+    if (topTopic && topicRelations[topTopic]) {
+      topicRelations[topTopic].forEach(relatedTopic => {
+        if (!mentioned.includes(relatedTopic) && !suggestions.find(s => s.includes(relatedTopic))) {
+          const topicNames = {
+            'projects': 'projects',
+            'services': 'services',
+            'skills': 'skills and technologies',
+            'contact': 'contact information',
+            'pricing': 'pricing details',
+            'experience': 'experience and background'
+          };
+          suggestions.push(`💡 Interested in **${topicNames[relatedTopic] || relatedTopic}**? I can tell you more!`);
+        }
+      });
     }
     
-    if (!mentioned.includes('contact') && (mentioned.includes('services') || mentioned.includes('pricing'))) {
-      suggestions.push("📧 Ready to get started? Ask about **contact** information!");
+    // Suggest based on conversation flow
+    if (this.context.conversationFlow.length >= 3) {
+      const recentTopics = this.context.conversationFlow
+        .slice(-3)
+        .map(f => f.topic)
+        .filter(t => t && t !== 'general');
+      
+      if (recentTopics.length > 0 && !mentioned.includes('contact')) {
+        suggestions.push("📧 Ready to connect? Ask about **contact** information!");
+      }
     }
     
-    if (!mentioned.includes('experience') && mentioned.includes('skills')) {
-      suggestions.push("📊 Curious about **experience**? I can share details!");
+    // Suggest based on sentiment
+    if (this.context.userMood === 'positive' && mentioned.length > 0) {
+      suggestions.push("🚀 Want to explore more? I can guide you through the **projects** or **services**!");
     }
     
-    return suggestions.length > 0 ? suggestions.join(' ') : null;
+    return suggestions.length > 0 ? suggestions.slice(0, 2).join(' ') : null;
   }
 
   addMessage(text, role, skipAnimation = false) {
@@ -1095,6 +2006,155 @@ class AIAssistant {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+  }
+
+  /**
+   * Save conversation to cloud (Netlify Blobs)
+   */
+  async saveConversationToCloud(message, response, context) {
+    try {
+      const payload = {
+        sessionId: this.sessionId,
+        message: message,
+        response: response,
+        context: {
+          lastTopic: context.lastTopic,
+          mentionedTopics: context.mentionedTopics,
+          userMood: context.userMood,
+          lastIntent: context.lastIntent,
+          intentConfidence: context.intentConfidence,
+          userProfile: {
+            expertise: context.userProfile?.expertise,
+            communicationStyle: context.userProfile?.communicationStyle
+          }
+        },
+        metadata: {
+          timestamp: Date.now(),
+          visitCount: context.visitCount
+        }
+      };
+
+      const response_api = await fetch(`${this.apiBaseUrl}/.netlify/functions/api/conversations/save`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response_api.ok) {
+        console.warn('[Nova] Failed to save conversation to cloud');
+      } else {
+        const data = await response_api.json();
+        log('[Nova] Conversation saved to cloud:', data.conversationId);
+      }
+    } catch (error) {
+      console.warn('[Nova] Error saving conversation:', error);
+      // Fail silently - don't interrupt user experience
+    }
+  }
+
+  /**
+   * Load conversations from cloud
+   */
+  async loadConversationsFromCloud() {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/.netlify/functions/api/conversations/load?sessionId=${this.sessionId}`);
+      
+      if (!response.ok) {
+        console.warn('[Nova] Failed to load conversations from cloud');
+        return;
+      }
+
+      const data = await response.json();
+      
+      if (data.conversations && data.conversations.length > 0) {
+        // Restore conversation context from cloud
+        const lastConversation = data.conversations[0];
+        if (lastConversation.context) {
+          // Merge cloud context with local context
+          this.context.lastTopic = lastConversation.context.lastTopic || this.context.lastTopic;
+          this.context.mentionedTopics = [
+            ...new Set([...this.context.mentionedTopics, ...(lastConversation.context.mentionedTopics || [])])
+          ];
+          
+          // Update user profile if available
+          if (lastConversation.context.userProfile) {
+            Object.assign(this.context.userProfile, lastConversation.context.userProfile);
+          }
+        }
+        
+        log(`[Nova] Loaded ${data.conversations.length} conversations from cloud`);
+      }
+    } catch (error) {
+      console.warn('[Nova] Error loading conversations:', error);
+      // Fail silently - continue with local context
+    }
+  }
+
+  /**
+   * Load global analytics to improve responses
+   */
+  async loadGlobalAnalytics() {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/.netlify/functions/api/conversations/analytics`);
+      
+      if (!response.ok) {
+        return;
+      }
+
+      const analytics = await response.json();
+      this.context.globalAnalytics = analytics;
+      
+      // Use global analytics to improve response selection
+      if (analytics.topTopics && analytics.topTopics.length > 0) {
+        // Boost topics that are popular globally
+        analytics.topTopics.forEach(({ topic, count }) => {
+          if (!this.context.attentionWeights[topic]) {
+            this.context.attentionWeights[topic] = Math.log(count + 1) * 0.5;
+          }
+        });
+      }
+      
+      log('[Nova] Loaded global analytics for improved responses');
+    } catch (error) {
+      console.warn('[Nova] Error loading analytics:', error);
+      // Fail silently
+    }
+  }
+
+  /**
+   * Enhanced response generation with global learning
+   */
+  generateResponseWithGlobalLearning(message) {
+    const response = this.generateResponse(message);
+    
+    // Enhance with global analytics if available
+    if (this.context.globalAnalytics) {
+      const analytics = this.context.globalAnalytics;
+      
+      // If user asks about a popular topic, provide more detail
+      const currentTopic = this.detectTopic(message);
+      const popularTopic = analytics.topTopics?.find(t => t.topic === currentTopic);
+      
+      if (popularTopic && popularTopic.count > 10) {
+        // This is a frequently asked topic - ensure comprehensive response
+        if (response.length < 200) {
+          // Add more detail for popular topics
+          const enhancements = {
+            services: '\n\n💡 This is one of our most asked-about topics! Many visitors find our services helpful.',
+            projects: '\n\n🚀 Projects are a popular topic! Check out our detailed case studies for more insights.',
+            contact: '\n\n📧 Many visitors reach out - we typically respond within 24 hours!'
+          };
+          
+          if (enhancements[currentTopic]) {
+            return response + enhancements[currentTopic];
+          }
+        }
+      }
+    }
+    
+    return response;
   }
 }
 
