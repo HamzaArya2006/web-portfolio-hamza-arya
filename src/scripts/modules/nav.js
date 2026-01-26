@@ -1,6 +1,9 @@
 export function bindMobileNav() {
   const btn = document.querySelector('[data-mobile-nav-toggle]');
   const menu = document.querySelector('[data-mobile-nav]');
+  // #region agent log
+  console.log('%c[DEBUG:H4]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'bindMobileNav started', {btnFound:!!btn,menuFound:!!menu});
+  // #endregion
   if (!btn || !menu) return;
   let lastFocusedElement = null;
   const getFocusable = () => menu.querySelectorAll(
@@ -43,6 +46,9 @@ export function bindMobileNav() {
   };
 
   btn.addEventListener('click', () => {
+    // #region agent log
+    console.log('%c[DEBUG:H4]', 'background:#7c3aed;color:#fff;padding:2px 6px;border-radius:3px', 'Mobile nav toggle clicked', {currentState:menu.getAttribute('data-open')});
+    // #endregion
     const open = menu.getAttribute('data-open') === 'true';
     menu.setAttribute('data-open', String(!open));
     menu.classList.toggle('hidden', open);

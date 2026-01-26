@@ -31,8 +31,19 @@ import { runModernIntroOverlaySequence } from "./modules/intro.js";
 import { renderProjects } from "./modules/projects.js";
 import { applySiteCustomizations, mountHeroCustomSlot } from "./modules/siteCustomizations.js";
 import { initAssistant } from "./modules/assistant.js";
+
+// #region agent log
+console.log('%c[DEBUG:INIT]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'Main.js module loaded', {timestamp:Date.now()});
+window.addEventListener('error', (e) => console.error('%c[DEBUG:ERROR]', 'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px', 'Global JS Error', {message:e.message,filename:e.filename,lineno:e.lineno,colno:e.colno}));
+window.addEventListener('unhandledrejection', (e) => console.error('%c[DEBUG:PROMISE]', 'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px', 'Unhandled Promise Rejection', {reason:e.reason?.message||e.reason}));
+// #endregion
+
 // Critical: Load immediately
 window.addEventListener("DOMContentLoaded", () => {
+  // #region agent log
+  console.log('%c[DEBUG:H8]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'DOMContentLoaded fired', {readyState:document.readyState,bodyExists:!!document.body});
+  // #endregion
+
   // Perf-lite: favor ultra-smooth feel on low/medium devices or when user prefers less motion
   try {
     const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -60,8 +71,15 @@ window.addEventListener("DOMContentLoaded", () => {
   
   bindSmoothScroll();
   bindRevealOnScroll();
-  bindMobileNav();
-  bindDesktopDropdown();
+  
+  // #region agent log
+  try { bindMobileNav(); console.log('%c[DEBUG:H4]', 'background:#059669;color:#fff;padding:2px 6px;border-radius:3px', 'bindMobileNav completed', {mobileNavToggle:!!document.querySelector('[data-mobile-nav-toggle]'),mobileNav:!!document.querySelector('[data-mobile-nav]')}); } catch(e) { console.error('%c[DEBUG:H4]', 'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px', 'bindMobileNav FAILED', {error:e.message,stack:e.stack}); }
+  // #endregion
+  
+  // #region agent log
+  try { bindDesktopDropdown(); console.log('%c[DEBUG:H5]', 'background:#059669;color:#fff;padding:2px 6px;border-radius:3px', 'bindDesktopDropdown completed', {dropdownGroup:!!document.querySelector('header nav .group')}); } catch(e) { console.error('%c[DEBUG:H5]', 'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px', 'bindDesktopDropdown FAILED', {error:e.message,stack:e.stack}); }
+  // #endregion
+  
   bindMobileSubmenu();
   deferHeroAnimations();
   // Activate subtle spotlight and parallax effects on hero and decorative elements
@@ -72,7 +90,10 @@ window.addEventListener("DOMContentLoaded", () => {
   initPWAInstall();
   initNotifications();
   bindLazyImages();
-  initAssistant();
+  
+  // #region agent log
+  try { initAssistant(); console.log('%c[DEBUG:H1]', 'background:#059669;color:#fff;padding:2px 6px;border-radius:3px', 'initAssistant completed', {assistantBtn:!!document.getElementById('ai-assistant-btn'),assistantPopup:!!document.getElementById('ai-assistant-popup')}); } catch(e) { console.error('%c[DEBUG:H1]', 'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px', 'initAssistant FAILED', {error:e.message,stack:e.stack}); }
+  // #endregion
   // Eagerly render projects if grid exists to avoid relying solely on intersection
   const grid = document.getElementById('projects-grid');
   if (grid) {
@@ -129,11 +150,17 @@ window.addEventListener("load", () => {
 
 // Conditionally load heavy sections on viewport intersection
 function loadHeavySections() {
+  // #region agent log
+  console.log('%c[DEBUG:H8]', 'background:#7c3aed;color:#fff;padding:2px 6px;border-radius:3px', 'loadHeavySections called');
+  // #endregion
   const sectionsToLoad = [
     {
       // Support both homepage projects section and projects listing page
       selector: '#projects, #projects-grid',
       load: async () => {
+        // #region agent log
+        console.log('%c[DEBUG:H8]', 'background:#7c3aed;color:#fff;padding:2px 6px;border-radius:3px', 'Projects section loading');
+        // #endregion
         const { renderProjects, bindProjectFilters } = await import("./modules/projects.js");
         renderProjects().catch(() => {});
         applySiteCustomizations();

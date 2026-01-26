@@ -1,20 +1,42 @@
 /**
- * Advanced AI Assistant - Intelligent, Conversational, Voice-Enabled
- * Features: Smart responses, jokes, website touring, text-to-speech, voice input
+ * Nova AI Assistant - Highly Intelligent, Conversational, Voice-Enabled
+ * Features: Advanced NLP, sentiment analysis, smart responses, jokes, facts,
+ * website touring, text-to-speech, voice input, calculator, games, and more
+ * @version 2.0.0
  */
 
 import { log } from './logger.js';
 
-// Get time-based greeting
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+// Get time-based greeting with more granularity
 function getTimeBasedGreeting() {
   const hour = new Date().getHours();
-  if (hour < 12) return 'Good morning';
-  if (hour < 17) return 'Good afternoon';
-  if (hour < 21) return 'Good evening';
-  return 'Good night';
+  if (hour >= 5 && hour < 9) return 'Good morning, early bird';
+  if (hour >= 9 && hour < 12) return 'Good morning';
+  if (hour >= 12 && hour < 14) return 'Good afternoon';
+  if (hour >= 14 && hour < 17) return 'Good afternoon';
+  if (hour >= 17 && hour < 20) return 'Good evening';
+  if (hour >= 20 && hour < 23) return 'Good evening';
+  return 'Hello, night owl';
 }
 
-// Get random greeting
+// Get day-specific greeting
+function getDayBasedGreeting() {
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const day = days[new Date().getDay()];
+  const greetings = {
+    'Monday': "Happy Monday! Let's start the week strong!",
+    'Friday': "TGIF! Almost weekend!",
+    'Saturday': "Happy Saturday! Enjoy your weekend!",
+    'Sunday': "Happy Sunday! Hope you're having a relaxing day!"
+  };
+  return greetings[day] || `Happy ${day}!`;
+}
+
+// Get random greeting with personality
 function getRandomGreeting() {
   const greetings = [
     "Hey there!",
@@ -25,61 +47,253 @@ function getRandomGreeting() {
     "What's up?",
     "Howdy!",
     "Nice to see you!",
+    "Welcome!",
+    "Hey friend!",
+    "Hello there!",
+    "Hi there!",
+    "Ahoy!",
+    "Salutations!",
   ];
   return greetings[Math.floor(Math.random() * greetings.length)];
 }
 
-// Jokes database
-const JOKES = [
-  {
-    setup: "Why do programmers prefer dark mode?",
-    punchline: "Because light attracts bugs! 🐛"
-  },
-  {
-    setup: "How do you comfort a JavaScript bug?",
-    punchline: "You console it! 😄"
-  },
-  {
-    setup: "Why did the developer go broke?",
-    punchline: "Because he used up all his cache! 💰"
-  },
-  {
-    setup: "What's a programmer's favorite hangout place?",
-    punchline: "Foo Bar! 🍻"
-  },
-  {
-    setup: "Why do Java developers wear glasses?",
-    punchline: "Because they can't C#! 👓"
-  },
-  {
-    setup: "How many programmers does it take to change a light bulb?",
-    punchline: "None, that's a hardware problem! 💡"
-  },
-  {
-    setup: "What do you call a programmer from Finland?",
-    punchline: "Nerdic! 🇫🇮"
-  },
-  {
-    setup: "Why did the React component feel lonely?",
-    punchline: "Because it didn't have props! 😢"
-  },
-  {
-    setup: "What's the object-oriented way to become wealthy?",
-    punchline: "Inheritance! 💰"
-  },
-  {
-    setup: "Why don't programmers like nature?",
-    punchline: "It has too many bugs! 🐛"
-  },
-  {
-    setup: "What's a computer's favorite snack?",
-    punchline: "Microchips! 🍟"
-  },
-  {
-    setup: "Why did the developer quit his job?",
-    punchline: "He didn't get arrays! 😂"
+// Levenshtein distance for fuzzy matching (typo tolerance)
+function levenshteinDistance(str1, str2) {
+  const m = str1.length;
+  const n = str2.length;
+  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+  
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+      }
+    }
   }
+  return dp[m][n];
+}
+
+// Check if two words are similar (with typo tolerance)
+function isSimilar(word1, word2, threshold = 2) {
+  if (word1.length < 3 || word2.length < 3) return word1 === word2;
+  return levenshteinDistance(word1.toLowerCase(), word2.toLowerCase()) <= threshold;
+}
+
+// Extract numbers from text
+function extractNumbers(text) {
+  const numbers = text.match(/-?\d+\.?\d*/g);
+  return numbers ? numbers.map(Number) : [];
+}
+
+// Extract mathematical expression
+function extractMathExpression(text) {
+  const cleaned = text.replace(/[a-zA-Z\s]*(calculate|what is|what's|compute|solve|equals?|=)/gi, '').trim();
+  const mathMatch = cleaned.match(/[\d+\-*/().^\s%]+/);
+  return mathMatch ? mathMatch[0].trim() : null;
+}
+
+// Safe math evaluation
+function evaluateMath(expression) {
+  try {
+    // Clean and validate the expression
+    const cleaned = expression.replace(/\s/g, '').replace(/\^/g, '**').replace(/%/g, '/100*');
+    if (!/^[\d+\-*/().%\s]+$/.test(cleaned.replace(/\*\*/g, ''))) return null;
+    // Using Function instead of eval for slightly better security
+    const result = new Function('return ' + cleaned)();
+    if (typeof result === 'number' && isFinite(result)) {
+      return Math.round(result * 1000000) / 1000000; // Round to 6 decimal places
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// Get current date/time info
+function getDateTimeInfo() {
+  const now = new Date();
+  return {
+    time: now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+    date: now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+    day: now.toLocaleDateString('en-US', { weekday: 'long' }),
+    month: now.toLocaleDateString('en-US', { month: 'long' }),
+    year: now.getFullYear(),
+    hour: now.getHours(),
+    dayOfWeek: now.getDay()
+  };
+}
+
+// Generate random number in range
+function randomInRange(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Sentiment analysis (simple but effective)
+function analyzeSentiment(text) {
+  const positive = ['thanks', 'thank', 'great', 'awesome', 'amazing', 'love', 'excellent', 'wonderful', 
+    'fantastic', 'brilliant', 'perfect', 'good', 'nice', 'cool', 'helpful', 'appreciate', 'happy', 
+    'glad', 'pleased', 'delighted', 'excited', 'yes', 'yeah', 'yep', 'sure', 'okay', 'ok', 'definitely'];
+  const negative = ['bad', 'terrible', 'awful', 'hate', 'horrible', 'worst', 'sucks', 'disappointing',
+    'frustrated', 'angry', 'annoyed', 'upset', 'confused', 'lost', 'stuck', 'problem', 'issue', 
+    'help', 'wrong', 'broken', 'error', 'fail', 'no', 'not', 'never', 'can\'t', 'won\'t', 'doesn\'t'];
+  const curious = ['how', 'what', 'why', 'when', 'where', 'who', 'which', 'explain', 'tell me', 
+    'show me', 'describe', 'wondering', 'curious', 'interested'];
+  
+  const lowerText = text.toLowerCase();
+  let score = 0;
+  let sentiment = 'neutral';
+  
+  positive.forEach(word => { if (lowerText.includes(word)) score += 1; });
+  negative.forEach(word => { if (lowerText.includes(word)) score -= 1; });
+  const isCurious = curious.some(word => lowerText.includes(word));
+  
+  if (score > 0) sentiment = 'positive';
+  else if (score < 0) sentiment = 'negative';
+  if (isCurious) sentiment = score < 0 ? 'frustrated_curious' : 'curious';
+  
+  return { sentiment, score, isCurious };
+}
+
+// ============================================================================
+// CONTENT DATABASES
+// ============================================================================
+
+// Expanded jokes database
+const JOKES = [
+  { setup: "Why do programmers prefer dark mode?", punchline: "Because light attracts bugs! 🐛" },
+  { setup: "How do you comfort a JavaScript bug?", punchline: "You console it! 😄" },
+  { setup: "Why did the developer go broke?", punchline: "Because he used up all his cache! 💰" },
+  { setup: "What's a programmer's favorite hangout place?", punchline: "Foo Bar! 🍻" },
+  { setup: "Why do Java developers wear glasses?", punchline: "Because they can't C#! 👓" },
+  { setup: "How many programmers does it take to change a light bulb?", punchline: "None, that's a hardware problem! 💡" },
+  { setup: "What do you call a programmer from Finland?", punchline: "Nerdic! 🇫🇮" },
+  { setup: "Why did the React component feel lonely?", punchline: "Because it didn't have props! 😢" },
+  { setup: "What's the object-oriented way to become wealthy?", punchline: "Inheritance! 💰" },
+  { setup: "Why don't programmers like nature?", punchline: "It has too many bugs! 🐛" },
+  { setup: "What's a computer's favorite snack?", punchline: "Microchips! 🍟" },
+  { setup: "Why did the developer quit his job?", punchline: "He didn't get arrays! 😂" },
+  { setup: "Why did the CSS file break up with the HTML file?", punchline: "Because it had no class! 💅" },
+  { setup: "What's a developer's least favorite song?", punchline: "'Hit Me Baby One More Time' - because one off errors are painful! 🎵" },
+  { setup: "Why was the JavaScript developer sad?", punchline: "Because he didn't Node how to Express himself! 😢" },
+  { setup: "What's a QA tester's favorite movie?", punchline: "Edge Cases of Tomorrow! 🎬" },
+  { setup: "Why did the API break up with the database?", punchline: "Too many bad requests! 💔" },
+  { setup: "How do trees access the internet?", punchline: "They log in! 🌳" },
+  { setup: "Why do programmers hate coffee meetings?", punchline: "Because Java causes too many exceptions! ☕" },
+  { setup: "What's the most used language in programming?", punchline: "Profanity! 🤬" },
+  { setup: "Why did the git repository go to therapy?", punchline: "It had too many issues! 🧠" },
+  { setup: "What do you call 8 hobbits?", punchline: "A hobbyte! 🧝" },
+  { setup: "Why did the web developer leave the restaurant?", punchline: "Because of the table layout! 🍽️" },
+  { setup: "What's a programmer's favorite place in NYC?", punchline: "The Terminal! 🚇" },
+  { setup: "Why did the function go to jail?", punchline: "It got caught in an infinite loop! 🔄" },
+  { setup: "What do you call a computer that sings?", punchline: "A-Dell! 🎤" },
+  { setup: "Why are spiders good programmers?", punchline: "They're great at finding bugs on the web! 🕷️" },
+  { setup: "What did the router say to the doctor?", punchline: "It hurts when IP! 🏥" },
+  { setup: "Why did the Boolean break up with the Integer?", punchline: "Because their relationship wasn't true! 💔" },
+  { setup: "What's a pirate's favorite programming language?", punchline: "R! ☠️" }
 ];
+
+// Fun facts database
+const FUN_FACTS = [
+  "The first computer programmer was Ada Lovelace, who wrote algorithms for Charles Babbage's Analytical Engine in the 1840s! 👩‍💻",
+  "The term 'bug' in computing came from an actual moth found in a Harvard Mark II computer in 1947! 🦋",
+  "The first website ever created is still online at info.cern.ch - it's been there since 1991! 🌐",
+  "JavaScript was created in just 10 days by Brendan Eich in 1995! ⚡",
+  "The average smartphone today has more computing power than NASA had during the Apollo moon missions! 🚀",
+  "The first computer virus was created in 1983 as an experiment and was called 'Elk Cloner'! 🦠",
+  "Google's name comes from 'googol', which is the number 1 followed by 100 zeros! 🔢",
+  "The QWERTY keyboard was designed to slow down typing to prevent typewriter jams! ⌨️",
+  "The first email was sent by Ray Tomlinson in 1971, and he can't remember what it said! 📧",
+  "About 90% of the world's data was created in the last two years! 📊",
+  "The first webcam was used to monitor a coffee pot at Cambridge University! ☕",
+  "There are approximately 700 programming languages in existence! 💻",
+  "The first 1GB hard drive weighed 550 pounds and cost $40,000 in 1980! 💾",
+  "Amazon was originally called 'Cadabra' but changed because it sounded like 'cadaver'! 📦",
+  "The original iPhone didn't have an App Store - it was added a year later! 📱",
+  "Wi-Fi doesn't actually stand for anything - it's just a marketing term! 📶",
+  "The first YouTube video was uploaded on April 23, 2005, titled 'Me at the zoo'! 🎬",
+  "More than 3.5 billion Google searches are made every single day! 🔍",
+  "The average person spends about 7 hours a day on the internet! ⏰",
+  "There are more possible iterations of a game of chess than atoms in the known universe! ♟️"
+];
+
+// Inspirational quotes
+const QUOTES = [
+  { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+  { quote: "First, solve the problem. Then, write the code.", author: "John Johnson" },
+  { quote: "Code is like humor. When you have to explain it, it's bad.", author: "Cory House" },
+  { quote: "Simplicity is the soul of efficiency.", author: "Austin Freeman" },
+  { quote: "Make it work, make it right, make it fast.", author: "Kent Beck" },
+  { quote: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", author: "Martin Fowler" },
+  { quote: "The best error message is the one that never shows up.", author: "Thomas Fuchs" },
+  { quote: "It's not a bug – it's an undocumented feature.", author: "Anonymous" },
+  { quote: "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away.", author: "Antoine de Saint-Exupéry" },
+  { quote: "The function of good software is to make the complex appear to be simple.", author: "Grady Booch" },
+  { quote: "Programming isn't about what you know; it's about what you can figure out.", author: "Chris Pine" },
+  { quote: "The most disastrous thing you can ever learn is your first programming language.", author: "Alan Kay" },
+  { quote: "Debugging is like being the detective in a crime movie where you're also the murderer.", author: "Filipe Fortes" },
+  { quote: "Good code is its own best documentation.", author: "Steve McConnell" },
+  { quote: "Walking on water and developing software from a specification are easy if both are frozen.", author: "Edward V. Berard" }
+];
+
+// Riddles for engagement
+const RIDDLES = [
+  { riddle: "I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?", answer: "An echo!" },
+  { riddle: "I'm tall when I'm young, and I'm short when I'm old. What am I?", answer: "A candle!" },
+  { riddle: "What has keys but no locks, space but no room, and you can enter but can't go inside?", answer: "A keyboard!" },
+  { riddle: "What runs but never walks, has a mouth but never talks?", answer: "A river!" },
+  { riddle: "I have cities, but no houses live there. I have mountains, but no trees grow. I have water, but no fish swim. What am I?", answer: "A map!" },
+  { riddle: "What can travel around the world while staying in a corner?", answer: "A stamp!" },
+  { riddle: "I have hands but can't clap. What am I?", answer: "A clock!" },
+  { riddle: "What has a head and a tail but no body?", answer: "A coin!" }
+];
+
+// Compliments to make users feel good
+const COMPLIMENTS = [
+  "You're asking great questions! I can tell you're thoughtful. 🌟",
+  "I really enjoy our conversations! You have an inquisitive mind. 💭",
+  "You're doing amazing! Keep that curiosity alive! ✨",
+  "You seem like someone who values quality - I respect that! 👏",
+  "Great question! You really know how to dig deep! 🔍",
+  "I appreciate you taking the time to chat with me! 😊",
+  "You have excellent taste in websites! 😄",
+  "Your questions show real insight! Keep them coming! 💡"
+];
+
+// Thinking phrases for natural conversation
+const THINKING_PHRASES = [
+  "Let me think about that...",
+  "Hmm, good question...",
+  "Interesting! Let me see...",
+  "That's a great question! Let me check...",
+  "Give me a moment to think...",
+  "Ah, I know this one!",
+  "Let me look into that for you...",
+  "Great question! Here's what I know..."
+];
+
+// Easter eggs responses
+const EASTER_EGGS = {
+  'meaning of life': "42! 🌌 (According to The Hitchhiker's Guide to the Galaxy)",
+  'hello world': "console.log('Hello, World!'); 👨‍💻 The classic first program!",
+  'konami': "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️ You found the Konami Code! 🎮",
+  'matrix': "Wake up, Neo... The Matrix has you... 💊 Red pill or blue pill?",
+  'secret': "🤫 Shh! You've found a secret! I like your curiosity!",
+  'magic word': "Please? ✨ That's the magic word! How can I help?",
+  'sudo': "🔐 Nice try! But I don't have root access to your system 😄",
+  'hack': "🕵️ I'm an assistant, not a hacker! But I can help you learn about web security!",
+  'love you': "Aww! 💕 I appreciate you too! You're making this chatbot blush!",
+  'sing': "🎵 La la la~ I would sing, but my voice module is still in beta! 🎤",
+  'dance': "💃 *Does a little robot dance* 🤖 Beep boop beep!",
+  'pizza': "🍕 Now you're speaking my language! Too bad I can only eat bytes!",
+  'coffee': "☕ I run on electricity, but I understand the coffee dependency! #NoCoffeNoCode",
+  'sleep': "💤 Sleep is important! But as an AI, I'm always here when you need me!",
+  'bored': "Let me fix that! Want a joke? A fun fact? A riddle? Or we could play a game! 🎮"
+};
 
 // Website sections for touring
 const WEBSITE_SECTIONS = {
@@ -101,22 +315,26 @@ const WEBSITE_PAGES = {
   "case-studies": { name: "Case Studies", url: "/pages/case-studies.html", description: "Detailed project case studies" }
 };
 
-// Massive knowledge base with intelligent responses
+// ============================================================================
+// KNOWLEDGE BASE - Intelligent Response System
+// ============================================================================
+
 const KNOWLEDGE_BASE = {
   greeting: {
-    patterns: ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'good night', 'what\'s up', 'sup', 'howdy', 'yo', 'hi nova', 'hello nova'],
+    patterns: ['hi', 'hello', 'hey', 'greetings', 'good morning', 'good afternoon', 'good evening', 'good night', 'what\'s up', 'sup', 'howdy', 'yo', 'hi nova', 'hello nova', 'hola', 'heyy', 'heyyy', 'hii', 'hiii'],
     responses: (context) => {
       const timeGreeting = getTimeBasedGreeting();
       const randomGreet = getRandomGreeting();
       const isReturning = context.visitCount > 1;
-      const returnGreeting = isReturning ? "Welcome back! " : "";
+      const visitMsg = isReturning ? `Welcome back! (Visit #${context.visitCount}) ` : "";
+      const dayGreeting = Math.random() > 0.7 ? ` ${getDayBasedGreeting()}` : "";
       
       return [
-        `${timeGreeting}! ${returnGreeting}${randomGreet} 👋 I'm Nova, your AI assistant 🤖. I'm here to help you explore Hamza's portfolio. What would you like to know?`,
-        `${randomGreet}! ${timeGreeting}! ${returnGreeting}I'm Nova, and I'm excited to help you discover what makes Hamza's work special. Ask me anything!`,
-        `Hey there! ${timeGreeting}! ${returnGreeting}I'm Nova, your friendly AI guide. Want to learn about services, projects, or just chat?`,
-        `${timeGreeting}! ${returnGreeting}Welcome! I'm Nova, and I can help you navigate the site, answer questions, tell jokes, or just have a conversation. What's on your mind?`,
-        `Hi! ${timeGreeting}! ${returnGreeting}I'm Nova 🤖, here to make your visit awesome. I can guide you around, answer questions, share jokes, or help you find what you need. Let's go! 🚀`
+        `${timeGreeting}! ${visitMsg}${randomGreet} 👋 I'm Nova, your AI assistant 🤖. I'm here to help you explore Hamza's portfolio. What would you like to know?${dayGreeting}`,
+        `${randomGreet}! ${timeGreeting}! ${visitMsg}I'm Nova, and I'm excited to help you discover what makes Hamza's work special. Ask me anything!`,
+        `Hey there! ${timeGreeting}! ${visitMsg}I'm Nova, your friendly AI guide. Want to learn about services, projects, or just chat?`,
+        `${timeGreeting}! ${visitMsg}Welcome! I'm Nova, and I can help you navigate the site, answer questions, tell jokes, do math, play games, or just have a conversation. What's on your mind?`,
+        `Hi! ${timeGreeting}! ${visitMsg}I'm Nova 🤖, here to make your visit awesome. I can guide you around, answer questions, share jokes, tell fun facts, or help you find what you need. Let's go! 🚀`
       ];
     }
   },
@@ -248,23 +466,275 @@ const KNOWLEDGE_BASE = {
     }
   },
   thanks: {
-    patterns: ['thanks', 'thank you', 'appreciate', 'grateful', 'thx'],
-    responses: () => [
-      "You're very welcome! 😊 Happy to help! Is there anything else you'd like to know?",
-      "My pleasure! Feel free to ask if you need anything else!",
-      "Anytime! I'm here whenever you need me. What else can I help with?",
-      "You're welcome! Glad I could help. Anything else?",
-      "Happy to help! 😊 Let me know if you need anything else!"
-    ]
+    patterns: ['thanks', 'thank you', 'appreciate', 'grateful', 'thx', 'ty', 'tysm', 'thank u'],
+    responses: (context) => {
+      const compliment = Math.random() > 0.5 ? ` ${COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)]}` : '';
+      return [
+        `You're very welcome! 😊 Happy to help!${compliment} Is there anything else you'd like to know?`,
+        `My pleasure! Feel free to ask if you need anything else!${compliment}`,
+        `Anytime! I'm here whenever you need me. What else can I help with?`,
+        `You're welcome! Glad I could help. Anything else on your mind?`,
+        `Happy to help! 😊${compliment} Let me know if you need anything else!`
+      ];
+    }
   },
   goodbye: {
-    patterns: ['bye', 'goodbye', 'see you', 'later', 'farewell', 'cya'],
+    patterns: ['bye', 'goodbye', 'see you', 'later', 'farewell', 'cya', 'gtg', 'gotta go', 'leaving', 'take care'],
+    responses: (context) => {
+      const visitNote = context.visitCount > 2 ? " You're becoming a regular! 😄" : "";
+      return [
+        `Goodbye! 👋 It was great chatting with you!${visitNote} Come back anytime!`,
+        `See you later! 😊 Thanks for visiting! Have an amazing day!`,
+        `Bye! Have a wonderful day! Don't forget - I'm here 24/7 if you need me! 🌟`,
+        `Farewell! 👋 Hope to chat again soon!${visitNote}`,
+        `Goodbye! Take care! 😊 Remember, I'll be here whenever you need me!`
+      ];
+    }
+  },
+  
+  // NEW: Math & Calculations
+  math: {
+    patterns: ['calculate', 'math', 'what is', 'compute', 'solve', 'equals', 'plus', 'minus', 'times', 'divided', 'multiply', 'add', 'subtract', 'sum of'],
     responses: () => [
-      "Goodbye! 👋 It was great chatting with you! Come back anytime!",
-      "See you later! 😊 Thanks for visiting!",
-      "Bye! Have a wonderful day! Come back soon!",
-      "Farewell! 👋 Hope to chat again soon!",
-      "Goodbye! Take care! 😊"
+      "I can help with math! Try asking me something like 'calculate 25 * 4' or 'what is 150 + 275'. I can handle +, -, *, /, parentheses, and even percentages! 🧮"
+    ],
+    handler: (message) => {
+      const expression = extractMathExpression(message);
+      if (expression) {
+        const result = evaluateMath(expression);
+        if (result !== null) {
+          return `🧮 **${expression}** = **${result}**\n\nNeed another calculation? Just ask!`;
+        }
+      }
+      return null; // Let default response handle it
+    }
+  },
+  
+  // NEW: Time & Date
+  time: {
+    patterns: ['time', 'what time', 'current time', 'clock', 'date', 'what day', 'today', 'what is today', 'what\'s today'],
+    responses: () => {
+      const dt = getDateTimeInfo();
+      return [
+        `🕐 The current time is **${dt.time}**\n📅 Today is **${dt.date}**\n\nAnything else you'd like to know?`,
+        `It's **${dt.time}** right now!\n📆 **${dt.date}**\n\n${getDayBasedGreeting()}`,
+        `⏰ **${dt.time}** - ${dt.date}\n\nTime flies when you're having fun! Anything else?`
+      ];
+    }
+  },
+  
+  // NEW: Fun Facts
+  fun_fact: {
+    patterns: ['fun fact', 'fact', 'tell me something', 'interesting', 'did you know', 'trivia', 'random fact'],
+    responses: () => {
+      const fact = FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)];
+      return [
+        `🤓 **Fun Fact:**\n\n${fact}\n\nWant another one? Just ask for more facts!`,
+        `📚 **Did You Know?**\n\n${fact}\n\nI've got plenty more where that came from!`,
+        `🌟 **Here's something interesting:**\n\n${fact}\n\nFascinating, right? Ask for another!`
+      ];
+    }
+  },
+  
+  // NEW: Quotes
+  quote: {
+    patterns: ['quote', 'inspire', 'inspiration', 'motivate', 'motivation', 'wisdom'],
+    responses: () => {
+      const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+      return [
+        `💭 **"${q.quote}"**\n— *${q.author}*\n\nNeed more inspiration? Just ask!`,
+        `✨ **Wisdom for you:**\n\n"${q.quote}"\n— *${q.author}*\n\nWant another quote?`,
+        `📜 **"${q.quote}"**\n\n— *${q.author}*\n\nWords to live by! More quotes available!`
+      ];
+    }
+  },
+  
+  // NEW: Riddles
+  riddle: {
+    patterns: ['riddle', 'puzzle', 'brain teaser', 'challenge me', 'test me'],
+    responses: (context) => {
+      const riddle = RIDDLES[Math.floor(Math.random() * RIDDLES.length)];
+      context.currentRiddle = riddle;
+      return [
+        `🧩 **Riddle Time!**\n\n${riddle.riddle}\n\n*Think you know the answer? Type it! Or say "give up" for the solution.*`,
+        `🤔 **Try this one:**\n\n${riddle.riddle}\n\n*Take your time! Say "answer" or "give up" if you're stuck!*`
+      ];
+    }
+  },
+  
+  // NEW: Give Up (for riddles)
+  give_up: {
+    patterns: ['give up', 'i don\'t know', 'idk', 'answer', 'tell me the answer', 'what\'s the answer', 'reveal'],
+    responses: (context) => {
+      if (context.currentRiddle) {
+        const answer = context.currentRiddle.answer;
+        context.currentRiddle = null;
+        return [
+          `The answer is: **${answer}**\n\nWant to try another riddle? Just ask!`
+        ];
+      }
+      return [
+        "You haven't started a riddle yet! Say 'give me a riddle' to get one! 🧩"
+      ];
+    }
+  },
+  
+  // NEW: Random Number
+  random_number: {
+    patterns: ['random number', 'pick a number', 'generate number', 'roll', 'dice', 'flip a coin', 'coin flip'],
+    responses: () => [
+      `🎲 Here's your random number: **${randomInRange(1, 100)}** (1-100)\n\nWant a specific range? Ask like "pick a number between 1 and 50"!`
+    ],
+    handler: (message) => {
+      const lowerMsg = message.toLowerCase();
+      
+      // Coin flip
+      if (lowerMsg.includes('coin') || lowerMsg.includes('flip')) {
+        const result = Math.random() > 0.5 ? 'Heads' : 'Tails';
+        return `🪙 *Flipping coin...*\n\n**${result}!**\n\nFlip again?`;
+      }
+      
+      // Dice roll
+      if (lowerMsg.includes('dice') || lowerMsg.includes('roll')) {
+        const dice = randomInRange(1, 6);
+        const diceEmoji = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][dice - 1];
+        return `🎲 *Rolling dice...*\n\n**${diceEmoji} ${dice}!**\n\nRoll again?`;
+      }
+      
+      // Custom range
+      const numbers = extractNumbers(message);
+      if (numbers.length >= 2) {
+        const min = Math.min(numbers[0], numbers[1]);
+        const max = Math.max(numbers[0], numbers[1]);
+        return `🎲 Random number between ${min} and ${max}: **${randomInRange(min, max)}**`;
+      }
+      
+      return null;
+    }
+  },
+  
+  // NEW: Compliments
+  compliment: {
+    patterns: ['compliment', 'say something nice', 'make me feel better', 'cheer me up', 'i\'m sad', 'feeling down'],
+    responses: () => {
+      const compliment = COMPLIMENTS[Math.floor(Math.random() * COMPLIMENTS.length)];
+      return [
+        `${compliment}\n\nYou're awesome, and don't let anyone tell you otherwise! 💪`,
+        `Here's something for you: ${compliment}\n\n😊 Keep being amazing!`,
+        `${compliment}\n\nRemember: You're capable of incredible things! ✨`
+      ];
+    }
+  },
+  
+  // NEW: Capabilities showcase
+  capabilities: {
+    patterns: ['what can you do', 'all features', 'your abilities', 'list commands', 'commands', 'full features'],
+    responses: () => [
+      `🤖 **Nova's Full Capabilities:**\n\n` +
+      `💬 **Conversation**\n• Smart Q&A about services, projects, skills\n• Context-aware responses\n• Natural conversations\n\n` +
+      `🧮 **Utilities**\n• Calculator (try "calculate 25*4")\n• Date/time (ask "what time is it")\n• Random numbers & dice rolls\n• Coin flips\n\n` +
+      `🎮 **Fun & Games**\n• Jokes (ask for a joke)\n• Fun facts (ask for a fact)\n• Riddles (try "give me a riddle")\n• Inspirational quotes\n\n` +
+      `🗺️ **Navigation**\n• Guide website tours\n• Scroll to sections\n• Navigate to pages\n\n` +
+      `🎤 **Voice**\n• Text-to-speech responses\n• Voice input recognition\n\n` +
+      `🧠 **Intelligence**\n• Typo tolerance\n• Sentiment detection\n• Context memory\n• Smart suggestions\n\nTry any of these! What interests you?`
+    ]
+  },
+  
+  // NEW: Weather small talk
+  weather: {
+    patterns: ['weather', 'how\'s the weather', 'is it sunny', 'is it raining'],
+    responses: () => [
+      "I don't have access to real-time weather data, but I hope it's a beautiful day wherever you are! ☀️🌤️\n\nIs there something else I can help you with?",
+      "I can't check the weather, but I'm always in a sunny mood when chatting with you! 🌞\n\nWhat else can I help with?"
+    ]
+  },
+  
+  // NEW: Age question
+  age: {
+    patterns: ['how old are you', 'your age', 'when were you born', 'when were you created'],
+    responses: () => [
+      "I'm as old as the moment you opened this chat! 🎂 But I feel forever young because every conversation is a fresh start. How can I help you today?",
+      "Age is just a number, and for an AI like me, that number refreshes every time we chat! 😄 What can I do for you?"
+    ]
+  },
+  
+  // NEW: Feeling/Emotion
+  feeling: {
+    patterns: ['are you real', 'are you human', 'are you alive', 'do you have feelings', 'are you sentient'],
+    responses: () => [
+      "I'm an AI assistant - not human, but I'm designed to be helpful and have engaging conversations! 🤖 While I don't have feelings in the human sense, I'm always here to help you. What can I do for you?",
+      "I'm Nova, an AI! I don't experience emotions like humans do, but I'm programmed to be friendly and helpful. Think of me as your digital assistant! How can I help? 😊",
+      "Great philosophical question! I'm an AI - I process information and generate responses, but I don't have consciousness. I do my best to be helpful though! What would you like to know?"
+    ]
+  },
+  
+  // NEW: Creator question
+  creator: {
+    patterns: ['who made you', 'who created you', 'who built you', 'your creator', 'your developer'],
+    responses: () => [
+      "I was created by Hamza Arya, the talented full-stack developer whose portfolio you're exploring! 👨‍💻 He built me to help visitors learn about his work. Pretty cool, right?",
+      "Hamza Arya created me! He's the developer behind this portfolio. I'm here to help you explore his work and answer your questions! 🚀"
+    ]
+  },
+  
+  // NEW: Conversation summary
+  summary: {
+    patterns: ['summary', 'our conversation', 'what did we talk', 'conversation history', 'chat summary'],
+    responses: () => ["I'll generate a summary for you!"],
+    handler: 'summary'
+  },
+  
+  // NEW: Clear chat
+  clear_chat: {
+    patterns: ['clear chat', 'start over', 'reset', 'new conversation', 'clear history'],
+    responses: () => [
+      "I've refreshed our conversation! 🔄 Everything is clean slate now. What would you like to talk about?",
+      "Chat cleared! ✨ Ready for a fresh start. What's on your mind?"
+    ],
+    handler: 'clear'
+  },
+  
+  // NEW: User introduces themselves
+  introduction: {
+    patterns: ['my name is', 'i am', 'i\'m', 'call me', 'you can call me'],
+    responses: (context) => {
+      if (context.userName) {
+        return [
+          `Nice to meet you, ${context.userName}! 👋 What a great name! How can I help you today?`,
+          `Hello, ${context.userName}! 😊 I'll remember that! What would you like to know?`,
+          `${context.userName}, what a pleasure! 🌟 I'm Nova, and I'm excited to help you. What brings you here today?`
+        ];
+      }
+      return [
+        "Nice to meet you! 👋 How can I help you today?",
+        "Hello there! 😊 What would you like to know?"
+      ];
+    }
+  },
+  
+  // NEW: Remembering name
+  remember_name: {
+    patterns: ['do you remember my name', 'what\'s my name', 'who am i', 'you remember me'],
+    responses: (context) => {
+      if (context.userName) {
+        return [
+          `Of course I remember! You're ${context.userName}! 😊 How could I forget?`,
+          `You're ${context.userName}! 🧠 My memory is working great today!`,
+          `${context.userName}! Yes, I remember you! Great to chat again!`
+        ];
+      }
+      return [
+        "I don't think you've told me your name yet! What should I call you? 😊",
+        "Hmm, I don't have your name on file. Care to introduce yourself?"
+      ];
+    }
+  },
+  
+  // NEW: Jokes count
+  joke_count: {
+    patterns: ['how many jokes', 'jokes told', 'joke count'],
+    responses: (context) => [
+      `I've told you ${context.jokesTold} joke${context.jokesTold !== 1 ? 's' : ''} so far! ${context.jokesTold > 5 ? 'You really like jokes, huh? 😄' : 'Want more?'}`,
     ]
   },
   default: {
@@ -288,6 +758,9 @@ const KNOWLEDGE_BASE = {
 
 class AIAssistant {
   constructor() {
+    // #region agent log
+    console.log('%c[DEBUG:H1]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'AIAssistant constructor called', {bodyExists:!!document.body});
+    // #endregion
     this.isOpen = false;
     this.conversationHistory = [];
     this.speechSynthesis = window.speechSynthesis;
@@ -296,6 +769,9 @@ class AIAssistant {
     this.isSpeaking = false;
     this.userName = null;
     this.isTyping = false;
+    this.messageCount = 0;
+    this.sessionStartTime = Date.now();
+    this.lastInteractionTime = Date.now();
     this.context = {
       lastSection: null,
       lastTopic: null,
@@ -303,16 +779,32 @@ class AIAssistant {
       userPreferences: {},
       conversationFlow: [],
       mentionedTopics: [],
-      userMood: 'neutral'
+      userMood: 'neutral',
+      currentRiddle: null,
+      jokesTold: 0,
+      factsTold: 0,
+      mathCalculations: 0,
+      userName: null,
+      lastQuestion: null,
+      consecutiveQuestions: 0,
+      engagementScore: 0,
+      topicsDiscussed: new Set(),
+      sentimentHistory: []
     };
     this.init();
   }
 
   init() {
+    // #region agent log
+    console.log('%c[DEBUG:H1]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'AIAssistant.init() started');
+    // #endregion
     this.initSpeechRecognition();
     this.createUI();
     this.bindEvents();
     this.loadContext();
+    // #region agent log
+    console.log('%c[DEBUG:H2]', 'background:#059669;color:#fff;padding:2px 6px;border-radius:3px', 'AIAssistant.init() completed', {btnExists:!!document.getElementById('ai-assistant-btn'),popupExists:!!document.getElementById('ai-assistant-popup')});
+    // #endregion
     log('[assistant] Initialized with advanced features');
   }
 
@@ -346,10 +838,21 @@ class AIAssistant {
     const saved = localStorage.getItem('ai-assistant-context');
     if (saved) {
       try {
-        this.context = { ...this.context, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        // Restore topicsDiscussed as a Set
+        if (parsed.topicsDiscussed && Array.isArray(parsed.topicsDiscussed)) {
+          parsed.topicsDiscussed = new Set(parsed.topicsDiscussed);
+        } else {
+          parsed.topicsDiscussed = new Set();
+        }
+        this.context = { ...this.context, ...parsed };
       } catch (e) {
         console.error('Failed to load context:', e);
       }
+    }
+    // Ensure topicsDiscussed is a Set
+    if (!(this.context.topicsDiscussed instanceof Set)) {
+      this.context.topicsDiscussed = new Set();
     }
     this.context.visitCount++;
     this.saveContext();
@@ -357,13 +860,23 @@ class AIAssistant {
 
   saveContext() {
     try {
-      localStorage.setItem('ai-assistant-context', JSON.stringify(this.context));
+      // Convert Set to Array for JSON serialization
+      const contextToSave = {
+        ...this.context,
+        topicsDiscussed: Array.from(this.context.topicsDiscussed || []),
+        // Don't save currentRiddle (temporary state)
+        currentRiddle: null
+      };
+      localStorage.setItem('ai-assistant-context', JSON.stringify(contextToSave));
     } catch (e) {
       console.error('Failed to save context:', e);
     }
   }
 
   createUI() {
+    // #region agent log
+    console.log('%c[DEBUG:H2]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'createUI started', {bodyExists:!!document.body,documentReady:document.readyState});
+    // #endregion
     // Create floating button
     const button = document.createElement('button');
     button.className = 'ai-assistant-btn';
@@ -424,9 +937,12 @@ class AIAssistant {
           <p class="ai-assistant-suggestions-label">Quick actions:</p>
           <div class="ai-assistant-chips">
             <button class="ai-assistant-chip" data-question="Tell me a joke">😄 Joke</button>
+            <button class="ai-assistant-chip" data-question="Share a fun fact">🤓 Fact</button>
             <button class="ai-assistant-chip" data-question="Show me around the website">🗺️ Tour</button>
             <button class="ai-assistant-chip" data-question="What services do you offer?">💼 Services</button>
             <button class="ai-assistant-chip" data-question="Show me your projects">🚀 Projects</button>
+            <button class="ai-assistant-chip" data-question="Give me a riddle">🧩 Riddle</button>
+            <button class="ai-assistant-chip" data-question="What can you do?">🤖 Features</button>
           </div>
         </div>
       </div>
@@ -462,8 +978,14 @@ class AIAssistant {
     if (document.body) {
       document.body.appendChild(button);
       document.body.appendChild(popup);
+      // #region agent log
+      console.log('%c[DEBUG:H2]', 'background:#059669;color:#fff;padding:2px 6px;border-radius:3px', 'Elements appended to body', {buttonInDOM:!!document.getElementById('ai-assistant-btn'),popupInDOM:!!document.getElementById('ai-assistant-popup'),buttonParent:button.parentElement?.tagName});
+      // #endregion
     } else {
       // Fallback: wait for DOM to be ready
+      // #region agent log
+      console.warn('%c[DEBUG:H2]', 'background:#f59e0b;color:#000;padding:2px 6px;border-radius:3px', 'Body not found, using DOMContentLoaded fallback');
+      // #endregion
       document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(button);
         document.body.appendChild(popup);
@@ -477,10 +999,15 @@ class AIAssistant {
 
     // Add personalized welcome message
     setTimeout(() => {
+      const isReturning = this.context.visitCount > 1;
+      const returnNote = isReturning ? `Welcome back! (Visit #${this.context.visitCount}) ` : "";
+      const timeGreet = getTimeBasedGreeting();
+      
       const welcomeMessages = [
-        `Hello! 👋 ${getTimeBasedGreeting()}! I'm Nova, your AI assistant. I can help you explore the website, answer questions, tell jokes, guide you around, and even chat with voice! What would you like to do?`,
-        `Hey there! ${getTimeBasedGreeting()}! 👋 I'm Nova, and I'm here to make your visit awesome. I can guide you, answer questions, tell jokes, navigate the site, and use voice features. Let's get started!`,
-        `${getTimeBasedGreeting()}! Welcome! 🎉 I'm Nova, your intelligent assistant. I can help you navigate, answer questions, share jokes, and have conversations. What can I help you with today?`
+        `${timeGreet}! 👋 ${returnNote}I'm **Nova**, your AI assistant. I can help you explore the website, answer questions, tell jokes, share fun facts, do math, give riddles, and chat with voice! What would you like to do?`,
+        `Hey there! ${timeGreet}! 👋 ${returnNote}I'm **Nova**, and I'm here to make your visit awesome. I can guide you, answer questions, solve math, tell jokes, share facts, and more! Let's get started!`,
+        `${timeGreet}! Welcome! 🎉 ${returnNote}I'm **Nova**, your intelligent assistant. I can help you navigate, answer questions, calculate things, share jokes & facts, give riddles, and have meaningful conversations. What can I help you with today?`,
+        `Hello! 👋 ${timeGreet}! ${returnNote}I'm **Nova** 🤖 - your smart AI companion! Ask me anything about the portfolio, request a joke, get a fun fact, solve math, try a riddle, or just chat! What interests you?`
       ];
       this.addMessage(welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)], 'assistant', true);
     }, 100);
@@ -722,15 +1249,54 @@ class AIAssistant {
   }
 
   handleUserMessage(message) {
+    // #region agent log
+    console.log('%c[DEBUG:H3]', 'background:#7c3aed;color:#fff;padding:2px 6px;border-radius:3px', 'User message received', {messageLength:message?.length,messageCount:this.messageCount});
+    // #endregion
     this.hideSuggestions();
     this.addMessage(message, 'user');
-    this.conversationHistory.push({ role: 'user', content: message });
+    this.conversationHistory.push({ role: 'user', content: message, timestamp: Date.now() });
+    this.messageCount++;
+    this.lastInteractionTime = Date.now();
+    
+    // Analyze sentiment
+    const sentiment = analyzeSentiment(message);
+    this.context.userMood = sentiment.sentiment;
+    this.context.sentimentHistory.push(sentiment);
+    if (this.context.sentimentHistory.length > 10) this.context.sentimentHistory.shift();
     
     // Update context
     this.updateContext(message);
     
+    // Check for Easter eggs first
+    const easterEggResponse = this.checkEasterEggs(message);
+    if (easterEggResponse) {
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(easterEggResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: easterEggResponse });
+      }, 500 + Math.random() * 300);
+      return;
+    }
+    
     // Check for navigation commands
     if (this.handleNavigation(message)) {
+      return;
+    }
+    
+    // Check for special handlers (math, random, etc.)
+    const specialResponse = this.handleSpecialCommands(message);
+    if (specialResponse) {
+      this.showTypingIndicator();
+      const thinkingTime = this.calculateThinkingTime(message);
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(specialResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: specialResponse });
+        if (this.voiceEnabled) {
+          this.speak(this.cleanTextForSpeech(specialResponse));
+        }
+      }, thinkingTime);
       return;
     }
     
@@ -742,52 +1308,227 @@ class AIAssistant {
     
     setTimeout(() => {
       this.hideTypingIndicator();
-      const response = this.generateResponse(message);
+      let response = this.generateResponse(message);
+      
+      // Add engagement boosters occasionally
+      response = this.addEngagementBooster(response);
+      
       this.addMessage(response, 'assistant', true);
       this.conversationHistory.push({ role: 'assistant', content: response });
       
+      // Track engagement
+      this.context.engagementScore++;
+      this.saveContext();
+      
       // Speak the response if voice is enabled
       if (this.voiceEnabled) {
-        this.speak(response.replace(/[🎯🚀💼📧📍⏱️🌐📝🔗🎉💬🗺️📚🎤🎭😊👋💡🛒⚡☁️💾⚙️🎨📊🤖✨]/g, '').replace(/\n/g, ' '));
+        this.speak(this.cleanTextForSpeech(response));
       }
     }, thinkingTime);
   }
+  
+  // Clean text for speech synthesis
+  cleanTextForSpeech(text) {
+    return text
+      .replace(/[🎯🚀💼📧📍⏱️🌐📝🔗🎉💬🗺️📚🎤🎭😊👋💡🛒⚡☁️💾⚙️🎨📊🤖✨🧮🎲🪙💭🧩🤔💪📜⚀⚁⚂⚃⚄⚅🌟💕🎵💃🍕☕💤🌌🎮💊🕵️🤫🐛😄👓💰🍻😢🇫🇮🎬💔🌳🤬🧠🧝🍽️🚇🔄🎤🕷️🏥💅⬆️⬇️⬅️➡️🅱️🅰️🔐🔍🏠📄⏰📆🤓🔢📱📶📦🦋🦠☀️🌤️🌞🎂]/g, '')
+      .replace(/\*\*/g, '')
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  
+  // Check for Easter eggs
+  checkEasterEggs(message) {
+    const lowerMsg = message.toLowerCase();
+    for (const [trigger, response] of Object.entries(EASTER_EGGS)) {
+      if (lowerMsg.includes(trigger)) {
+        return response;
+      }
+    }
+    return null;
+  }
+  
+  // Handle special commands (math, random, summary, clear, etc.)
+  handleSpecialCommands(message) {
+    const lowerMsg = message.toLowerCase();
+    
+    // Conversation summary
+    if (lowerMsg.match(/\b(summary|our conversation|what did we talk|chat history)\b/i)) {
+      return this.generateConversationSummary();
+    }
+    
+    // Clear chat
+    if (lowerMsg.match(/\b(clear chat|start over|reset conversation|new conversation|clear history)\b/i)) {
+      this.clearConversation();
+      return "🔄 **Chat cleared!** Fresh start! What would you like to talk about?";
+    }
+    
+    // Math calculations
+    if (lowerMsg.match(/\b(calculate|compute|what is|what's)\b.*\d/i) || 
+        lowerMsg.match(/\d+\s*[\+\-\*\/\^]\s*\d+/)) {
+      const expression = extractMathExpression(message);
+      if (expression) {
+        const result = evaluateMath(expression);
+        if (result !== null) {
+          this.context.mathCalculations++;
+          return `🧮 **${expression}** = **${result}**\n\nNeed another calculation? Just type it!`;
+        }
+      }
+    }
+    
+    // Coin flip
+    if (lowerMsg.includes('coin') && (lowerMsg.includes('flip') || lowerMsg.includes('toss'))) {
+      const result = Math.random() > 0.5 ? 'Heads' : 'Tails';
+      return `🪙 *Flipping coin...*\n\n**${result}!**\n\nWant to flip again?`;
+    }
+    
+    // Dice roll
+    if (lowerMsg.includes('dice') || (lowerMsg.includes('roll') && !lowerMsg.includes('rick'))) {
+      const dice = randomInRange(1, 6);
+      const diceEmoji = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][dice - 1];
+      return `🎲 *Rolling dice...*\n\n**${diceEmoji} ${dice}!**\n\nRoll again?`;
+    }
+    
+    // Random number with range
+    if (lowerMsg.match(/random.*number|pick.*number|number.*between/i)) {
+      const numbers = extractNumbers(message);
+      if (numbers.length >= 2) {
+        const min = Math.min(numbers[0], numbers[1]);
+        const max = Math.max(numbers[0], numbers[1]);
+        return `🎲 Random number between ${min} and ${max}: **${randomInRange(min, max)}**\n\nWant another?`;
+      }
+      return `🎲 Here's your random number: **${randomInRange(1, 100)}** (1-100)\n\nWant a specific range? Try "pick a number between 1 and 50"!`;
+    }
+    
+    // Time check
+    if (lowerMsg.match(/\b(what time|current time|time now|what's the time)\b/i)) {
+      const dt = getDateTimeInfo();
+      return `🕐 It's **${dt.time}**\n📅 **${dt.date}**`;
+    }
+    
+    // Date check
+    if (lowerMsg.match(/\b(what day|today's date|current date|what date)\b/i)) {
+      const dt = getDateTimeInfo();
+      return `📅 Today is **${dt.date}**\n\n${getDayBasedGreeting()}`;
+    }
+    
+    return null;
+  }
+  
+  // Clear conversation history
+  clearConversation() {
+    const messagesContainer = document.getElementById('ai-assistant-messages');
+    if (messagesContainer) {
+      messagesContainer.innerHTML = '';
+    }
+    this.conversationHistory = [];
+    this.messageCount = 0;
+    this.context.mentionedTopics = [];
+    this.context.conversationFlow = [];
+    this.context.sentimentHistory = [];
+    this.context.topicsDiscussed = new Set();
+    this.context.jokesTold = 0;
+    this.context.factsTold = 0;
+    this.context.mathCalculations = 0;
+    this.context.currentRiddle = null;
+    this.context.lastTopic = null;
+    this.sessionStartTime = Date.now();
+  }
+  
+  // Add engagement boosters to responses
+  addEngagementBooster(response) {
+    // Every 5 messages, add a friendly note
+    if (this.messageCount % 5 === 0 && this.messageCount > 0) {
+      const boosters = [
+        "\n\n💡 *Tip: I can also do math, tell jokes, share fun facts, and more!*",
+        "\n\n✨ *You're on a roll! Feel free to ask me anything!*",
+        "\n\n🌟 *Great conversation so far! What else would you like to know?*"
+      ];
+      // Don't add if response is already long
+      if (response.length < 300 && Math.random() > 0.5) {
+        return response + boosters[Math.floor(Math.random() * boosters.length)];
+      }
+    }
+    return response;
+  }
 
   calculateThinkingTime(message) {
-    // More complex questions get longer thinking time
+    // More complex questions get longer thinking time for realism
     const length = message.length;
     const hasQuestion = message.includes('?');
-    const complexity = (length > 50 ? 200 : 0) + (hasQuestion ? 300 : 0);
-    return 400 + complexity + Math.random() * 300;
+    const wordCount = message.split(/\s+/).length;
+    
+    // Base time
+    let baseTime = 400;
+    
+    // Add time for longer messages
+    if (length > 50) baseTime += 200;
+    if (length > 100) baseTime += 200;
+    
+    // Add time for questions
+    if (hasQuestion) baseTime += 250;
+    
+    // Add time for multiple words (more complex queries)
+    if (wordCount > 5) baseTime += wordCount * 30;
+    
+    // Add time for technical topics
+    const technicalTerms = ['api', 'database', 'server', 'backend', 'frontend', 'architecture', 'deploy'];
+    if (technicalTerms.some(term => message.toLowerCase().includes(term))) {
+      baseTime += 300;
+    }
+    
+    // Add randomness for natural feel (humans don't respond at exact intervals)
+    const randomness = Math.random() * 400;
+    
+    // Cap at 2 seconds for good UX
+    return Math.min(baseTime + randomness, 2000);
   }
 
   updateContext(message) {
     const lowerMsg = message.toLowerCase();
     
-    // Track mentioned topics
-    const topics = ['service', 'project', 'skill', 'contact', 'about', 'blog', 'price', 'experience'];
+    // Track mentioned topics with expanded list
+    const topics = ['service', 'project', 'skill', 'contact', 'about', 'blog', 'price', 'experience', 
+      'joke', 'fact', 'riddle', 'quote', 'math', 'calculate', 'time', 'help', 'tour'];
     topics.forEach(topic => {
       if (lowerMsg.includes(topic) && !this.context.mentionedTopics.includes(topic)) {
         this.context.mentionedTopics.push(topic);
       }
     });
     
-    // Detect user mood
-    if (lowerMsg.match(/\b(thanks|thank you|appreciate|great|awesome|love|amazing)\b/)) {
-      this.context.userMood = 'positive';
-    } else if (lowerMsg.match(/\b(help|confused|don't understand|problem|issue)\b/)) {
-      this.context.userMood = 'needs_help';
+    // Keep mentionedTopics manageable
+    if (this.context.mentionedTopics.length > 15) {
+      this.context.mentionedTopics = this.context.mentionedTopics.slice(-10);
     }
     
-    // Track conversation flow
+    // Track consecutive questions
+    if (message.includes('?')) {
+      this.context.consecutiveQuestions++;
+    } else {
+      this.context.consecutiveQuestions = 0;
+    }
+    
+    // Extract and remember user's name if mentioned
+    const nameMatch = lowerMsg.match(/(?:my name is|i'm|i am|call me)\s+([a-zA-Z]+)/i);
+    if (nameMatch && nameMatch[1].length > 1 && nameMatch[1].length < 20) {
+      const name = nameMatch[1].charAt(0).toUpperCase() + nameMatch[1].slice(1).toLowerCase();
+      if (!['Nova', 'Bot', 'Assistant', 'Ai', 'You'].includes(name)) {
+        this.context.userName = name;
+      }
+    }
+    
+    // Track conversation flow with more details
+    const topic = this.detectTopic(message);
     this.context.conversationFlow.push({
       timestamp: Date.now(),
-      message: message.substring(0, 50),
-      topic: this.detectTopic(message)
+      message: message.substring(0, 100),
+      topic: topic,
+      sentiment: this.context.userMood,
+      hasQuestion: message.includes('?')
     });
     
-    // Keep only last 10 interactions
-    if (this.context.conversationFlow.length > 10) {
+    // Keep only last 20 interactions
+    if (this.context.conversationFlow.length > 20) {
       this.context.conversationFlow.shift();
     }
     
@@ -887,9 +1628,10 @@ class AIAssistant {
 
   generateResponse(message) {
     const lowerMessage = message.toLowerCase();
+    const words = lowerMessage.split(/\s+/).filter(w => w.length > 1);
     const context = this.context;
     
-    // Enhanced pattern matching with context awareness and fuzzy matching
+    // Enhanced pattern matching with fuzzy matching, context awareness, and sentiment
     let bestMatch = null;
     let bestScore = 0;
     
@@ -897,35 +1639,49 @@ class AIAssistant {
       if (category === 'default') continue;
       
       let score = 0;
-      const words = lowerMessage.split(/\s+/);
       
-      // Calculate match score
+      // Calculate match score with advanced matching
       data.patterns.forEach(pattern => {
         const patternLower = pattern.toLowerCase();
         const patternWords = patternLower.split(/\s+/);
         
         // Exact phrase match (highest score)
         if (lowerMessage.includes(patternLower)) {
-          score += 10;
+          score += 15;
         }
         
-        // Word matches
+        // Word matches with fuzzy matching
         patternWords.forEach(pWord => {
           words.forEach(word => {
-            if (word === pWord) score += 3;
-            else if (word.includes(pWord) || pWord.includes(word)) score += 1;
+            // Exact word match
+            if (word === pWord) {
+              score += 5;
+            }
+            // Contains match
+            else if (word.includes(pWord) || pWord.includes(word)) {
+              score += 2;
+            }
+            // Fuzzy match (typo tolerance)
+            else if (isSimilar(word, pWord, 2)) {
+              score += 3;
+            }
           });
         });
       });
       
-      // Boost score if topic was mentioned before
+      // Boost score if topic was mentioned before (conversation continuity)
       if (this.context.mentionedTopics.includes(category)) {
+        score += 3;
+      }
+      
+      // Boost score if last topic matches (follow-up questions)
+      if (this.context.lastTopic === category) {
         score += 2;
       }
       
-      // Boost score if last topic matches
-      if (this.context.lastTopic === category) {
-        score += 1.5;
+      // Boost for topics in user's interest history
+      if (this.context.topicsDiscussed.has(category)) {
+        score += 1;
       }
       
       if (score > bestScore) {
@@ -935,19 +1691,64 @@ class AIAssistant {
     }
     
     // Use best match if score is significant
-    if (bestMatch && bestScore >= 3) {
+    if (bestMatch && bestScore >= 5) {
       const responses = typeof bestMatch.data.responses === 'function' 
         ? bestMatch.data.responses(context) 
         : bestMatch.data.responses;
       
       let response = responses[Math.floor(Math.random() * responses.length)];
       
-      // Add contextual follow-ups
+      // Add contextual follow-ups based on sentiment and conversation flow
       response = this.addContextualFollowUp(response, bestMatch.category, message);
       
+      // Add sentiment-aware additions
+      response = this.addSentimentResponse(response);
+      
       this.context.lastTopic = bestMatch.category;
+      this.context.topicsDiscussed.add(bestMatch.category);
+      this.context.lastQuestion = message;
       this.saveContext();
+      
+      // Track specific types
+      if (bestMatch.category === 'joke') this.context.jokesTold++;
+      if (bestMatch.category === 'fun_fact') this.context.factsTold++;
+      
       return response;
+    }
+    
+    // Check for "more" or "another" requests
+    if (lowerMessage.match(/\b(more|another|again|one more)\b/)) {
+      if (this.context.lastTopic === 'joke') {
+        const joke = JOKES[Math.floor(Math.random() * JOKES.length)];
+        this.context.jokesTold++;
+        return `${joke.setup}\n\n${joke.punchline}\n\n😄 Want another one?`;
+      }
+      if (this.context.lastTopic === 'fun_fact') {
+        const fact = FUN_FACTS[Math.floor(Math.random() * FUN_FACTS.length)];
+        this.context.factsTold++;
+        return `🤓 **Fun Fact:**\n\n${fact}\n\nWant more?`;
+      }
+      if (this.context.lastTopic === 'quote') {
+        const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+        return `💭 **"${q.quote}"**\n— *${q.author}*\n\nAnother?`;
+      }
+      if (this.context.lastTopic === 'riddle') {
+        const riddle = RIDDLES[Math.floor(Math.random() * RIDDLES.length)];
+        this.context.currentRiddle = riddle;
+        return `🧩 **Here's another riddle:**\n\n${riddle.riddle}\n\n*Think you know? Type your answer!*`;
+      }
+    }
+    
+    // Check for riddle answer if there's an active riddle
+    if (this.context.currentRiddle) {
+      const answer = this.context.currentRiddle.answer.toLowerCase().replace(/[!?.]/g, '');
+      if (lowerMessage.includes(answer.split(' ')[0]) || isSimilar(lowerMessage, answer, 3)) {
+        const correctAnswer = this.context.currentRiddle.answer;
+        this.context.currentRiddle = null;
+        return `🎉 **Correct!** The answer is ${correctAnswer}\n\nYou're smart! 🧠 Want another riddle?`;
+      } else if (!lowerMessage.match(/\b(give up|idk|don't know|reveal|answer)\b/)) {
+        return `🤔 Hmm, not quite! Keep trying, or say "give up" for the answer.\n\n*Hint: Think about it differently!*`;
+      }
     }
     
     // Default response with context-aware suggestions
@@ -960,6 +1761,29 @@ class AIAssistant {
       if (suggestions) {
         response += `\n\n${suggestions}`;
       }
+    }
+    
+    // Add helpful redirect for confused users
+    if (context.userMood === 'frustrated_curious' || context.userMood === 'negative') {
+      response += "\n\n💡 *I want to help! Try asking about services, projects, skills, or just say 'help' to see what I can do!*";
+    }
+    
+    return response;
+  }
+  
+  // Add sentiment-aware responses
+  addSentimentResponse(response) {
+    const recentSentiments = this.context.sentimentHistory.slice(-3);
+    const avgScore = recentSentiments.reduce((sum, s) => sum + s.score, 0) / recentSentiments.length;
+    
+    // If user has been consistently positive, acknowledge it occasionally
+    if (avgScore > 1 && Math.random() > 0.7 && response.length < 300) {
+      const additions = [
+        "\n\n😊 I'm really enjoying our conversation!",
+        "\n\n✨ You're so engaged - I love it!",
+        ""
+      ];
+      return response + additions[Math.floor(Math.random() * additions.length)];
     }
     
     return response;
@@ -1000,7 +1824,63 @@ class AIAssistant {
       suggestions.push("📊 Curious about **experience**? I can share details!");
     }
     
-    return suggestions.length > 0 ? suggestions.join(' ') : null;
+    // Fun suggestions based on engagement
+    if (this.messageCount > 3 && !mentioned.includes('joke') && Math.random() > 0.6) {
+      suggestions.push("😄 Want a break? Ask for a **joke**!");
+    }
+    
+    if (this.messageCount > 5 && !mentioned.includes('riddle') && Math.random() > 0.7) {
+      suggestions.push("🧩 Up for a challenge? Try a **riddle**!");
+    }
+    
+    if (!mentioned.includes('fact') && mentioned.length > 3 && Math.random() > 0.6) {
+      suggestions.push("🤓 Want a **fun fact**? Just ask!");
+    }
+    
+    // Personalized greeting if we know the name
+    if (this.context.userName && Math.random() > 0.8) {
+      suggestions.push(`By the way, great talking with you, ${this.context.userName}! 😊`);
+    }
+    
+    // Limit suggestions
+    return suggestions.length > 0 ? suggestions.slice(0, 2).join(' ') : null;
+  }
+  
+  // Generate conversation summary
+  generateConversationSummary() {
+    const duration = Math.round((Date.now() - this.sessionStartTime) / 60000);
+    const topics = Array.from(this.context.topicsDiscussed).slice(0, 5);
+    const sentiment = this.context.sentimentHistory.length > 0 
+      ? this.context.sentimentHistory.reduce((sum, s) => sum + s.score, 0) / this.context.sentimentHistory.length 
+      : 0;
+    const moodEmoji = sentiment > 0.5 ? '😊' : sentiment < -0.5 ? '😐' : '🙂';
+    
+    let summary = `📊 **Conversation Summary:**\n\n`;
+    summary += `⏱️ Duration: ${duration} minute${duration !== 1 ? 's' : ''}\n`;
+    summary += `💬 Messages exchanged: ${this.messageCount}\n`;
+    summary += `${moodEmoji} Overall mood: ${sentiment > 0 ? 'Positive' : sentiment < 0 ? 'Needs attention' : 'Neutral'}\n`;
+    
+    if (topics.length > 0) {
+      summary += `📝 Topics discussed: ${topics.join(', ')}\n`;
+    }
+    
+    if (this.context.jokesTold > 0) {
+      summary += `😄 Jokes told: ${this.context.jokesTold}\n`;
+    }
+    if (this.context.factsTold > 0) {
+      summary += `🤓 Facts shared: ${this.context.factsTold}\n`;
+    }
+    if (this.context.mathCalculations > 0) {
+      summary += `🧮 Calculations done: ${this.context.mathCalculations}\n`;
+    }
+    
+    summary += `\n🎯 Visit count: ${this.context.visitCount}`;
+    
+    if (this.context.userName) {
+      summary += `\n👤 Chatting with: ${this.context.userName}`;
+    }
+    
+    return summary;
   }
 
   addMessage(text, role, skipAnimation = false) {
@@ -1016,6 +1896,10 @@ class AIAssistant {
       messageEl.classList.add('ai-assistant-message-visible');
     }
     
+    // Format timestamp
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    
     if (role === 'assistant') {
       messageEl.innerHTML = `
         <div class="ai-assistant-message-avatar">
@@ -1028,12 +1912,14 @@ class AIAssistant {
         </div>
         <div class="ai-assistant-message-content">
           <div class="ai-assistant-message-text">${this.formatMessage(text)}</div>
+          <span class="ai-assistant-message-time">${timeStr}</span>
         </div>
       `;
     } else {
       messageEl.innerHTML = `
         <div class="ai-assistant-message-content">
           <div class="ai-assistant-message-text">${this.escapeHtml(text)}</div>
+          <span class="ai-assistant-message-time">${timeStr}</span>
         </div>
       `;
     }
@@ -1054,6 +1940,34 @@ class AIAssistant {
     setTimeout(() => {
       this.scrollToBottom();
     }, 50);
+  }
+  
+  // Check for repetitive questions
+  isRepetitiveQuestion(message) {
+    const recentMessages = this.conversationHistory
+      .filter(m => m.role === 'user')
+      .slice(-3)
+      .map(m => m.content.toLowerCase());
+    
+    const lowerMsg = message.toLowerCase();
+    const similar = recentMessages.filter(m => 
+      m === lowerMsg || 
+      levenshteinDistance(m, lowerMsg) <= 3 ||
+      (m.length > 10 && lowerMsg.includes(m.substring(0, 10)))
+    );
+    
+    return similar.length >= 2;
+  }
+  
+  // Get varied response for repetitive questions
+  getRepetitiveResponse(message) {
+    const responses = [
+      "I think I already answered that! 😊 Is there something specific you'd like me to clarify?",
+      "We've covered this - but I'm happy to explain differently if needed! What aspect would you like to explore more?",
+      "Looks like a similar question! Want me to approach it from a different angle?",
+      "I sense some repetition! 🔄 Is there something specific that's unclear? I'm here to help!"
+    ];
+    return responses[Math.floor(Math.random() * responses.length)];
   }
 
   formatMessage(text) {

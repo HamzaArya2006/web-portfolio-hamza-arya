@@ -3,6 +3,9 @@ import { notify } from './notifications.js';
 
 export function bindContactForm() {
   const form = document.querySelector('form[data-contact]');
+  // #region agent log
+  console.log('%c[DEBUG:H6]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'bindContactForm called', {formFound:!!form});
+  // #endregion
   if (!form) return;
   const statusEl = document.querySelector('[data-contact-status]');
   if (statusEl) {
@@ -32,6 +35,9 @@ export function bindContactForm() {
   }
 
   form.addEventListener('submit', async (e) => {
+    // #region agent log
+    console.log('%c[DEBUG:H6]', 'background:#7c3aed;color:#fff;padding:2px 6px;border-radius:3px', 'Form submit event fired');
+    // #endregion
     e.preventDefault();
     if (submitting) return;
     submitting = true;
@@ -45,6 +51,9 @@ export function bindContactForm() {
     const email = (formData.get('email') || '').toString().trim();
     const brief = (formData.get('brief') || '').toString().trim();
     const budget = (formData.get('budget') || '').toString().trim();
+    // #region agent log
+    console.log('%c[DEBUG:H7]', 'background:#059669;color:#fff;padding:2px 6px;border-radius:3px', 'Form data extracted', {hasName:!!name,hasEmail:!!email,hasBrief:!!brief});
+    // #endregion
     if (!name || !email || !brief) {
       if (statusEl) {
         statusEl.textContent = 'Please fill in your name, email, and project brief.';
@@ -52,6 +61,9 @@ export function bindContactForm() {
         statusEl.classList.remove('text-emerald-400');
         statusEl.classList.add('text-red-400');
       }
+      // #region agent log
+      console.warn('%c[DEBUG:H7]', 'background:#f59e0b;color:#000;padding:2px 6px;border-radius:3px', 'Form validation failed - missing fields', {hasName:!!name,hasEmail:!!email,hasBrief:!!brief});
+      // #endregion
       submitting = false;
       return;
     }
