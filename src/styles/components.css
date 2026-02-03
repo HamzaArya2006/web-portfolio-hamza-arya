@@ -66,7 +66,20 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .input {
-    @apply w-full rounded-md border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50;
+    @apply w-full rounded-md border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200;
+  }
+
+  .input:focus {
+    @apply border-blue-500/50 bg-white/8;
+    transform: scale(1.01);
+  }
+
+  .input:invalid:not(:placeholder-shown):not(:focus) {
+    @apply border-red-500/50 bg-red-500/5;
+  }
+
+  .input:valid:not(:placeholder-shown):not(:focus) {
+    @apply border-emerald-500/50;
   }
   .card {
     @apply rounded-xl border border-white/10 bg-white/5 shadow-sm;

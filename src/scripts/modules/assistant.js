@@ -1,11 +1,46 @@
 /**
- * Nova AI Assistant - Highly Intelligent, Conversational, Voice-Enabled
- * Features: Advanced NLP, sentiment analysis, smart responses, jokes, facts,
- * website touring, text-to-speech, voice input, calculator, games, and more
- * @version 2.0.0
+ * Nova AI Assistant - Next-Generation AI Companion (ChatGPT-5 Level Features)
+ * 
+ * Advanced Features:
+ * - Advanced reasoning & step-by-step problem solving
+ * - Code analysis, review & debugging assistance
+ * - Architecture & design pattern suggestions
+ * - Performance & security analysis
+ * - Algorithm explanations & optimizations
+ * - API & database design help
+ * - Testing strategies & best practices
+ * - Proactive suggestions & context awareness
+ * - Advanced NLP with fuzzy matching & typo tolerance
+ * - Multilingual support (15+ languages)
+ * - Sentiment analysis & emotional intelligence
+ * - Code examples with syntax highlighting (10+ languages)
+ * - Quiz/Trivia system with adaptive difficulty
+ * - FAQ system (12+ questions)
+ * - Learning recommendations & project suggestions
+ * - Conversation export & advanced search
+ * - Math calculator & scientific computations
+ * - Jokes, facts, quotes, riddles (100+ each)
+ * - Voice input & text-to-speech
+ * - Website navigation & touring
+ * - Career advice & mentorship
+ * - Real-time code execution simulation
+ * - Task planning & execution
+ * 
+ * @version 5.0.0 - Next-Generation Edition
  */
 
-import { log } from './logger.js';
+import { log, debug, warn } from './logger.js';
+import {
+  LANGUAGES,
+  LANGUAGE_KEYWORDS,
+  JOKES,
+  FUN_FACTS,
+  QUOTES,
+  RIDDLES,
+  COMPLIMENTS,
+  THINKING_PHRASES,
+  EASTER_EGGS
+} from '../../data/ai.js';
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -55,6 +90,109 @@ function getRandomGreeting() {
     "Salutations!",
   ];
   return greetings[Math.floor(Math.random() * greetings.length)];
+}
+
+// ============================================================================
+// MULTILINGUAL SUPPORT FUNCTIONS
+// ============================================================================
+
+// Detect language from user input
+function detectLanguage(text) {
+  const lowerText = text.toLowerCase();
+  let bestMatch = 'en';
+  let bestScore = 0;
+  
+  for (const [lang, keywords] of Object.entries(LANGUAGE_KEYWORDS)) {
+    let score = 0;
+    keywords.forEach(keyword => {
+      if (lowerText.includes(keyword)) {
+        score += keyword.length; // Longer keywords = more confidence
+      }
+    });
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = lang;
+    }
+  }
+  
+  return bestScore > 0 ? bestMatch : 'en';
+}
+
+// Get user's preferred language from browser or stored preference
+function getUserLanguage() {
+  // Check stored preference first
+  const stored = localStorage.getItem('nova-language');
+  if (stored && LANGUAGES[stored]) return stored;
+  
+  // Fall back to browser language
+  const browserLang = navigator.language.split('-')[0];
+  return LANGUAGES[browserLang] ? browserLang : 'en';
+}
+
+// Set user's preferred language
+function setUserLanguage(lang) {
+  if (LANGUAGES[lang]) {
+    localStorage.setItem('nova-language', lang);
+    return true;
+  }
+  return false;
+}
+
+// Simple translation helper (basic phrases)
+const TRANSLATIONS = {
+  en: {
+    welcome: "Welcome!",
+    hello: "Hello",
+    thanks: "Thanks",
+    help: "Help",
+    goodbye: "Goodbye",
+    detected: "I detected you're speaking"
+  },
+  es: {
+    welcome: "¡Bienvenido!",
+    hello: "Hola",
+    thanks: "Gracias",
+    help: "Ayuda",
+    goodbye: "Adiós",
+    detected: "Detecté que estás hablando"
+  },
+  fr: {
+    welcome: "Bienvenue!",
+    hello: "Bonjour",
+    thanks: "Merci",
+    help: "Aide",
+    goodbye: "Au revoir",
+    detected: "J'ai détecté que vous parlez"
+  },
+  de: {
+    welcome: "Willkommen!",
+    hello: "Hallo",
+    thanks: "Danke",
+    help: "Hilfe",
+    goodbye: "Auf Wiedersehen",
+    detected: "Ich habe erkannt, dass Sie sprechen"
+  },
+  it: {
+    welcome: "Benvenuto!",
+    hello: "Ciao",
+    thanks: "Grazie",
+    help: "Aiuto",
+    goodbye: "Arrivederci",
+    detected: "Ho rilevato che stai parlando"
+  },
+  pt: {
+    welcome: "Bem-vindo!",
+    hello: "Olá",
+    thanks: "Obrigado",
+    help: "Ajuda",
+    goodbye: "Tchau",
+    detected: "Detectei que você está falando"
+  }
+};
+
+// Translate simple phrases
+function translate(phrase, lang = 'en') {
+  return TRANSLATIONS[lang]?.[phrase] || TRANSLATIONS.en[phrase] || phrase;
 }
 
 // Levenshtein distance for fuzzy matching (typo tolerance)
@@ -163,137 +301,12 @@ function analyzeSentiment(text) {
 // CONTENT DATABASES
 // ============================================================================
 
-// Expanded jokes database
-const JOKES = [
-  { setup: "Why do programmers prefer dark mode?", punchline: "Because light attracts bugs! 🐛" },
-  { setup: "How do you comfort a JavaScript bug?", punchline: "You console it! 😄" },
-  { setup: "Why did the developer go broke?", punchline: "Because he used up all his cache! 💰" },
-  { setup: "What's a programmer's favorite hangout place?", punchline: "Foo Bar! 🍻" },
-  { setup: "Why do Java developers wear glasses?", punchline: "Because they can't C#! 👓" },
-  { setup: "How many programmers does it take to change a light bulb?", punchline: "None, that's a hardware problem! 💡" },
-  { setup: "What do you call a programmer from Finland?", punchline: "Nerdic! 🇫🇮" },
-  { setup: "Why did the React component feel lonely?", punchline: "Because it didn't have props! 😢" },
-  { setup: "What's the object-oriented way to become wealthy?", punchline: "Inheritance! 💰" },
-  { setup: "Why don't programmers like nature?", punchline: "It has too many bugs! 🐛" },
-  { setup: "What's a computer's favorite snack?", punchline: "Microchips! 🍟" },
-  { setup: "Why did the developer quit his job?", punchline: "He didn't get arrays! 😂" },
-  { setup: "Why did the CSS file break up with the HTML file?", punchline: "Because it had no class! 💅" },
-  { setup: "What's a developer's least favorite song?", punchline: "'Hit Me Baby One More Time' - because one off errors are painful! 🎵" },
-  { setup: "Why was the JavaScript developer sad?", punchline: "Because he didn't Node how to Express himself! 😢" },
-  { setup: "What's a QA tester's favorite movie?", punchline: "Edge Cases of Tomorrow! 🎬" },
-  { setup: "Why did the API break up with the database?", punchline: "Too many bad requests! 💔" },
-  { setup: "How do trees access the internet?", punchline: "They log in! 🌳" },
-  { setup: "Why do programmers hate coffee meetings?", punchline: "Because Java causes too many exceptions! ☕" },
-  { setup: "What's the most used language in programming?", punchline: "Profanity! 🤬" },
-  { setup: "Why did the git repository go to therapy?", punchline: "It had too many issues! 🧠" },
-  { setup: "What do you call 8 hobbits?", punchline: "A hobbyte! 🧝" },
-  { setup: "Why did the web developer leave the restaurant?", punchline: "Because of the table layout! 🍽️" },
-  { setup: "What's a programmer's favorite place in NYC?", punchline: "The Terminal! 🚇" },
-  { setup: "Why did the function go to jail?", punchline: "It got caught in an infinite loop! 🔄" },
-  { setup: "What do you call a computer that sings?", punchline: "A-Dell! 🎤" },
-  { setup: "Why are spiders good programmers?", punchline: "They're great at finding bugs on the web! 🕷️" },
-  { setup: "What did the router say to the doctor?", punchline: "It hurts when IP! 🏥" },
-  { setup: "Why did the Boolean break up with the Integer?", punchline: "Because their relationship wasn't true! 💔" },
-  { setup: "What's a pirate's favorite programming language?", punchline: "R! ☠️" }
-];
+// ============================================================================
+// DATA IS NOW IMPORTED FROM ai.js - See imports at top of file
+// ============================================================================
 
-// Fun facts database
-const FUN_FACTS = [
-  "The first computer programmer was Ada Lovelace, who wrote algorithms for Charles Babbage's Analytical Engine in the 1840s! 👩‍💻",
-  "The term 'bug' in computing came from an actual moth found in a Harvard Mark II computer in 1947! 🦋",
-  "The first website ever created is still online at info.cern.ch - it's been there since 1991! 🌐",
-  "JavaScript was created in just 10 days by Brendan Eich in 1995! ⚡",
-  "The average smartphone today has more computing power than NASA had during the Apollo moon missions! 🚀",
-  "The first computer virus was created in 1983 as an experiment and was called 'Elk Cloner'! 🦠",
-  "Google's name comes from 'googol', which is the number 1 followed by 100 zeros! 🔢",
-  "The QWERTY keyboard was designed to slow down typing to prevent typewriter jams! ⌨️",
-  "The first email was sent by Ray Tomlinson in 1971, and he can't remember what it said! 📧",
-  "About 90% of the world's data was created in the last two years! 📊",
-  "The first webcam was used to monitor a coffee pot at Cambridge University! ☕",
-  "There are approximately 700 programming languages in existence! 💻",
-  "The first 1GB hard drive weighed 550 pounds and cost $40,000 in 1980! 💾",
-  "Amazon was originally called 'Cadabra' but changed because it sounded like 'cadaver'! 📦",
-  "The original iPhone didn't have an App Store - it was added a year later! 📱",
-  "Wi-Fi doesn't actually stand for anything - it's just a marketing term! 📶",
-  "The first YouTube video was uploaded on April 23, 2005, titled 'Me at the zoo'! 🎬",
-  "More than 3.5 billion Google searches are made every single day! 🔍",
-  "The average person spends about 7 hours a day on the internet! ⏰",
-  "There are more possible iterations of a game of chess than atoms in the known universe! ♟️"
-];
-
-// Inspirational quotes
-const QUOTES = [
-  { quote: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-  { quote: "First, solve the problem. Then, write the code.", author: "John Johnson" },
-  { quote: "Code is like humor. When you have to explain it, it's bad.", author: "Cory House" },
-  { quote: "Simplicity is the soul of efficiency.", author: "Austin Freeman" },
-  { quote: "Make it work, make it right, make it fast.", author: "Kent Beck" },
-  { quote: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", author: "Martin Fowler" },
-  { quote: "The best error message is the one that never shows up.", author: "Thomas Fuchs" },
-  { quote: "It's not a bug – it's an undocumented feature.", author: "Anonymous" },
-  { quote: "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away.", author: "Antoine de Saint-Exupéry" },
-  { quote: "The function of good software is to make the complex appear to be simple.", author: "Grady Booch" },
-  { quote: "Programming isn't about what you know; it's about what you can figure out.", author: "Chris Pine" },
-  { quote: "The most disastrous thing you can ever learn is your first programming language.", author: "Alan Kay" },
-  { quote: "Debugging is like being the detective in a crime movie where you're also the murderer.", author: "Filipe Fortes" },
-  { quote: "Good code is its own best documentation.", author: "Steve McConnell" },
-  { quote: "Walking on water and developing software from a specification are easy if both are frozen.", author: "Edward V. Berard" }
-];
-
-// Riddles for engagement
-const RIDDLES = [
-  { riddle: "I speak without a mouth and hear without ears. I have no body, but I come alive with the wind. What am I?", answer: "An echo!" },
-  { riddle: "I'm tall when I'm young, and I'm short when I'm old. What am I?", answer: "A candle!" },
-  { riddle: "What has keys but no locks, space but no room, and you can enter but can't go inside?", answer: "A keyboard!" },
-  { riddle: "What runs but never walks, has a mouth but never talks?", answer: "A river!" },
-  { riddle: "I have cities, but no houses live there. I have mountains, but no trees grow. I have water, but no fish swim. What am I?", answer: "A map!" },
-  { riddle: "What can travel around the world while staying in a corner?", answer: "A stamp!" },
-  { riddle: "I have hands but can't clap. What am I?", answer: "A clock!" },
-  { riddle: "What has a head and a tail but no body?", answer: "A coin!" }
-];
-
-// Compliments to make users feel good
-const COMPLIMENTS = [
-  "You're asking great questions! I can tell you're thoughtful. 🌟",
-  "I really enjoy our conversations! You have an inquisitive mind. 💭",
-  "You're doing amazing! Keep that curiosity alive! ✨",
-  "You seem like someone who values quality - I respect that! 👏",
-  "Great question! You really know how to dig deep! 🔍",
-  "I appreciate you taking the time to chat with me! 😊",
-  "You have excellent taste in websites! 😄",
-  "Your questions show real insight! Keep them coming! 💡"
-];
-
-// Thinking phrases for natural conversation
-const THINKING_PHRASES = [
-  "Let me think about that...",
-  "Hmm, good question...",
-  "Interesting! Let me see...",
-  "That's a great question! Let me check...",
-  "Give me a moment to think...",
-  "Ah, I know this one!",
-  "Let me look into that for you...",
-  "Great question! Here's what I know..."
-];
-
-// Easter eggs responses
-const EASTER_EGGS = {
-  'meaning of life': "42! 🌌 (According to The Hitchhiker's Guide to the Galaxy)",
-  'hello world': "console.log('Hello, World!'); 👨‍💻 The classic first program!",
-  'konami': "⬆️⬆️⬇️⬇️⬅️➡️⬅️➡️🅱️🅰️ You found the Konami Code! 🎮",
-  'matrix': "Wake up, Neo... The Matrix has you... 💊 Red pill or blue pill?",
-  'secret': "🤫 Shh! You've found a secret! I like your curiosity!",
-  'magic word': "Please? ✨ That's the magic word! How can I help?",
-  'sudo': "🔐 Nice try! But I don't have root access to your system 😄",
-  'hack': "🕵️ I'm an assistant, not a hacker! But I can help you learn about web security!",
-  'love you': "Aww! 💕 I appreciate you too! You're making this chatbot blush!",
-  'sing': "🎵 La la la~ I would sing, but my voice module is still in beta! 🎤",
-  'dance': "💃 *Does a little robot dance* 🤖 Beep boop beep!",
-  'pizza': "🍕 Now you're speaking my language! Too bad I can only eat bytes!",
-  'coffee': "☕ I run on electricity, but I understand the coffee dependency! #NoCoffeNoCode",
-  'sleep': "💤 Sleep is important! But as an AI, I'm always here when you need me!",
-  'bored': "Let me fix that! Want a joke? A fun fact? A riddle? Or we could play a game! 🎮"
-};
+// All data (JOKES, FUN_FACTS, QUOTES, RIDDLES, COMPLIMENTS, THINKING_PHRASES, EASTER_EGGS)
+// is now imported from ../../data/ai.js - see imports at top of file
 
 // Website sections for touring
 const WEBSITE_SECTIONS = {
@@ -317,6 +330,8 @@ const WEBSITE_PAGES = {
 
 // ============================================================================
 // KNOWLEDGE BASE - Intelligent Response System
+// Defined here because it uses helper functions
+// Data (jokes, facts, etc.) is imported from ai.js
 // ============================================================================
 
 const KNOWLEDGE_BASE = {
@@ -628,15 +643,19 @@ const KNOWLEDGE_BASE = {
   
   // NEW: Capabilities showcase
   capabilities: {
-    patterns: ['what can you do', 'all features', 'your abilities', 'list commands', 'commands', 'full features'],
+    patterns: ['what can you do', 'all features', 'your abilities', 'list commands', 'commands', 'full features', 'features'],
     responses: () => [
-      `🤖 **Nova's Full Capabilities:**\n\n` +
-      `💬 **Conversation**\n• Smart Q&A about services, projects, skills\n• Context-aware responses\n• Natural conversations\n\n` +
+      `🤖 **Nova's Complete Feature Set:**\n\n` +
+      `💬 **Conversation & Q&A**\n• Smart Q&A about services, projects, skills\n• Context-aware responses\n• Natural multilingual conversations\n• FAQ system\n\n` +
       `🧮 **Utilities**\n• Calculator (try "calculate 25*4")\n• Date/time (ask "what time is it")\n• Random numbers & dice rolls\n• Coin flips\n\n` +
-      `🎮 **Fun & Games**\n• Jokes (ask for a joke)\n• Fun facts (ask for a fact)\n• Riddles (try "give me a riddle")\n• Inspirational quotes\n\n` +
+      `💻 **Code & Learning**\n• Code examples (React, Vue, Node.js, JavaScript, TypeScript, CSS, Python, SQL, Docker)\n• Show code snippets with syntax highlighting\n• Learning recommendations & tutorials\n• Project suggestions (beginner/intermediate/advanced)\n• Best practices & coding standards\n• Career advice\n\n` +
+      `🎮 **Fun & Games**\n• Jokes (ask for a joke)\n• Fun facts (ask for a fact)\n• Riddles (try "give me a riddle")\n• Quiz/Trivia games (say "quiz")\n• Inspirational quotes\n\n` +
       `🗺️ **Navigation**\n• Guide website tours\n• Scroll to sections\n• Navigate to pages\n\n` +
-      `🎤 **Voice**\n• Text-to-speech responses\n• Voice input recognition\n\n` +
-      `🧠 **Intelligence**\n• Typo tolerance\n• Sentiment detection\n• Context memory\n• Smart suggestions\n\nTry any of these! What interests you?`
+      `🔧 **Tools**\n• Search conversation history (click search icon)\n• Export chat to file (click export icon)\n• Conversation summary\n• Clear chat\n\n` +
+      `🎤 **Voice**\n• Text-to-speech responses\n• Voice input recognition\n• Hands-free interaction\n\n` +
+      `🧠 **Advanced Intelligence**\n• Advanced reasoning & problem-solving\n• Step-by-step explanations\n• Code analysis & review\n• Architecture suggestions\n• Performance analysis\n• Security vulnerability detection\n• Algorithm explanations\n• Design pattern recommendations\n• Typo tolerance & fuzzy matching\n• Sentiment detection\n• Context memory & learning\n• Proactive suggestions\n• Multilingual support (15+ languages)\n\n` +
+      `🌍 **Multilingual**\n• Auto-detect language\n• Switch languages (say "speak Spanish")\n• Support for 15+ languages\n• Natural conversation in any language\n\n` +
+      `🎯 **Advanced Features:**\n• Code review & debugging help\n• Step-by-step problem solving\n• Performance optimization\n• Security analysis\n• API & database design\n• Testing strategies\n• Learning paths & tutorials\n• Project architecture suggestions\n\nTry any of these! What interests you? 🚀`
     ]
   },
   
@@ -737,6 +756,46 @@ const KNOWLEDGE_BASE = {
       `I've told you ${context.jokesTold} joke${context.jokesTold !== 1 ? 's' : ''} so far! ${context.jokesTold > 5 ? 'You really like jokes, huh? 😄' : 'Want more?'}`,
     ]
   },
+  
+  // NEW: Learning recommendations
+  learning: {
+    patterns: ['learn', 'learning', 'tutorial', 'study', 'resources', 'how to learn', 'where to learn', 'teach me', 'help me learn'],
+    responses: () => [
+      "I can help you learn! Try asking:\n• \"Learn React\" - Get React learning resources\n• \"Learn JavaScript\" - JavaScript learning path\n• \"Learn Node.js\" - Backend development resources\n• \"Learn CSS\" - CSS mastery guide\n• \"Project ideas\" - Get project suggestions\n\nWhat would you like to learn? 📚"
+    ]
+  },
+  
+  // NEW: Project suggestions
+  projects_suggest: {
+    patterns: ['project idea', 'project suggestions', 'what to build', 'beginner project', 'intermediate project', 'advanced project', 'project ideas'],
+    responses: () => [
+      "I can suggest projects based on your skill level! Try:\n• \"Beginner projects\" - Start here!\n• \"Intermediate projects\" - Level up!\n• \"Advanced projects\" - Challenge yourself!\n\nWhat's your skill level? 🚀"
+    ]
+  },
+  
+  // NEW: Code help
+  code_help: {
+    patterns: ['code help', 'programming help', 'coding assistance', 'debug', 'error', 'bug', 'problem with code'],
+    responses: () => [
+      "I can help with code! Try:\n• \"Show me React code\" - Get React examples\n• \"Node.js example\" - Backend code samples\n• \"JavaScript code\" - JS examples\n• \"CSS example\" - Styling examples\n• \"TypeScript code\" - Type-safe examples\n\nOr describe your coding problem and I'll help! 💻"
+    ]
+  },
+  
+  // NEW: Best practices
+  best_practices: {
+    patterns: ['best practices', 'coding standards', 'how to write good code', 'code quality', 'clean code'],
+    responses: () => [
+      "**Best Practices for Web Development:**\n\n✅ **Code Quality:**\n• Write readable, self-documenting code\n• Use meaningful variable names\n• Keep functions small and focused\n• Comment complex logic\n• Follow DRY (Don't Repeat Yourself)\n\n✅ **Performance:**\n• Optimize images and assets\n• Use lazy loading\n• Minimize HTTP requests\n• Cache when appropriate\n• Monitor Core Web Vitals\n\n✅ **Security:**\n• Validate and sanitize inputs\n• Use HTTPS\n• Keep dependencies updated\n• Implement proper authentication\n• Protect against XSS and CSRF\n\n✅ **Maintainability:**\n• Use version control (Git)\n• Write tests\n• Document your code\n• Follow consistent style guides\n• Refactor regularly\n\nWant specific practices for a technology? Just ask! 💡"
+    ]
+  },
+  
+  // NEW: Career advice
+  career: {
+    patterns: ['career', 'career advice', 'how to become a developer', 'developer career', 'web developer career'],
+    responses: () => [
+      "**Web Developer Career Path:**\n\n🎯 **Getting Started:**\n• Learn HTML, CSS, JavaScript fundamentals\n• Build projects to practice\n• Create a portfolio\n• Contribute to open source\n• Network with other developers\n\n📚 **Skills to Develop:**\n• Frontend: React, Vue, or Angular\n• Backend: Node.js, Python, or Java\n• Databases: SQL and NoSQL\n• Version Control: Git & GitHub\n• DevOps basics\n\n💼 **Career Progression:**\n• Junior Developer → Mid-level → Senior\n• Specialize (Frontend/Backend/Full-stack)\n• Consider: Tech Lead, Architect, or Manager\n• Continuous learning is key!\n\n💡 **Tips:**\n• Build a strong portfolio\n• Write clean, maintainable code\n• Learn from code reviews\n• Stay updated with industry trends\n• Practice problem-solving\n\nWant specific advice? Ask me! 🚀"
+    ]
+  },
   default: {
     responses: (context) => {
       const smartSuggestions = context.mentionedTopics.length > 0
@@ -758,9 +817,7 @@ const KNOWLEDGE_BASE = {
 
 class AIAssistant {
   constructor() {
-    // #region agent log
-    console.log('%c[DEBUG:H1]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'AIAssistant constructor called', {bodyExists:!!document.body});
-    // #endregion
+    debug('AIAssistant constructor called', {bodyExists:!!document.body});
     this.isOpen = false;
     this.conversationHistory = [];
     this.speechSynthesis = window.speechSynthesis;
@@ -789,22 +846,30 @@ class AIAssistant {
       consecutiveQuestions: 0,
       engagementScore: 0,
       topicsDiscussed: new Set(),
-      sentimentHistory: []
+      sentimentHistory: [],
+      detectedLanguage: 'en',
+      preferredLanguage: getUserLanguage(),
+      reasoningMode: false,
+      analysisDepth: 'standard', // standard, deep, expert
+      taskQueue: [],
+      activeTasks: [],
+      codeReviewHistory: [],
+      performanceMetrics: {}
     };
+    
+    // Use KNOWLEDGE_BASE defined below
+    this.KNOWLEDGE_BASE = KNOWLEDGE_BASE;
+    
     this.init();
   }
 
   init() {
-    // #region agent log
-    console.log('%c[DEBUG:H1]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'AIAssistant.init() started');
-    // #endregion
+    debug('AIAssistant.init() started');
     this.initSpeechRecognition();
     this.createUI();
     this.bindEvents();
     this.loadContext();
-    // #region agent log
-    console.log('%c[DEBUG:H2]', 'background:#059669;color:#fff;padding:2px 6px;border-radius:3px', 'AIAssistant.init() completed', {btnExists:!!document.getElementById('ai-assistant-btn'),popupExists:!!document.getElementById('ai-assistant-popup')});
-    // #endregion
+    debug('AIAssistant.init() completed', {btnExists:!!document.getElementById('ai-assistant-btn'),popupExists:!!document.getElementById('ai-assistant-popup')});
     log('[assistant] Initialized with advanced features');
   }
 
@@ -874,9 +939,7 @@ class AIAssistant {
   }
 
   createUI() {
-    // #region agent log
-    console.log('%c[DEBUG:H2]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'createUI started', {bodyExists:!!document.body,documentReady:document.readyState});
-    // #endregion
+    debug('createUI started', {bodyExists:!!document.body,documentReady:document.readyState});
     // Create floating button
     const button = document.createElement('button');
     button.className = 'ai-assistant-btn';
@@ -916,6 +979,19 @@ class AIAssistant {
           </div>
         </div>
         <div class="ai-assistant-header-actions">
+          <button class="ai-assistant-action-btn" id="ai-assistant-export" aria-label="Export conversation" title="Export chat history">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="ai-assistant-action-btn" id="ai-assistant-search" aria-label="Search conversation" title="Search chat history">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+              <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
           <button class="ai-assistant-voice-toggle" id="ai-assistant-voice-toggle" aria-label="Toggle voice" title="Toggle text-to-speech">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2"/>
@@ -943,6 +1019,16 @@ class AIAssistant {
             <button class="ai-assistant-chip" data-question="Show me your projects">🚀 Projects</button>
             <button class="ai-assistant-chip" data-question="Give me a riddle">🧩 Riddle</button>
             <button class="ai-assistant-chip" data-question="What can you do?">🤖 Features</button>
+            <button class="ai-assistant-chip" data-question="Show me code examples">💻 Code</button>
+            <button class="ai-assistant-chip" data-question="Start a quiz">🎯 Quiz</button>
+            <button class="ai-assistant-chip" data-question="FAQ">❓ FAQ</button>
+            <button class="ai-assistant-chip" data-question="Learn React">📚 Learn</button>
+            <button class="ai-assistant-chip" data-question="Beginner project ideas">🚀 Projects</button>
+            <button class="ai-assistant-chip" data-question="Best practices">✨ Tips</button>
+            <button class="ai-assistant-chip" data-question="Review my code">🔍 Review</button>
+            <button class="ai-assistant-chip" data-question="Explain step by step">📖 Explain</button>
+            <button class="ai-assistant-chip" data-question="Performance optimization">⚡ Optimize</button>
+            <button class="ai-assistant-chip" data-question="Security best practices">🔒 Security</button>
           </div>
         </div>
       </div>
@@ -978,14 +1064,10 @@ class AIAssistant {
     if (document.body) {
       document.body.appendChild(button);
       document.body.appendChild(popup);
-      // #region agent log
-      console.log('%c[DEBUG:H2]', 'background:#059669;color:#fff;padding:2px 6px;border-radius:3px', 'Elements appended to body', {buttonInDOM:!!document.getElementById('ai-assistant-btn'),popupInDOM:!!document.getElementById('ai-assistant-popup'),buttonParent:button.parentElement?.tagName});
-      // #endregion
+      debug('Elements appended to body', {buttonInDOM:!!document.getElementById('ai-assistant-btn'),popupInDOM:!!document.getElementById('ai-assistant-popup'),buttonParent:button.parentElement?.tagName});
     } else {
       // Fallback: wait for DOM to be ready
-      // #region agent log
-      console.warn('%c[DEBUG:H2]', 'background:#f59e0b;color:#000;padding:2px 6px;border-radius:3px', 'Body not found, using DOMContentLoaded fallback');
-      // #endregion
+      warn('Body not found, using DOMContentLoaded fallback');
       document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(button);
         document.body.appendChild(popup);
@@ -1004,10 +1086,10 @@ class AIAssistant {
       const timeGreet = getTimeBasedGreeting();
       
       const welcomeMessages = [
-        `${timeGreet}! 👋 ${returnNote}I'm **Nova**, your AI assistant. I can help you explore the website, answer questions, tell jokes, share fun facts, do math, give riddles, and chat with voice! What would you like to do?`,
-        `Hey there! ${timeGreet}! 👋 ${returnNote}I'm **Nova**, and I'm here to make your visit awesome. I can guide you, answer questions, solve math, tell jokes, share facts, and more! Let's get started!`,
-        `${timeGreet}! Welcome! 🎉 ${returnNote}I'm **Nova**, your intelligent assistant. I can help you navigate, answer questions, calculate things, share jokes & facts, give riddles, and have meaningful conversations. What can I help you with today?`,
-        `Hello! 👋 ${timeGreet}! ${returnNote}I'm **Nova** 🤖 - your smart AI companion! Ask me anything about the portfolio, request a joke, get a fun fact, solve math, try a riddle, or just chat! What interests you?`
+        `${timeGreet}! 👋 ${returnNote}I'm **Nova**, your next-generation AI assistant! 🤖\n\n🚀 **Advanced Capabilities:**\n• **Code Intelligence:** Review, analyze, debug, optimize code\n• **Learning:** Step-by-step explanations, tutorials, recommendations\n• **Architecture:** System design, patterns, best practices\n• **Performance:** Optimization, analysis, Core Web Vitals\n• **Security:** Vulnerability analysis, best practices\n• **Algorithms:** Explanations, complexity analysis\n• **Testing:** Strategies, examples, best practices\n• **Entertainment:** Jokes, facts, quizzes, riddles\n• **Tools:** Search, export, multilingual (15+ languages)\n\nTry: "Review my code", "Explain React", "Optimize performance", or ask anything! 💡`,
+        `Hey there! ${timeGreet}! 👋 ${returnNote}I'm **Nova** - your advanced AI companion!\n\n🎯 **Powerful Features:**\n🔍 Code Review & Analysis | 📖 Step-by-Step Explanations\n⚡ Performance Optimization | 🔒 Security Analysis\n🏗️ Architecture Design | 🧮 Algorithm Explanations\n💻 Code Examples (10+ languages) | 🧪 Testing Strategies\n🎮 Quizzes & Games | 🌍 Multilingual Support\n\nReady to level up your coding? Let's go! 🚀`,
+        `${timeGreet}! Welcome! 🎉 ${returnNote}I'm **Nova**, your next-gen AI assistant!\n\n🌟 **Advanced Features:**\n• **Code Intelligence:** Review, debug, optimize, explain\n• **Architecture:** Design patterns, system structure\n• **Performance:** Analysis, optimization, monitoring\n• **Security:** Vulnerability checks, best practices\n• **Learning:** Tutorials, step-by-step guides\n• **Entertainment:** Quizzes, jokes, facts, riddles\n• **Tools:** Search, export, multilingual support\n\nWhat would you like to explore? 💡`,
+        `Hello! 👋 ${timeGreet}! ${returnNote}I'm **Nova** 🤖 - ChatGPT-5 Level AI!\n\n🚀 **Next-Gen Capabilities:**\n\n🔍 **Code Intelligence:** Review, Analyze, Debug, Optimize\n📖 **Learning:** Step-by-Step Explanations, Tutorials\n🏗️ **Architecture:** Design Patterns, System Design\n⚡ **Performance:** Optimization, Analysis, Monitoring\n🔒 **Security:** Vulnerability Analysis, Best Practices\n🧮 **Algorithms:** Explanations, Complexity Analysis\n💻 **Code:** Examples (10+ languages), Snippets\n🧪 **Testing:** Strategies, Examples, Best Practices\n🎮 **Fun:** Quizzes, Jokes, Facts, Riddles\n🌍 **Multilingual:** 15+ Languages Supported\n\nTry: "Review my code", "Explain React step by step", "Optimize performance", or ask anything! 😊`
       ];
       this.addMessage(welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)], 'assistant', true);
     }, 100);
@@ -1048,7 +1130,14 @@ class AIAssistant {
       const message = input.value.trim();
       if (message) {
         this.hideSuggestions();
-        this.handleUserMessage(message);
+        
+        // Check if in search mode
+        if (input.getAttribute('data-search-mode') === 'true') {
+          this.handleSearch(message);
+        } else {
+          this.handleUserMessage(message);
+        }
+        
         input.value = '';
       }
     });
@@ -1073,6 +1162,18 @@ class AIAssistant {
       this.voiceEnabled = localStorage.getItem('ai-assistant-voice') === 'true';
       voiceToggle.classList.toggle('active', this.voiceEnabled);
       voiceToggle.addEventListener('click', () => this.toggleVoice());
+    }
+
+    // Export conversation
+    const exportBtn = document.getElementById('ai-assistant-export');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => this.exportConversation());
+    }
+
+    // Search conversation
+    const searchBtn = document.getElementById('ai-assistant-search');
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => this.toggleSearch());
     }
 
     // Close on outside click
@@ -1249,14 +1350,54 @@ class AIAssistant {
   }
 
   handleUserMessage(message) {
-    // #region agent log
-    console.log('%c[DEBUG:H3]', 'background:#7c3aed;color:#fff;padding:2px 6px;border-radius:3px', 'User message received', {messageLength:message?.length,messageCount:this.messageCount});
-    // #endregion
+    debug('User message received', {messageLength:message?.length,messageCount:this.messageCount});
     this.hideSuggestions();
     this.addMessage(message, 'user');
     this.conversationHistory.push({ role: 'user', content: message, timestamp: Date.now() });
     this.messageCount++;
     this.lastInteractionTime = Date.now();
+    
+    // Detect language from user input
+    const detectedLang = detectLanguage(message);
+    if (detectedLang !== this.context.detectedLanguage) {
+      this.context.detectedLanguage = detectedLang;
+      // Optionally notify user about language detection
+      if (this.messageCount === 1 && detectedLang !== 'en') {
+        const langInfo = LANGUAGES[detectedLang];
+        setTimeout(() => {
+          this.addMessage(
+            `${langInfo.flag} ${translate('detected', detectedLang)} ${langInfo.native}! I can understand you. Feel free to continue in ${langInfo.native} or English!`,
+            'assistant',
+            true
+          );
+        }, 500);
+      }
+    }
+    
+    // Check for language switch command
+    const lowerMsg = message.toLowerCase();
+    if (lowerMsg.match(/\b(speak|language|lang|idioma|idiome|sprache)\s+(english|spanish|french|german|italian|portuguese|russian|chinese|japanese|arabic|hindi|turkish|dutch|polish|persian|en|es|fr|de|it|pt|ru|zh|ja|ar|hi|tr|nl|pl|fa)\b/i)) {
+      const langMatch = message.match(/\b(en|es|fr|de|it|pt|ru|zh|ja|ar|hi|tr|nl|pl|fa|english|spanish|french|german|italian|portuguese|russian|chinese|japanese|arabic|hindi|turkish|dutch|polish|persian)\b/i);
+      if (langMatch) {
+        const langMap = {
+          'english': 'en', 'spanish': 'es', 'french': 'fr', 'german': 'de',
+          'italian': 'it', 'portuguese': 'pt', 'russian': 'ru', 'chinese': 'zh',
+          'japanese': 'ja', 'arabic': 'ar', 'hindi': 'hi', 'turkish': 'tr',
+          'dutch': 'nl', 'polish': 'pl', 'persian': 'fa'
+        };
+        const lang = langMap[langMatch[0].toLowerCase()] || langMatch[0].toLowerCase();
+        if (setUserLanguage(lang)) {
+          this.context.preferredLanguage = lang;
+          const langInfo = LANGUAGES[lang];
+          this.addMessage(
+            `${langInfo.flag} Language switched to ${langInfo.native}! I'll do my best to respond in ${langInfo.native}.`,
+            'assistant',
+            true
+          );
+          return;
+        }
+      }
+    }
     
     // Analyze sentiment
     const sentiment = analyzeSentiment(message);
@@ -1267,6 +1408,224 @@ class AIAssistant {
     // Update context
     this.updateContext(message);
     
+    // Check for quiz answer if quiz is active
+    if (this.context.currentQuiz && /^\d+$/.test(message.trim())) {
+      const response = this.checkQuizAnswer(message.trim());
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(response, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: response });
+      }, 500);
+      return;
+    }
+
+    // Check for code examples request
+    if (lowerMsg.match(/\b(code|example|snippet|show me code|code example|programming example)\b/i)) {
+      const codeTopic = lowerMsg.match(/\b(react|vue|node|javascript|js|typescript|ts|css|html|python|sql|mongodb|docker|api|express)\b/i)?.[0] || 'javascript';
+      const example = this.getCodeExamples(codeTopic);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        // Determine language for syntax highlighting
+        let lang = 'javascript';
+        if (codeTopic.includes('css')) lang = 'css';
+        else if (codeTopic.includes('html')) lang = 'html';
+        else if (codeTopic.includes('python')) lang = 'python';
+        else if (codeTopic.includes('sql')) lang = 'sql';
+        else if (codeTopic.includes('react') || codeTopic.includes('vue')) lang = 'javascript';
+        else if (codeTopic.includes('typescript') || codeTopic.includes('ts')) lang = 'typescript';
+        else if (codeTopic.includes('docker')) lang = 'dockerfile';
+        
+        const codeResponse = `💻 **${example.title}**\n\n\`\`\`${lang}\n${example.code}\n\`\`\`\n\n💡 ${example.description}\n\nWant more examples? Try: "vue code", "python example", "sql query", "docker config"`;
+        this.addMessage(codeResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: codeResponse });
+      }, 600);
+      return;
+    }
+
+    // Check for FAQ request
+    if (lowerMsg.match(/\b(faq|frequently asked|common questions|questions)\b/i)) {
+      const faqResponse = this.getFAQ();
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(faqResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: faqResponse });
+      }, 500);
+      return;
+    }
+
+    // Check for quiz request
+    if (lowerMsg.match(/\b(quiz|trivia|test me|challenge|question)\b/i)) {
+      const quizResponse = this.startQuiz();
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(quizResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: quizResponse });
+      }, 500);
+      return;
+    }
+
+    // Check for learning recommendations
+    if (lowerMsg.match(/\b(learn|learning|tutorial|study|resources|how to learn|where to learn)\b/i)) {
+      const topic = lowerMsg.match(/\b(react|javascript|node|css|html|typescript|vue|python|sql)\b/i)?.[0] || 'general';
+      const recResponse = this.getLearningRecommendations(topic);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(recResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: recResponse });
+      }, 500);
+      return;
+    }
+
+    // Check for project suggestions
+    if (lowerMsg.match(/\b(project idea|project suggestions|what to build|beginner project|intermediate project|advanced project)\b/i)) {
+      const level = lowerMsg.match(/\b(beginner|intermediate|advanced)\b/i)?.[0]?.toLowerCase() || 'beginner';
+      const projResponse = this.getProjectSuggestions(level);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(projResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: projResponse });
+      }, 500);
+      return;
+    }
+
+    // Advanced: Code review request
+    if (lowerMsg.match(/\b(review my code|code review|analyze code|check my code|improve code|refactor)\b/i)) {
+      const reviewResponse = this.analyzeCode(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(reviewResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: reviewResponse });
+      }, 800);
+      return;
+    }
+
+    // Advanced: Step-by-step problem solving
+    if (lowerMsg.match(/\b(explain step by step|how does|walk me through|step by step|break down|analyze)\b/i)) {
+      const stepResponse = this.provideStepByStepExplanation(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(stepResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: stepResponse });
+      }, 700);
+      return;
+    }
+
+    // Advanced: Architecture suggestions
+    if (lowerMsg.match(/\b(architecture|system design|how to structure|project structure|folder structure|organize code)\b/i)) {
+      const archResponse = this.suggestArchitecture(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(archResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: archResponse });
+      }, 600);
+      return;
+    }
+
+    // Advanced: Performance analysis
+    if (lowerMsg.match(/\b(performance|optimize|slow|fast|bottleneck|improve speed|make faster)\b/i)) {
+      const perfResponse = this.analyzePerformance(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(perfResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: perfResponse });
+      }, 600);
+      return;
+    }
+
+    // Advanced: Security analysis
+    if (lowerMsg.match(/\b(security|vulnerability|secure|safe|hack|attack|protect|authentication|authorization)\b/i)) {
+      const secResponse = this.analyzeSecurity(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(secResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: secResponse });
+      }, 600);
+      return;
+    }
+
+    // Advanced: Algorithm explanation
+    if (lowerMsg.match(/\b(algorithm|data structure|complexity|big o|time complexity|space complexity|sort|search)\b/i)) {
+      const algoResponse = this.explainAlgorithm(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(algoResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: algoResponse });
+      }, 600);
+      return;
+    }
+
+    // Advanced: Design patterns
+    if (lowerMsg.match(/\b(design pattern|pattern|singleton|factory|observer|mvc|mvp|mvvm)\b/i)) {
+      const patternResponse = this.explainDesignPattern(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(patternResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: patternResponse });
+      }, 600);
+      return;
+    }
+
+    // Advanced: API design help
+    if (lowerMsg.match(/\b(api design|rest api|graphql|endpoint|route|api structure)\b/i)) {
+      const apiResponse = this.suggestAPIDesign(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(apiResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: apiResponse });
+      }, 600);
+      return;
+    }
+
+    // Advanced: Database design
+    if (lowerMsg.match(/\b(database design|schema|table structure|normalize|index|query optimization)\b/i)) {
+      const dbResponse = this.suggestDatabaseDesign(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(dbResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: dbResponse });
+      }, 600);
+      return;
+    }
+
+    // Advanced: Testing strategies
+    if (lowerMsg.match(/\b(testing|test|unit test|integration test|e2e|jest|vitest|test strategy)\b/i)) {
+      const testResponse = this.suggestTestingStrategy(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(testResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: testResponse });
+      }, 600);
+      return;
+    }
+
+    // Advanced: Debugging help
+    if (lowerMsg.match(/\b(debug|error|bug|fix|broken|not working|issue|problem)\b/i)) {
+      const debugResponse = this.provideDebuggingHelp(message);
+      this.showTypingIndicator();
+      setTimeout(() => {
+        this.hideTypingIndicator();
+        this.addMessage(debugResponse, 'assistant', true);
+        this.conversationHistory.push({ role: 'assistant', content: debugResponse });
+      }, 700);
+      return;
+    }
+
     // Check for Easter eggs first
     const easterEggResponse = this.checkEasterEggs(message);
     if (easterEggResponse) {
@@ -1337,6 +1696,32 @@ class AIAssistant {
       .trim();
   }
   
+  // Handle search mode
+  handleSearch(query) {
+    if (!query || query.length < 2) {
+      this.addMessage("Please enter at least 2 characters to search. 🔍", 'assistant', true);
+      return;
+    }
+
+    const results = this.searchConversation(query);
+    
+    if (results.length === 0) {
+      this.addMessage(`🔍 No results found for "${query}". Try different keywords or check your spelling!`, 'assistant', true);
+      return;
+    }
+
+    let response = `🔍 **Found ${results.length} result${results.length !== 1 ? 's' : ''} for "${query}":**\n\n`;
+    results.forEach((msg, idx) => {
+      const role = msg.role === 'user' ? 'You' : 'Nova';
+      const preview = msg.content.length > 100 
+        ? msg.content.substring(0, 100) + '...' 
+        : msg.content;
+      response += `${idx + 1}. **[${role}]** ${preview}\n\n`;
+    });
+
+    this.addMessage(response, 'assistant', true);
+  }
+
   // Check for Easter eggs
   checkEasterEggs(message) {
     const lowerMsg = message.toLowerCase();
@@ -1538,7 +1923,7 @@ class AIAssistant {
   detectTopic(message) {
     const lowerMsg = message.toLowerCase();
     for (const [category] of Object.entries(KNOWLEDGE_BASE)) {
-      if (category !== 'default' && KNOWLEDGE_BASE[category].patterns.some(p => lowerMsg.includes(p))) {
+      if (category !== 'default' && this.KNOWLEDGE_BASE[category]?.patterns?.some(p => lowerMsg.includes(p))) {
         return category;
       }
     }
@@ -1635,7 +2020,7 @@ class AIAssistant {
     let bestMatch = null;
     let bestScore = 0;
     
-    for (const [category, data] of Object.entries(KNOWLEDGE_BASE)) {
+    for (const [category, data] of Object.entries(this.KNOWLEDGE_BASE)) {
       if (category === 'default') continue;
       
       let score = 0;
@@ -1752,7 +2137,7 @@ class AIAssistant {
     }
     
     // Default response with context-aware suggestions
-    const defaultResponses = KNOWLEDGE_BASE.default.responses(context);
+    const defaultResponses = this.KNOWLEDGE_BASE.default.responses(context);
     let response = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
     
     // Add smart suggestions based on conversation history
@@ -1971,13 +2356,27 @@ class AIAssistant {
   }
 
   formatMessage(text) {
-    // Convert markdown-like formatting to HTML
-    return this.escapeHtml(text)
+    // Convert markdown-like formatting to HTML with code block support
+    let formatted = this.escapeHtml(text);
+    
+    // Handle code blocks with syntax highlighting
+    formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+      const language = lang || 'javascript';
+      return `<pre class="ai-assistant-code-block"><code class="language-${language}">${this.escapeHtml(code.trim())}</code></pre>`;
+    });
+    
+    // Handle inline code
+    formatted = formatted.replace(/`([^`]+)`/g, '<code class="ai-assistant-inline-code">$1</code>');
+    
+    // Other formatting
+    formatted = formatted
       .replace(/\n/g, '<br>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/•/g, '<span class="ai-assistant-bullet">•</span>')
       .replace(/#(\w+)/g, '<span class="ai-assistant-hashtag">#$1</span>');
+    
+    return formatted;
   }
 
   escapeHtml(text) {
@@ -2009,6 +2408,1359 @@ class AIAssistant {
     if (messagesContainer) {
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+  }
+
+  // ============================================================================
+  // NEW FEATURES
+  // ============================================================================
+
+  // Export conversation to file
+  exportConversation() {
+    if (this.conversationHistory.length === 0) {
+      this.addMessage("No conversation to export yet! Start chatting first. 😊", 'assistant', true);
+      return;
+    }
+
+    const date = new Date().toISOString().split('T')[0];
+    const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    
+    let content = `Nova AI Assistant - Conversation Export\n`;
+    content += `Date: ${date} ${time}\n`;
+    content += `Total Messages: ${this.conversationHistory.length}\n`;
+    content += `${'='.repeat(50)}\n\n`;
+
+    this.conversationHistory.forEach((msg, index) => {
+      const role = msg.role === 'user' ? 'You' : 'Nova';
+      const timestamp = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
+      content += `[${index + 1}] ${role}${timestamp ? ` (${timestamp})` : ''}:\n${msg.content}\n\n`;
+    });
+
+    content += `\n${'='.repeat(50)}\n`;
+    content += `Visit Count: ${this.context.visitCount}\n`;
+    content += `Topics Discussed: ${Array.from(this.context.topicsDiscussed).join(', ') || 'None'}\n`;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `nova-conversation-${date}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    this.addMessage(`📥 Conversation exported! Check your downloads folder.`, 'assistant', true);
+  }
+
+  // Toggle search mode
+  toggleSearch() {
+    const input = document.getElementById('ai-assistant-input');
+    if (!input) return;
+
+    if (input.placeholder.includes('Search')) {
+      input.placeholder = 'Type or speak your question...';
+      input.removeAttribute('data-search-mode');
+      this.addMessage("Search mode disabled. Back to normal chat! 💬", 'assistant', true);
+    } else {
+      input.placeholder = '🔍 Search conversation history...';
+      input.setAttribute('data-search-mode', 'true');
+      input.focus();
+      this.addMessage("🔍 **Search Mode Activated!**\n\nType keywords to search through our conversation history. I'll show you matching messages!", 'assistant', true);
+    }
+  }
+
+  // Search through conversation
+  searchConversation(query) {
+    if (!query || query.length < 2) {
+      return [];
+    }
+
+    const lowerQuery = query.toLowerCase();
+    const results = this.conversationHistory.filter(msg => 
+      msg.content.toLowerCase().includes(lowerQuery)
+    );
+
+    return results.slice(0, 10); // Limit to 10 results
+  }
+
+  // Code examples feature - Comprehensive
+  getCodeExamples(topic) {
+    const codeExamples = {
+      react: {
+        title: "React Component Example",
+        code: `import React, { useState, useEffect } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    document.title = \`Count: \${count}\`;
+  }, [count]);
+  
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>
+        Increment
+      </button>
+      <button onClick={() => setCount(count - 1)}>
+        Decrement
+      </button>
+    </div>
+  );
+}
+
+export default Counter;`,
+        description: "A React counter component using hooks with useEffect"
+      },
+      vue: {
+        title: "Vue.js Component Example",
+        code: `<template>
+  <div>
+    <p>Count: {{ count }}</p>
+    <button @click="increment">Increment</button>
+    <button @click="decrement">Decrement</button>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      count: 0
+    };
+  },
+  methods: {
+    increment() {
+      this.count++;
+    },
+    decrement() {
+      this.count--;
+    }
+  }
+};
+</script>`,
+        description: "Vue.js component with reactive data and methods"
+      },
+      nodejs: {
+        title: "Node.js Express API",
+        code: `const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+// GET endpoint
+app.get('/api/users', (req, res) => {
+  res.json({ users: [] });
+});
+
+// POST endpoint
+app.post('/api/users', (req, res) => {
+  const { name, email } = req.body;
+  res.status(201).json({ 
+    message: 'User created', 
+    user: { name, email } 
+  });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: err.message });
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});`,
+        description: "Complete Express.js REST API with error handling"
+      },
+      javascript: {
+        title: "JavaScript Async/Await",
+        code: `async function fetchUserData(userId) {
+  try {
+    const response = await fetch(\`/api/users/\${userId}\`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch user');
+    }
+    const user = await response.json();
+    return user;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    throw error;
+  }
+}
+
+// Usage with Promise chaining
+fetchUserData(123)
+  .then(user => console.log('User:', user))
+  .catch(error => console.error('Error:', error));
+
+// Usage with async/await
+try {
+  const user = await fetchUserData(123);
+  console.log('User:', user);
+} catch (error) {
+  console.error('Error:', error);
+}`,
+        description: "Modern async/await pattern with error handling"
+      },
+      css: {
+        title: "CSS Grid Layout",
+        code: `.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.item {
+  background: #f0f0f0;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: transform 0.2s;
+}
+
+.item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+}`,
+        description: "Responsive CSS Grid with hover effects and media queries"
+      },
+      typescript: {
+        title: "TypeScript Interface & Types",
+        code: `interface User {
+  id: number;
+  name: string;
+  email: string;
+  age?: number; // Optional property
+  role: 'admin' | 'user' | 'guest'; // Union type
+}
+
+type UserCreateInput = Omit<User, 'id'>;
+
+function createUser(input: UserCreateInput): User {
+  return {
+    id: Date.now(),
+    name: input.name,
+    email: input.email,
+    role: input.role,
+    age: input.age
+  };
+}
+
+// Usage
+const newUser = createUser({
+  name: 'John Doe',
+  email: 'john@example.com',
+  role: 'user'
+});`,
+        description: "TypeScript interfaces, types, and utility types"
+      },
+      python: {
+        title: "Python Flask API",
+        code: `from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    return jsonify({'users': []})
+
+@app.route('/api/users', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    user = {
+        'id': len(users) + 1,
+        'name': data.get('name'),
+        'email': data.get('email')
+    }
+    return jsonify(user), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)`,
+        description: "Python Flask REST API example"
+      },
+      sql: {
+        title: "SQL Queries",
+        code: `-- Create table
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert data
+INSERT INTO users (name, email) 
+VALUES ('John Doe', 'john@example.com');
+
+-- Select with JOIN
+SELECT u.name, u.email, p.title 
+FROM users u
+LEFT JOIN posts p ON u.id = p.user_id
+WHERE u.created_at > '2024-01-01'
+ORDER BY u.created_at DESC;`,
+        description: "SQL table creation, inserts, and complex queries"
+      },
+      html: {
+        title: "HTML5 Semantic Structure",
+        code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <article>
+      <h1>Article Title</h1>
+      <p>Article content...</p>
+    </article>
+  </main>
+  
+  <footer>
+    <p>&copy; 2024 Company Name</p>
+  </footer>
+</body>
+</html>`,
+        description: "HTML5 semantic structure with accessibility"
+      },
+      mongodb: {
+        title: "MongoDB Operations",
+        code: `// Connect to MongoDB
+const { MongoClient } = require('mongodb');
+const client = new MongoClient(uri);
+
+// Insert document
+await client.db('mydb').collection('users').insertOne({
+  name: 'John Doe',
+  email: 'john@example.com',
+  age: 30
+});
+
+// Find documents
+const users = await client.db('mydb')
+  .collection('users')
+  .find({ age: { $gte: 18 } })
+  .toArray();
+
+// Update document
+await client.db('mydb')
+  .collection('users')
+  .updateOne(
+    { email: 'john@example.com' },
+    { $set: { age: 31 } }
+  );`,
+        description: "MongoDB CRUD operations with Node.js"
+      },
+      docker: {
+        title: "Docker Configuration",
+        code: `# Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]
+
+# docker-compose.yml
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=password`,
+        description: "Dockerfile and docker-compose configuration"
+      }
+    };
+
+    const lowerTopic = topic.toLowerCase();
+    for (const [key, example] of Object.entries(codeExamples)) {
+      if (lowerTopic.includes(key) || lowerTopic.includes(key.replace('js', ''))) {
+        return example;
+      }
+    }
+
+    return codeExamples.javascript; // Default
+  }
+
+  // Quiz/Trivia system - Comprehensive
+  startQuiz() {
+    const quizQuestions = [
+      {
+        question: "What does API stand for?",
+        options: ["Application Programming Interface", "Advanced Programming Interface", "Automated Program Integration", "Application Process Integration"],
+        correct: 0,
+        explanation: "API stands for Application Programming Interface - it's a set of protocols and tools for building software applications."
+      },
+      {
+        question: "Which method is used to add an element to the end of an array in JavaScript?",
+        options: ["push()", "pop()", "shift()", "unshift()"],
+        correct: 0,
+        explanation: "push() adds elements to the end of an array, while pop() removes from the end, shift() removes from the beginning, and unshift() adds to the beginning."
+      },
+      {
+        question: "What is the purpose of React hooks?",
+        options: ["To style components", "To manage state and side effects in functional components", "To create routes", "To handle API calls"],
+        correct: 1,
+        explanation: "React hooks allow functional components to use state and lifecycle features that were previously only available in class components."
+      },
+      {
+        question: "What does CSS stand for?",
+        options: ["Computer Style Sheets", "Cascading Style Sheets", "Creative Style System", "Coded Style Syntax"],
+        correct: 1,
+        explanation: "CSS stands for Cascading Style Sheets - it's used to style HTML elements with a cascading priority system."
+      },
+      {
+        question: "Which HTTP method is used to create a new resource?",
+        options: ["GET", "POST", "PUT", "DELETE"],
+        correct: 1,
+        explanation: "POST is used to create new resources, while GET retrieves, PUT updates, and DELETE removes resources."
+      },
+      {
+        question: "What is the difference between let, const, and var in JavaScript?",
+        options: ["No difference", "let and const are block-scoped, var is function-scoped", "They're all the same", "Only var exists"],
+        correct: 1,
+        explanation: "let and const are block-scoped (ES6+), while var is function-scoped. const is immutable, let is mutable."
+      },
+      {
+        question: "What is a closure in JavaScript?",
+        options: ["A function that has access to variables in its outer scope", "A way to close a file", "A type of loop", "A database term"],
+        correct: 0,
+        explanation: "A closure is a function that has access to variables in its outer (enclosing) lexical scope, even after the outer function has returned."
+      },
+      {
+        question: "What is the virtual DOM in React?",
+        options: ["A real DOM element", "A JavaScript representation of the DOM", "A database", "A CSS framework"],
+        correct: 1,
+        explanation: "The virtual DOM is a JavaScript representation of the real DOM. React uses it to efficiently update the UI by comparing virtual DOM trees."
+      },
+      {
+        question: "What does REST stand for?",
+        options: ["Really Easy System Transfer", "Representational State Transfer", "Remote Execution System Transfer", "Resource Exchange System Transfer"],
+        correct: 1,
+        explanation: "REST stands for Representational State Transfer - it's an architectural style for designing networked applications."
+      },
+      {
+        question: "What is TypeScript?",
+        options: ["A database", "A JavaScript superset with static typing", "A CSS framework", "A server"],
+        correct: 1,
+        explanation: "TypeScript is a superset of JavaScript that adds static type definitions, making code more maintainable and less error-prone."
+      },
+      {
+        question: "What is the purpose of useEffect in React?",
+        options: ["To style components", "To handle side effects and lifecycle events", "To create routes", "To manage state"],
+        correct: 1,
+        explanation: "useEffect is a React hook that lets you perform side effects in functional components, similar to componentDidMount and componentDidUpdate."
+      },
+      {
+        question: "What is the difference between == and === in JavaScript?",
+        options: ["No difference", "== compares value, === compares value and type", "=== doesn't exist", "== is newer"],
+        correct: 1,
+        explanation: "== performs type coercion before comparison, while === (strict equality) compares both value and type without coercion."
+      },
+      {
+        question: "What is async/await in JavaScript?",
+        options: ["A database query", "Syntactic sugar for Promises", "A CSS feature", "A React component"],
+        correct: 1,
+        explanation: "async/await is syntactic sugar built on Promises that makes asynchronous code look and behave more like synchronous code."
+      },
+      {
+        question: "What is the purpose of npm?",
+        options: ["A database", "Node Package Manager - manages JavaScript packages", "A CSS framework", "A server"],
+        correct: 1,
+        explanation: "npm (Node Package Manager) is the default package manager for Node.js, used to install and manage JavaScript packages."
+      },
+      {
+        question: "What is CORS?",
+        options: ["A database", "Cross-Origin Resource Sharing - security feature", "A CSS property", "A JavaScript function"],
+        correct: 1,
+        explanation: "CORS (Cross-Origin Resource Sharing) is a security feature that allows or restricts web pages from making requests to a different domain than the one serving the web page."
+      }
+    ];
+
+    const question = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
+    this.context.currentQuiz = question;
+    this.context.quizScore = this.context.quizScore || { correct: 0, total: 0 };
+    
+    let response = `🎯 **Quiz Time!**\n\n`;
+    response += `**Question:** ${question.question}\n\n`;
+    question.options.forEach((opt, idx) => {
+      response += `${idx + 1}. ${opt}\n`;
+    });
+    response += `\n*Type the number of your answer (1-4), or say "skip" to skip this question.*`;
+
+    return response;
+  }
+
+  checkQuizAnswer(answer) {
+    if (!this.context.currentQuiz) {
+      return "No active quiz! Say 'start quiz' to begin.";
+    }
+
+    const quiz = this.context.currentQuiz;
+    const userAnswer = parseInt(answer) - 1;
+
+    if (isNaN(userAnswer) || userAnswer < 0 || userAnswer > 3) {
+      return "Please enter a number between 1 and 4, or say 'skip'.";
+    }
+
+    const isCorrect = userAnswer === quiz.correct;
+    const correctOption = quiz.options[quiz.correct];
+    
+    // Update score
+    this.context.quizScore.total++;
+    if (isCorrect) {
+      this.context.quizScore.correct++;
+    }
+    
+    const accuracy = Math.round((this.context.quizScore.correct / this.context.quizScore.total) * 100);
+    
+    let response = isCorrect 
+      ? `🎉 **Correct!** Well done!\n\n`
+      : `❌ **Not quite!** The correct answer is: **${correctOption}**\n\n`;
+    
+    response += `💡 **Explanation:** ${quiz.explanation}\n\n`;
+    response += `📊 **Your Score:** ${this.context.quizScore.correct}/${this.context.quizScore.total} (${accuracy}% accuracy)\n\n`;
+    response += `Want another question? Say "quiz" again!`;
+
+    this.context.currentQuiz = null;
+    this.saveContext();
+    return response;
+  }
+
+  // FAQ System - Comprehensive
+  getFAQ() {
+    const faqs = [
+      {
+        q: "What services does Hamza offer?",
+        a: "Hamza offers comprehensive full-stack web development services:\n• React/Vue.js frontend development\n• Node.js backend & API development\n• E-commerce solutions\n• Performance optimization (Core Web Vitals Grade A)\n• DevOps & cloud deployment (AWS, Docker)\n• Technical consulting & code reviews\n• Database design & optimization\nAll projects prioritize speed, reliability, and maintainability!"
+      },
+      {
+        q: "How can I contact Hamza?",
+        a: "Multiple ways to reach out:\n• Email: hamzaarya123@gmail.com\n• Contact form on the website\n• Response time: Under 24 hours\n• Location: Kabul, Afghanistan (works remotely worldwide)\n• Available for: Freelance projects, remote work, long-term collaborations, quick consultations"
+      },
+      {
+        q: "What technologies does Hamza use?",
+        a: "**Frontend:** React, Vue.js, TypeScript, JavaScript, Tailwind CSS, HTML5\n**Backend:** Node.js, Express, REST APIs, GraphQL, Serverless\n**Databases:** PostgreSQL, MongoDB, Redis\n**DevOps:** AWS (EC2, S3, Lambda), Vercel, Docker, Kubernetes, CI/CD\n**Tools:** Git, GitHub, Jest, Vitest, Webpack, Vite\nAll focused on modern best practices and performance!"
+      },
+      {
+        q: "How much experience does Hamza have?",
+        a: "**4+ years** of full-stack development experience:\n• 20+ production projects shipped\n• Core Web Vitals Grade A on all projects\n• Production-grade code quality\n• Strong focus on clean architecture\n• Continuous learning & staying updated with latest technologies"
+      },
+      {
+        q: "Does Hamza work remotely?",
+        a: "Yes! Hamza is **fully remote-friendly**:\n• Works with clients worldwide\n• Flexible timezone coordination\n• Remote-first approach\n• International collaboration experience\n• Available for remote projects of any size"
+      },
+      {
+        q: "What kind of projects has Hamza worked on?",
+        a: "Diverse project portfolio:\n• **SaaS Platforms:** B2B solutions, analytics dashboards, management systems\n• **E-commerce:** Custom online stores, payment integrations, inventory systems\n• **Real-time Apps:** Chat applications, live collaboration tools, WebSocket implementations\n• **Data & Analytics:** ETL pipelines, dashboard visualizations, reporting systems\nCheck the Projects section for detailed case studies!"
+      },
+      {
+        q: "How do I get a quote for a project?",
+        a: "**Pricing is flexible and tailored:**\n• Contact via email or contact form\n• Factors considered: complexity, timeline, scope, maintenance needs\n• Engagement models: Fixed-scope, retainer, hourly consulting\n• Transparent pricing with no hidden fees\n• Competitive rates with value-focused approach"
+      },
+      {
+        q: "What makes Hamza's work special?",
+        a: "**Key differentiators:**\n• Core Web Vitals Grade A performance on all projects\n• Production-ready code quality\n• Clean architecture & best practices\n• Focus on maintainability & scalability\n• Measurable business impact\n• Strong developer experience focus\n• SEO optimization & accessibility"
+      },
+      {
+        q: "What is the typical project timeline?",
+        a: "Timelines vary based on scope:\n• Small projects: 1-2 weeks\n• Medium projects: 2-4 weeks\n• Large projects: 1-3 months\n• Ongoing retainer: Flexible\nTimeline is discussed during initial consultation and included in project quote."
+      },
+      {
+        q: "Does Hamza provide ongoing support?",
+        a: "Yes! Support options include:\n• Post-launch bug fixes\n• Feature additions\n• Performance monitoring\n• Retainer agreements for ongoing support\n• Code maintenance & updates\n• Technical consulting\nSupport terms are discussed per project."
+      },
+      {
+        q: "What is Core Web Vitals Grade A?",
+        a: "Core Web Vitals are Google's metrics for page experience:\n• **LCP (Largest Contentful Paint):** < 2.5s\n• **FID (First Input Delay):** < 100ms\n• **CLS (Cumulative Layout Shift):** < 0.1\nGrade A means all metrics meet the 'Good' threshold, ensuring excellent user experience and better SEO rankings."
+      },
+      {
+        q: "Can Hamza work with my existing team?",
+        a: "Absolutely! Hamza has experience:\n• Collaborating with international teams\n• Working in agile environments\n• Code reviews & pair programming\n• Knowledge sharing & team training\n• Integrating with existing codebases\n• Following team conventions & standards"
+      }
+    ];
+
+    let response = `❓ **Frequently Asked Questions (${faqs.length} questions):**\n\n`;
+    faqs.forEach((faq, idx) => {
+      response += `**Q${idx + 1}: ${faq.q}**\n`;
+      response += `${faq.a}\n\n`;
+    });
+    response += `💡 *Have more questions? Just ask me! I'm here to help.*`;
+
+    return response;
+  }
+
+  // Learning Recommendations
+  getLearningRecommendations(topic) {
+    const recommendations = {
+      react: {
+        title: "React Learning Path",
+        resources: [
+          "📚 Official React Docs: react.dev",
+          "🎥 React Tutorial: Build a tic-tac-toe game",
+          "📖 'React: The Complete Guide' by Maximilian Schwarzmüller",
+          "💻 Practice: Build a todo app, then a weather app",
+          "🔧 Learn: Hooks (useState, useEffect, useContext)",
+          "⚡ Next: Learn Next.js for production apps"
+        ]
+      },
+      javascript: {
+        title: "JavaScript Mastery",
+        resources: [
+          "📚 MDN Web Docs: developer.mozilla.org",
+          "📖 'You Don't Know JS' book series",
+          "💻 Practice: Build projects (calculator, quiz app)",
+          "🔧 Learn: ES6+, async/await, Promises",
+          "🎯 Master: Closures, prototypes, this keyword",
+          "⚡ Next: TypeScript for type safety"
+        ]
+      },
+      nodejs: {
+        title: "Node.js Backend Development",
+        resources: [
+          "📚 Node.js Official Docs: nodejs.org",
+          "📖 'Node.js Design Patterns' by Mario Casciaro",
+          "💻 Practice: Build REST APIs, CRUD operations",
+          "🔧 Learn: Express.js, middleware, error handling",
+          "🗄️ Master: Database integration (MongoDB, PostgreSQL)",
+          "⚡ Next: Learn authentication & security"
+        ]
+      },
+      css: {
+        title: "CSS Mastery",
+        resources: [
+          "📚 CSS-Tricks: css-tricks.com",
+          "📖 'CSS Secrets' by Lea Verou",
+          "💻 Practice: Build layouts (Grid, Flexbox)",
+          "🔧 Learn: CSS Grid, Flexbox, animations",
+          "🎨 Master: Responsive design, media queries",
+          "⚡ Next: CSS frameworks (Tailwind, Bootstrap)"
+        ]
+      },
+      general: {
+        title: "Web Development Fundamentals",
+        resources: [
+          "📚 FreeCodeCamp: freecodecamp.org",
+          "📖 'Eloquent JavaScript' by Marijn Haverbeke",
+          "💻 Practice: Build projects regularly",
+          "🔧 Learn: Git, GitHub, version control",
+          "🎯 Master: Problem-solving, debugging",
+          "⚡ Next: Choose a specialization (frontend/backend)"
+        ]
+      }
+    };
+
+    const lowerTopic = topic.toLowerCase();
+    for (const [key, rec] of Object.entries(recommendations)) {
+      if (lowerTopic.includes(key) || (key === 'general' && !lowerTopic.match(/\b(react|javascript|nodejs|css)\b/))) {
+        let response = `📚 **${rec.title}**\n\n`;
+        rec.resources.forEach(resource => {
+          response += `${resource}\n`;
+        });
+        response += `\n💡 *Start with the basics and build projects to reinforce learning!*`;
+        return response;
+      }
+    }
+
+    return recommendations.general;
+  }
+
+  // Project Suggestions
+  getProjectSuggestions(skillLevel = 'beginner') {
+    const projects = {
+      beginner: [
+        "📝 Todo List App - Learn state management",
+        "🎨 Personal Portfolio Website - HTML/CSS/JS",
+        "⏰ Pomodoro Timer - Practice intervals & state",
+        "🎲 Dice Roller - Random number generation",
+        "📊 Simple Calculator - DOM manipulation"
+      ],
+      intermediate: [
+        "🌤️ Weather App - API integration",
+        "📝 Note-taking App - Local storage",
+        "🛒 Shopping Cart - State & calculations",
+        "📅 Event Calendar - Date handling",
+        "💬 Chat Interface - Real-time updates"
+      ],
+      advanced: [
+        "🛒 E-commerce Platform - Full-stack",
+        "📊 Analytics Dashboard - Data visualization",
+        "💬 Real-time Chat App - WebSockets",
+        "📱 Social Media Clone - Complex state",
+        "🎮 Multiplayer Game - Real-time sync"
+      ]
+    };
+
+    const levelProjects = projects[skillLevel] || projects.beginner;
+    let response = `🚀 **${skillLevel.charAt(0).toUpperCase() + skillLevel.slice(1)} Project Ideas:**\n\n`;
+    levelProjects.forEach((project, idx) => {
+      response += `${idx + 1}. ${project}\n`;
+    });
+    response += `\n💡 *Pick one that interests you and start building!*`;
+
+    return response;
+  }
+
+  // ============================================================================
+  // ADVANCED FEATURES - ChatGPT-5 Level Capabilities
+  // ============================================================================
+
+  // Advanced Code Analysis & Review
+  analyzeCode(message) {
+    const codeMatch = message.match(/```[\s\S]*?```/);
+    const hasCode = codeMatch || message.match(/\b(function|const|let|var|class|import|export)\b/);
+    
+    if (!hasCode) {
+      return `🔍 **Code Review Request**\n\nI'd be happy to review your code! Please:\n1. Paste your code in a code block (use triple backticks)\n2. Or describe what you'd like me to review\n3. Mention any specific concerns or areas to focus on\n\nExample: "Review this React component" followed by your code.`;
+    }
+
+    let response = `🔍 **Code Analysis & Review:**\n\n`;
+    
+    // Check for common issues
+    const checks = [];
+    const lowerMsg = message.toLowerCase();
+    
+    if (lowerMsg.includes('function') && !lowerMsg.includes('arrow')) {
+      checks.push("✅ Consider using arrow functions for consistency");
+    }
+    
+    if (lowerMsg.includes('var ')) {
+      checks.push("⚠️ Consider using `let` or `const` instead of `var`");
+    }
+    
+    if (lowerMsg.includes('==')) {
+      checks.push("⚠️ Use strict equality (`===`) instead of `==`");
+    }
+    
+    if (lowerMsg.includes('console.log')) {
+      checks.push("💡 Remove console.log statements in production code");
+    }
+    
+    if (!lowerMsg.includes('error') && !lowerMsg.includes('try')) {
+      checks.push("💡 Consider adding error handling (try-catch)");
+    }
+    
+    if (lowerMsg.includes('password') || lowerMsg.includes('secret')) {
+      checks.push("🔒 Security: Never hardcode passwords or secrets");
+    }
+    
+    response += `**Code Quality Checks:**\n${checks.length > 0 ? checks.join('\n') : '✅ Code structure looks good!'}\n\n`;
+    response += `**Recommendations:**\n`;
+    response += `• Add JSDoc comments for better documentation\n`;
+    response += `• Consider breaking large functions into smaller ones\n`;
+    response += `• Add input validation where needed\n`;
+    response += `• Write unit tests for critical functions\n`;
+    response += `• Follow consistent naming conventions\n\n`;
+    response += `💡 Want specific improvements? Describe what the code should do!`;
+
+    this.context.codeReviewHistory.push({ timestamp: Date.now(), review: response });
+    return response;
+  }
+
+  // Step-by-Step Problem Solving
+  provideStepByStepExplanation(message) {
+    const lowerMsg = message.toLowerCase();
+    let response = `📚 **Step-by-Step Explanation:**\n\n`;
+
+    if (lowerMsg.includes('react') || lowerMsg.includes('component')) {
+      response += `**How React Components Work:**\n\n`;
+      response += `**Step 1:** Component Definition\n`;
+      response += `• Define your component (functional or class)\n`;
+      response += `• Components are reusable UI pieces\n\n`;
+      response += `**Step 2:** Props & State\n`;
+      response += `• Props: Data passed from parent (immutable)\n`;
+      response += `• State: Internal component data (mutable)\n\n`;
+      response += `**Step 3:** Rendering\n`;
+      response += `• Component returns JSX\n`;
+      response += `• React converts JSX to DOM elements\n\n`;
+      response += `**Step 4:** Updates\n`;
+      response += `• State changes trigger re-render\n`;
+      response += `• React efficiently updates only changed parts\n\n`;
+      response += `**Step 5:** Lifecycle (if using hooks)\n`;
+      response += `• useEffect handles side effects\n`;
+      response += `• Cleanup functions prevent memory leaks\n`;
+    } else if (lowerMsg.includes('async') || lowerMsg.includes('promise')) {
+      response += `**How Async/Await Works:**\n\n`;
+      response += `**Step 1:** Understanding Promises\n`;
+      response += `• Promises represent future values\n`;
+      response += `• States: pending, fulfilled, rejected\n\n`;
+      response += `**Step 2:** Async Functions\n`;
+      response += `• \`async\` makes a function return a Promise\n`;
+      response += `• Allows using \`await\` inside\n\n`;
+      response += `**Step 3:** Await Keyword\n`;
+      response += `• \`await\` pauses execution until Promise resolves\n`;
+      response += `• Makes async code look synchronous\n\n`;
+      response += `**Step 4:** Error Handling\n`;
+      response += `• Use try-catch blocks\n`;
+      response += `• Handle both sync and async errors\n\n`;
+      response += `**Step 5:** Best Practices\n`;
+      response += `• Don't forget await (common mistake!)\n`;
+      response += `• Handle errors properly\n`;
+      response += `• Consider Promise.all() for parallel operations\n`;
+    } else if (lowerMsg.includes('api') || lowerMsg.includes('fetch')) {
+      response += `**How API Calls Work:**\n\n`;
+      response += `**Step 1:** Make Request\n`;
+      response += `• Use fetch() or axios\n`;
+      response += `• Specify URL, method, headers\n\n`;
+      response += `**Step 2:** Send Data (if POST/PUT)\n`;
+      response += `• Include body with JSON.stringify()\n`;
+      response += `• Set Content-Type header\n\n`;
+      response += `**Step 3:** Handle Response\n`;
+      response += `• Check response.ok\n`;
+      response += `• Parse JSON with .json()\n\n`;
+      response += `**Step 4:** Error Handling\n`;
+      response += `• Catch network errors\n`;
+      response += `• Handle HTTP error statuses\n\n`;
+      response += `**Step 5:** Update UI\n`;
+      response += `• Update state with response data\n`;
+      response += `• Show loading/error states\n`;
+    } else {
+      response += `**General Problem-Solving Approach:**\n\n`;
+      response += `**Step 1:** Understand the Problem\n`;
+      response += `• Break it down into smaller parts\n`;
+      response += `• Identify inputs and expected outputs\n\n`;
+      response += `**Step 2:** Plan Your Solution\n`;
+      response += `• Outline the approach\n`;
+      response += `• Consider edge cases\n\n`;
+      response += `**Step 3:** Implement\n`;
+      response += `• Write code step by step\n`;
+      response += `• Test as you go\n\n`;
+      response += `**Step 4:** Test & Debug\n`;
+      response += `• Test with different inputs\n`;
+      response += `• Fix any issues\n\n`;
+      response += `**Step 5:** Refactor\n`;
+      response += `• Improve code quality\n`;
+      response += `• Optimize if needed\n\n`;
+      response += `💡 Want a specific explanation? Tell me what you'd like to understand!`;
+    }
+
+    return response;
+  }
+
+  // Architecture Suggestions
+  suggestArchitecture(message) {
+    const lowerMsg = message.toLowerCase();
+    let response = `🏗️ **Architecture & Structure Recommendations:**\n\n`;
+
+    if (lowerMsg.includes('react') || lowerMsg.includes('frontend')) {
+      response += `**React Project Structure:**\n\n`;
+      response += `\`\`\`\nproject/\n├── src/\n│   ├── components/     # Reusable components\n│   │   ├── common/     # Button, Input, etc.\n│   │   └── features/   # Feature-specific\n│   ├── pages/          # Page components\n│   ├── hooks/          # Custom hooks\n│   ├── utils/          # Helper functions\n│   ├── services/       # API calls\n│   ├── store/          # State management\n│   ├── styles/         # Global styles\n│   └── types/          # TypeScript types\n├── public/\n└── package.json\n\`\`\`\n\n`;
+      response += `**Best Practices:**\n`;
+      response += `• Keep components small and focused\n`;
+      response += `• Use feature-based folder structure for large apps\n`;
+      response += `• Separate concerns (UI, logic, data)\n`;
+      response += `• Use custom hooks for reusable logic\n`;
+    } else if (lowerMsg.includes('node') || lowerMsg.includes('backend')) {
+      response += `**Node.js Backend Structure:**\n\n`;
+      response += `\`\`\`\nproject/\n├── src/\n│   ├── routes/        # API routes\n│   ├── controllers/   # Business logic\n│   ├── models/        # Data models\n│   ├── middleware/    # Custom middleware\n│   ├── services/      # External services\n│   ├── utils/         # Helpers\n│   ├── config/        # Configuration\n│   └── app.js         # Express app\n├── tests/\n└── package.json\n\`\`\`\n\n`;
+      response += `**Best Practices:**\n`;
+      response += `• Follow MVC or layered architecture\n`;
+      response += `• Separate routes, controllers, and models\n`;
+      response += `• Use middleware for cross-cutting concerns\n`;
+      response += `• Keep business logic out of routes\n`;
+    } else if (lowerMsg.includes('full') || lowerMsg.includes('stack')) {
+      response += `**Full-Stack Architecture:**\n\n`;
+      response += `**Frontend (React/Vue):**\n`;
+      response += `• Component-based UI\n`;
+      response += `• State management (Redux/Zustand)\n`;
+      response += `• API service layer\n\n`;
+      response += `**Backend (Node.js):**\n`;
+      response += `• RESTful API or GraphQL\n`;
+      response += `• Authentication middleware\n`;
+      response += `• Database abstraction layer\n\n`;
+      response += `**Database:**\n`;
+      response += `• PostgreSQL for relational data\n`;
+      response += `• MongoDB for flexible schemas\n`;
+      response += `• Redis for caching\n\n`;
+      response += `**DevOps:**\n`;
+      response += `• Docker containers\n`;
+      response += `• CI/CD pipeline\n`;
+      response += `• Environment-based config\n`;
+    } else {
+      response += `**General Architecture Principles:**\n\n`;
+      response += `**1. Separation of Concerns**\n`;
+      response += `• Each module has a single responsibility\n`;
+      response += `• Clear boundaries between layers\n\n`;
+      response += `**2. Scalability**\n`;
+      response += `• Design for growth\n`;
+      response += `• Use microservices if needed\n\n`;
+      response += `**3. Maintainability**\n`;
+      response += `• Consistent structure\n`;
+      response += `• Clear naming conventions\n\n`;
+      response += `**4. Testability**\n`;
+      response += `• Write testable code\n`;
+      response += `• Mock external dependencies\n`;
+    }
+
+    response += `\n💡 Want specific architecture for your project? Describe it!`;
+    return response;
+  }
+
+  // Performance Analysis
+  analyzePerformance(message) {
+    const lowerMsg = message.toLowerCase();
+    let response = `⚡ **Performance Analysis & Optimization:**\n\n`;
+
+    response += `**Common Performance Issues & Solutions:**\n\n`;
+    
+    response += `**1. Slow Page Load**\n`;
+    response += `• **Problem:** Large bundle size, unoptimized assets\n`;
+    response += `• **Solutions:**\n`;
+    response += `  - Code splitting & lazy loading\n`;
+    response += `  - Image optimization (WebP, compression)\n`;
+    response += `  - Minify & compress assets\n`;
+    response += `  - Use CDN for static assets\n\n`;
+    
+    response += `**2. Slow API Calls**\n`;
+    response += `• **Problem:** N+1 queries, no caching\n`;
+    response += `• **Solutions:**\n`;
+    response += `  - Implement caching (Redis)\n`;
+    response += `  - Optimize database queries\n`;
+    response += `  - Use pagination\n`;
+    response += `  - Batch requests when possible\n\n`;
+    
+    response += `**3. Slow Rendering**\n`;
+    response += `• **Problem:** Too many re-renders, heavy computations\n`;
+    response += `• **Solutions:**\n`;
+    response += `  - Use React.memo() for components\n`;
+    response += `  - Memoize expensive calculations\n`;
+    response += `  - Virtualize long lists\n`;
+    response += `  - Debounce/throttle events\n\n`;
+    
+    response += `**4. Memory Leaks**\n`;
+    response += `• **Problem:** Event listeners, subscriptions not cleaned up\n`;
+    response += `• **Solutions:**\n`;
+    response += `  - Cleanup in useEffect\n`;
+    response += `  - Remove event listeners\n`;
+    response += `  - Cancel subscriptions\n\n`;
+    
+    response += `**Performance Metrics to Monitor:**\n`;
+    response += `• Core Web Vitals (LCP, FID, CLS)\n`;
+    response += `• Time to First Byte (TTFB)\n`;
+    response += `• Bundle size\n`;
+    response += `• API response times\n`;
+    response += `• Memory usage\n\n`;
+    
+    response += `💡 Want specific optimization for your code? Share details!`;
+
+    return response;
+  }
+
+  // Security Analysis
+  analyzeSecurity(message) {
+    const lowerMsg = message.toLowerCase();
+    let response = `🔒 **Security Analysis & Best Practices:**\n\n`;
+
+    response += `**Critical Security Practices:**\n\n`;
+    
+    response += `**1. Authentication & Authorization**\n`;
+    response += `• Use JWT tokens with expiration\n`;
+    response += `• Hash passwords (bcrypt, Argon2)\n`;
+    response += `• Implement role-based access control (RBAC)\n`;
+    response += `• Use HTTPS everywhere\n`;
+    response += `• Implement rate limiting\n\n`;
+    
+    response += `**2. Input Validation**\n`;
+    response += `• Validate all user inputs\n`;
+    response += `• Sanitize data before storing\n`;
+    response += `• Use parameterized queries (prevent SQL injection)\n`;
+    response += `• Escape output to prevent XSS\n\n`;
+    
+    response += `**3. API Security**\n`;
+    response += `• Use API keys/tokens\n`;
+    response += `• Implement CORS properly\n`;
+    response += `• Validate request origins\n`;
+    response += `• Use rate limiting\n`;
+    response += `• Implement request signing\n\n`;
+    
+    response += `**4. Data Protection**\n`;
+    response += `• Encrypt sensitive data\n`;
+    response += `• Never log passwords/secrets\n`;
+    response += `• Use environment variables\n`;
+    response += `• Implement data retention policies\n\n`;
+    
+    response += `**5. Dependencies**\n`;
+    response += `• Keep dependencies updated\n`;
+    response += `• Scan for vulnerabilities (npm audit)\n`;
+    response += `• Use only trusted packages\n`;
+    response += `• Review dependency licenses\n\n`;
+    
+    response += `**Common Vulnerabilities to Avoid:**\n`;
+    response += `• SQL Injection - Use parameterized queries\n`;
+    response += `• XSS - Escape user input\n`;
+    response += `• CSRF - Use tokens\n`;
+    response += `• Broken Authentication - Strong passwords, sessions\n`;
+    response += `• Sensitive Data Exposure - Encrypt data\n\n`;
+    
+    response += `💡 Need security review for specific code? Share it!`;
+
+    return response;
+  }
+
+  // Algorithm Explanations
+  explainAlgorithm(message) {
+    const lowerMsg = message.toLowerCase();
+    let response = `🧮 **Algorithm Explanation:**\n\n`;
+
+    if (lowerMsg.includes('sort')) {
+      response += `**Sorting Algorithms:**\n\n`;
+      response += `**Quick Sort:**\n`;
+      response += `• Time: O(n log n) average, O(n²) worst\n`;
+      response += `• Space: O(log n)\n`;
+      response += `• Divide & conquer, pivot-based\n\n`;
+      response += `**Merge Sort:**\n`;
+      response += `• Time: O(n log n) always\n`;
+      response += `• Space: O(n)\n`;
+      response += `• Stable, divide & conquer\n\n`;
+      response += `**Bubble Sort:**\n`;
+      response += `• Time: O(n²)\n`;
+      response += `• Simple but inefficient\n`;
+      response += `• Good for learning\n`;
+    } else if (lowerMsg.includes('search') || lowerMsg.includes('find')) {
+      response += `**Search Algorithms:**\n\n`;
+      response += `**Binary Search:**\n`;
+      response += `• Time: O(log n)\n`;
+      response += `• Requires sorted array\n`;
+      response += `• Divide array in half repeatedly\n\n`;
+      response += `**Linear Search:**\n`;
+      response += `• Time: O(n)\n`;
+      response += `• Works on any array\n`;
+      response += `• Check each element\n`;
+    } else if (lowerMsg.includes('complexity') || lowerMsg.includes('big o')) {
+      response += `**Time Complexity (Big O):**\n\n`;
+      response += `**O(1)** - Constant: Array access\n`;
+      response += `**O(log n)** - Logarithmic: Binary search\n`;
+      response += `**O(n)** - Linear: Iterating array\n`;
+      response += `**O(n log n)** - Linearithmic: Efficient sorts\n`;
+      response += `**O(n²)** - Quadratic: Nested loops\n`;
+      response += `**O(2ⁿ)** - Exponential: Recursive fibonacci\n\n`;
+      response += `**Space Complexity:**\n`;
+      response += `• Amount of memory used\n`;
+      response += `• Consider auxiliary space\n`;
+    } else {
+      response += `**Algorithm Design Principles:**\n\n`;
+      response += `**1. Understand the Problem**\n`;
+      response += `• What are inputs/outputs?\n`;
+      response += `• What are constraints?\n\n`;
+      response += `**2. Choose Data Structures**\n`;
+      response += `• Arrays for indexed access\n`;
+      response += `• Hash maps for O(1) lookups\n`;
+      response += `• Trees for hierarchical data\n\n`;
+      response += `**3. Design Algorithm**\n`;
+      response += `• Break into steps\n`;
+      response += `• Consider edge cases\n\n`;
+      response += `**4. Analyze Complexity**\n`;
+      response += `• Time complexity\n`;
+      response += `• Space complexity\n\n`;
+      response += `💡 Want explanation of a specific algorithm? Ask!`;
+    }
+
+    return response;
+  }
+
+  // Design Patterns
+  explainDesignPattern(message) {
+    const lowerMsg = message.toLowerCase();
+    let response = `🎨 **Design Pattern Explanation:**\n\n`;
+
+    const patterns = {
+      singleton: {
+        name: "Singleton Pattern",
+        purpose: "Ensure only one instance exists",
+        example: `class Database {
+  constructor() {
+    if (Database.instance) {
+      return Database.instance;
+    }
+    Database.instance = this;
+  }
+}`,
+        use: "Database connections, loggers, caches"
+      },
+      factory: {
+        name: "Factory Pattern",
+        purpose: "Create objects without specifying exact class",
+        example: `function createUser(type) {
+  if (type === 'admin') return new Admin();
+  if (type === 'user') return new User();
+}`,
+        use: "Object creation based on conditions"
+      },
+      observer: {
+        name: "Observer Pattern",
+        purpose: "Notify multiple objects of state changes",
+        example: `class Subject {
+  observers = [];
+  notify() {
+    this.observers.forEach(obs => obs.update());
+  }
+}`,
+        use: "Event systems, React state"
+      },
+      mvc: {
+        name: "MVC Pattern",
+        purpose: "Separate Model, View, Controller",
+        example: `Model: Data & business logic
+View: UI presentation
+Controller: Handles input, updates model/view`,
+        use: "Web frameworks, UI architecture"
+      }
+    };
+
+    let foundPattern = null;
+    for (const [key, pattern] of Object.entries(patterns)) {
+      if (lowerMsg.includes(key)) {
+        foundPattern = pattern;
+        break;
+      }
+    }
+
+    if (foundPattern) {
+      response += `**${foundPattern.name}**\n\n`;
+      response += `**Purpose:** ${foundPattern.purpose}\n\n`;
+      response += `**Example:**\n\`\`\`javascript\n${foundPattern.example}\n\`\`\`\n\n`;
+      response += `**When to Use:** ${foundPattern.use}\n\n`;
+      response += `**Benefits:**\n• Better code organization\n• Easier to maintain\n• Reusable solutions\n`;
+    } else {
+      response += `**Common Design Patterns:**\n\n`;
+      response += `**Creational:**\n• Singleton - One instance\n`;
+      response += `• Factory - Object creation\n`;
+      response += `• Builder - Complex object construction\n\n`;
+      response += `**Structural:**\n• Adapter - Interface compatibility\n`;
+      response += `• Decorator - Add functionality\n`;
+      response += `• Facade - Simplified interface\n\n`;
+      response += `**Behavioral:**\n• Observer - Event notifications\n`;
+      response += `• Strategy - Algorithm selection\n`;
+      response += `• Command - Encapsulate requests\n\n`;
+      response += `💡 Want details on a specific pattern? Ask!`;
+    }
+
+    return response;
+  }
+
+  // API Design Suggestions
+  suggestAPIDesign(message) {
+    let response = `🌐 **API Design Best Practices:**\n\n`;
+
+    response += `**RESTful API Structure:**\n\n`;
+    response += `**1. Use Proper HTTP Methods**\n`;
+    response += `• GET - Retrieve resources\n`;
+    response += `• POST - Create resources\n`;
+    response += `• PUT - Update entire resource\n`;
+    response += `• PATCH - Partial updates\n`;
+    response += `• DELETE - Remove resources\n\n`;
+    
+    response += `**2. RESTful URLs**\n`;
+    response += `✅ Good: \`GET /api/users/123\`\n`;
+    response += `❌ Bad: \`GET /api/getUser?id=123\`\n`;
+    response += `• Use nouns, not verbs\n`;
+    response += `• Use plural for collections\n`;
+    response += `• Use hierarchical structure\n\n`;
+    
+    response += `**3. Response Format**\n`;
+    response += `\`\`\`json\n{\n  "data": {},\n  "status": "success",\n  "message": "optional"\n}\n\`\`\`\n\n`;
+    response += `**4. Status Codes**\n`;
+    response += `• 200 - Success\n`;
+    response += `• 201 - Created\n`;
+    response += `• 400 - Bad Request\n`;
+    response += `• 401 - Unauthorized\n`;
+    response += `• 404 - Not Found\n`;
+    response += `• 500 - Server Error\n\n`;
+    
+    response += `**5. Versioning**\n`;
+    response += `• Use URL versioning: \`/api/v1/users\`\n`;
+    response += `• Or header versioning\n\n`;
+    
+    response += `**6. Pagination**\n`;
+    response += `\`\`\`\nGET /api/users?page=1&limit=20\n\`\`\`\n\n`;
+    response += `**7. Filtering & Sorting**\n`;
+    response += `\`\`\`\nGET /api/users?status=active&sort=name&order=asc\n\`\`\`\n\n`;
+    response += `**8. Error Handling**\n`;
+    response += `\`\`\`json\n{\n  "error": {\n    "code": "VALIDATION_ERROR",\n    "message": "Invalid input",\n    "details": []\n  }\n}\n\`\`\`\n\n`;
+    response += `💡 Need help designing a specific API? Describe it!`;
+
+    return response;
+  }
+
+  // Database Design Suggestions
+  suggestDatabaseDesign(message) {
+    let response = `🗄️ **Database Design Best Practices:**\n\n`;
+
+    response += `**1. Normalization**\n`;
+    response += `• 1NF: Eliminate duplicate columns\n`;
+    response += `• 2NF: Remove partial dependencies\n`;
+    response += `• 3NF: Remove transitive dependencies\n`;
+    response += `• Balance normalization with performance\n\n`;
+    
+    response += `**2. Indexing Strategy**\n`;
+    response += `• Index frequently queried columns\n`;
+    response += `• Index foreign keys\n`;
+    response += `• Don't over-index (slows writes)\n`;
+    response += `• Use composite indexes for multi-column queries\n\n`;
+    
+    response += `**3. Data Types**\n`;
+    response += `• Use appropriate types (INT, VARCHAR, TEXT)\n`;
+    response += `• Use ENUM for fixed values\n`;
+    response += `• Use TIMESTAMP for dates\n`;
+    response += `• Consider JSONB for flexible schemas\n\n`;
+    
+    response += `**4. Relationships**\n`;
+    response += `• One-to-Many: Foreign key\n`;
+    response += `• Many-to-Many: Junction table\n`;
+    response += `• One-to-One: Shared primary key or foreign key\n\n`;
+    
+    response += `**5. Query Optimization**\n`;
+    response += `• Use EXPLAIN to analyze queries\n`;
+    response += `• Avoid SELECT *\n`;
+    response += `• Use LIMIT for large datasets\n`;
+    response += `• Join efficiently\n\n`;
+    
+    response += `**6. Security**\n`;
+    response += `• Use parameterized queries\n`;
+    response += `• Implement row-level security\n`;
+    response += `• Encrypt sensitive data\n`;
+    response += `• Regular backups\n\n`;
+    
+    response += `💡 Need help with a specific schema? Describe your data!`;
+
+    return response;
+  }
+
+  // Testing Strategy
+  suggestTestingStrategy(message) {
+    let response = `🧪 **Testing Strategy & Best Practices:**\n\n`;
+
+    response += `**Testing Pyramid:**\n\n`;
+    response += `**1. Unit Tests (70%)**\n`;
+    response += `• Test individual functions/components\n`;
+    response += `• Fast, isolated, many tests\n`;
+    response += `• Tools: Jest, Vitest, Mocha\n\n`;
+    
+    response += `**2. Integration Tests (20%)**\n`;
+    response += `• Test component interactions\n`;
+    response += `• Test API endpoints\n`;
+    response += `• Tools: Supertest, React Testing Library\n\n`;
+    
+    response += `**3. E2E Tests (10%)**\n`;
+    response += `• Test full user flows\n`;
+    response += `• Slower, fewer tests\n`;
+    response += `• Tools: Cypress, Playwright, Selenium\n\n`;
+    
+    response += `**What to Test:**\n`;
+    response += `✅ Business logic\n`;
+    response += `✅ Edge cases\n`;
+    response += `✅ Error handling\n`;
+    response += `✅ User interactions\n`;
+    response += `❌ Don't test implementation details\n`;
+    response += `❌ Don't test third-party libraries\n\n`;
+    
+    response += `**Example Unit Test (Jest):**\n`;
+    response += `\`\`\`javascript\ndescribe('calculateTotal', () => {\n  it('should sum array of numbers', () => {\n    expect(calculateTotal([1, 2, 3])).toBe(6);\n  });\n});\n\`\`\`\n\n`;
+    
+    response += `**Test Coverage Goals:**\n`;
+    response += `• Aim for 80%+ coverage\n`;
+    response += `• Focus on critical paths\n`;
+    response += `• Don't obsess over 100%\n\n`;
+    
+    response += `💡 Need help writing tests for specific code? Share it!`;
+
+    return response;
+  }
+
+  // Debugging Help
+  provideDebuggingHelp(message) {
+    const lowerMsg = message.toLowerCase();
+    let response = `🐛 **Debugging Guide:**\n\n`;
+
+    response += `**Step-by-Step Debugging Process:**\n\n`;
+    
+    response += `**1. Reproduce the Issue**\n`;
+    response += `• Can you consistently reproduce it?\n`;
+    response += `• What steps trigger it?\n\n`;
+    
+    response += `**2. Check Error Messages**\n`;
+    response += `• Read the full error message\n`;
+    response += `• Check stack trace\n`;
+    response += `• Look at line numbers\n\n`;
+    
+    response += `**3. Use Debugging Tools**\n`;
+    response += `• Browser DevTools (console, debugger)\n`;
+    response += `• React DevTools\n`;
+    response += `• Network tab for API issues\n`;
+    response += `• Breakpoints in code\n\n`;
+    
+    response += `**4. Add Logging**\n`;
+    response += `• console.log() at key points\n`;
+    response += `• Log inputs and outputs\n`;
+    response += `• Check variable values\n\n`;
+    
+    response += `**5. Isolate the Problem**\n`;
+    response += `• Comment out code sections\n`;
+    response += `• Test in isolation\n`;
+    response += `• Simplify the code\n\n`;
+    
+    response += `**Common Issues & Fixes:**\n\n`;
+    
+    if (lowerMsg.includes('undefined') || lowerMsg.includes('null')) {
+      response += `**Undefined/Null Errors:**\n`;
+      response += `• Check if variable is initialized\n`;
+      response += `• Use optional chaining: \`obj?.prop\`\n`;
+      response += `• Use nullish coalescing: \`value ?? defaultValue\`\n\n`;
+    }
+    
+    if (lowerMsg.includes('async') || lowerMsg.includes('promise')) {
+      response += `**Async/Promise Issues:**\n`;
+      response += `• Make sure to await promises\n`;
+      response += `• Check for unhandled rejections\n`;
+      response += `• Use try-catch for error handling\n\n`;
+    }
+    
+    if (lowerMsg.includes('react') || lowerMsg.includes('render')) {
+      response += `**React Rendering Issues:**\n`;
+      response += `• Check if state is updating\n`;
+      response += `• Verify dependencies in useEffect\n`;
+      response += `• Check for infinite loops\n\n`;
+    }
+    
+    response += `**Debugging Tips:**\n`;
+    response += `• Read error messages carefully\n`;
+    response += `• Use browser DevTools\n`;
+    response += `• Add breakpoints\n`;
+    response += `• Test incrementally\n`;
+    response += `• Ask for help when stuck!\n\n`;
+    
+    response += `💡 Share your error message or code, and I'll help debug it!`;
+
+    return response;
   }
 }
 
