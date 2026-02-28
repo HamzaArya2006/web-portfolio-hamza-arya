@@ -28,7 +28,7 @@ import { bindViewTransitions, addViewTransitionStyles } from "./modules/view-tra
 import { initPWAInstall } from "./modules/pwa-install.js";
 import { initNotifications } from "./modules/notifications.js";
 import { runModernIntroOverlaySequence } from "./modules/intro.js";
-import { renderProjects, bindProjectFilters } from "./modules/projects.js";
+import { renderProjects, renderProjectsSync, bindProjectFilters } from "./modules/projects.js";
 import { applySiteCustomizations, mountHeroCustomSlot } from "./modules/siteCustomizations.js";
 import { initAssistant } from "./modules/assistant.js";
 
@@ -40,6 +40,15 @@ window.addEventListener('unhandledrejection', (e) => console.error('%c[DEBUG:PRO
 
 // Critical: Load immediately
 window.addEventListener("DOMContentLoaded", () => {
+  // Paint project cards first so they always show (sync, no dependencies)
+  try {
+    renderProjectsSync();
+    bindLazyImages();
+    bindRevealOnScroll();
+  } catch (e) {
+    console.error('[projects] Sync render failed:', e);
+  }
+
   // #region agent log
   console.log('%c[DEBUG:H8]', 'background:#1e40af;color:#fff;padding:2px 6px;border-radius:3px', 'DOMContentLoaded fired', {readyState:document.readyState,bodyExists:!!document.body});
   // #endregion
@@ -102,11 +111,23 @@ window.addEventListener("DOMContentLoaded", () => {
         .then(() => {
           applySiteCustomizations();
           bindProjectFilters();
-          bindLazyImages(); // Lazy images run after inject so new project images get observed
-          bindRevealOnScroll(); // Reveal observer for dynamically injected project cards
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => {
+          bindLazyImages();
+          bindRevealOnScroll();
+        });
     } catch (_) {}
+  }
+  // Eagerly render testimonials so they show without scrolling
+  const testimonialsGrid = document.getElementById('testimonials-grid');
+  if (testimonialsGrid) {
+    import("./modules/testimonials.js").then(({ renderTestimonials }) => {
+      renderTestimonials();
+      import('./modules/testimonialsAuto.js').then(({ autoPlayTestimonials }) => {
+        try { autoPlayTestimonials(); } catch (_) {}
+      }).catch(() => {});
+    }).catch(() => {});
   }
   mountHeroCustomSlot();
   applySiteCustomizations();

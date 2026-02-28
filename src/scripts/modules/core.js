@@ -40,7 +40,7 @@ export function bindRevealOnScroll() {
         }
       });
     },
-    { threshold: 0.15 }
+    { threshold: 0.05, rootMargin: '100px 0px 100px 0px' }
   );
   const heroObserver = new IntersectionObserver(
     (entries, obs) => {
@@ -59,6 +59,22 @@ export function bindRevealOnScroll() {
     if (heroSet.has(el)) heroObserver.observe(el);
     else defaultObserver.observe(el);
   });
+
+  // Reveal any [data-reveal] elements already in view (e.g. on load or after layout)
+  function revealVisible() {
+    const rect = (el) => el.getBoundingClientRect();
+    const vh = window.innerHeight;
+    revealables.forEach((el) => {
+      if (heroSet.has(el)) return;
+      const r = rect(el);
+      if (r.top < vh - 50 && r.bottom > 0) {
+        el.classList.remove('opacity-0', 'translate-y-6');
+        el.classList.add('fade-in', 'slide-up');
+      }
+    });
+  }
+  requestAnimationFrame(revealVisible);
+  setTimeout(revealVisible, 150);
 }
 
 

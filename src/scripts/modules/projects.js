@@ -65,8 +65,11 @@ async function loadProjects(force = false) {
   if (remoteFailed && !force) return projects;
 
   const endpoint = `${PUBLIC_API_BASE}/api/public/projects`;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
   try {
-    const response = await fetch(endpoint, { cache: 'no-store' });
+    const response = await fetch(endpoint, { cache: 'no-store', signal: controller.signal });
+    clearTimeout(timeoutId);
     if (!response.ok) throw new Error('Failed to fetch remote projects');
     const data = await response.json();
     if (Array.isArray(data) && data.length) {
@@ -74,26 +77,21 @@ async function loadProjects(force = false) {
       remoteLoaded = true;
     }
   } catch (error) {
+    clearTimeout(timeoutId);
     warn('[projects] Falling back to local data:', error.message);
     remoteFailed = true;
   }
   return projects;
 }
 
-export async function renderProjects() {
-  const grid = document.getElementById('projects-grid');
-  const count = document.getElementById('projects-count');
-  const totalCount = document.getElementById('total-projects');
-  if (!grid) return;
-  const data = await loadProjects();
-  const filtered = data.filter(projectMatchesFilter);
-  if (count) count.textContent = String(filtered.length);
-  if (totalCount) totalCount.textContent = String(data.length);
-  grid.innerHTML = filtered
+function buildProjectsHTML(list) {
+  return list
     .map(p => {
       const categories = classifyProject(p);
-      const techArray = p.tech.split(' • ');
-      const { lazySrc, srcSet, sizes } = buildResponsiveImageAttrs(p.image);
+      const tech = p.tech || '';
+      const techArray = tech.split(' • ').filter(Boolean);
+      const imgUrl = p.image || '';
+      const { lazySrc, srcSet, sizes } = buildResponsiveImageAttrs(imgUrl);
       const isCaseStudy = !!(
         p.caseStudy ||
         (p.metrics && Object.keys(p.metrics).length >= 3)
@@ -156,18 +154,14 @@ export async function renderProjects() {
               : ''
           }
           <div class="project-actions">
-            <a href="${
-              p.links.live
-            }" class="project-action-btn" title="View Live Demo" target="_blank" rel="noopener">
+            <a href="${p.links?.live ?? '#'}" class="project-action-btn" title="View Live Demo" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15,3 21,3 21,9"></polyline>
                 <line x1="10" y1="14" x2="21" y2="3"></line>
               </svg>
             </a>
-            <a href="${
-              p.links.code
-            }" class="project-action-btn" title="View Source Code" target="_blank" rel="noopener">
+            <a href="${p.links?.code ?? '#'}" class="project-action-btn" title="View Source Code" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="16,18 22,12 16,6"></polyline>
                 <polyline points="8,6 2,12 8,18"></polyline>
@@ -200,9 +194,7 @@ export async function renderProjects() {
               .join('')}
           </div>
           <div class="project-footer">
-            <a href="${
-              p.links.live
-            }" class="project-link primary" target="_blank" rel="noopener">
+            <a href="${p.links?.live ?? '#'}" class="project-link primary" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
                 <polyline points="15,3 21,3 21,9"></polyline>
@@ -210,9 +202,7 @@ export async function renderProjects() {
               </svg>
               Live Demo
             </a>
-            <a href="${
-              p.links.code
-            }" class="project-link" target="_blank" rel="noopener">
+            <a href="${p.links?.code ?? '#'}" class="project-link" target="_blank" rel="noopener">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="16,18 22,12 16,6"></polyline>
                 <polyline points="8,6 2,12 8,18"></polyline>
@@ -224,12 +214,13 @@ export async function renderProjects() {
       </article>`;
     })
     .join('');
+}
 
-  // Fallbacks to ensure visibility and image loading
+function revealCardsAndBindImages(grid) {
+  if (!grid) return;
   try {
     const images = grid.querySelectorAll('img[data-src]');
     images.forEach(img => {
-      // If IntersectionObserver isn't available, eager-load images
       if (!('IntersectionObserver' in window)) {
         const ds = img.getAttribute('data-src');
         if (ds) img.setAttribute('src', ds);
@@ -238,7 +229,6 @@ export async function renderProjects() {
         const dsizes = img.getAttribute('data-sizes');
         if (dsizes) img.setAttribute('sizes', dsizes);
       }
-      // Safety: reveal cards even if image load event doesn't fire
       const article = img.closest('article');
       if (article) {
         setTimeout(() => {
@@ -248,14 +238,48 @@ export async function renderProjects() {
         }, 2000);
       }
     });
-    // If reveal observer didn't bind to newly injected nodes, ensure baseline visibility
     grid.querySelectorAll('article.project-card').forEach(card => {
       card.classList.remove('opacity-0');
       card.classList.remove('translate-y-6');
     });
-  } catch (_) {
-    // no-op
-  }
+  } catch (_) {}
+}
+
+/** Sync-only first paint from local data. Call as soon as DOM has #projects-grid. */
+export function renderProjectsSync() {
+  const grid = document.getElementById('projects-grid');
+  const count = document.getElementById('projects-count');
+  const totalCount = document.getElementById('total-projects');
+  if (!grid) return;
+  const dataSource = projects.length ? projects : localProjects;
+  const filtered = dataSource.filter(projectMatchesFilter);
+  if (count) count.textContent = String(filtered.length);
+  if (totalCount) totalCount.textContent = String(dataSource.length);
+  grid.innerHTML = buildProjectsHTML(filtered);
+  revealCardsAndBindImages(grid);
+}
+
+export async function renderProjects() {
+  const grid = document.getElementById('projects-grid');
+  const count = document.getElementById('projects-count');
+  const totalCount = document.getElementById('total-projects');
+  if (!grid) return;
+
+  // 1) Sync first paint from current data (local fallback) so cards show immediately
+  const dataSource = projects.length ? projects : localProjects;
+  const filteredInitial = dataSource.filter(projectMatchesFilter);
+  if (count) count.textContent = String(filteredInitial.length);
+  if (totalCount) totalCount.textContent = String(dataSource.length);
+  grid.innerHTML = buildProjectsHTML(filteredInitial);
+  revealCardsAndBindImages(grid);
+
+  // 2) Load remote (if any) and re-render when ready
+  const data = await loadProjects();
+  const filtered = data.filter(projectMatchesFilter);
+  if (count) count.textContent = String(filtered.length);
+  if (totalCount) totalCount.textContent = String(data.length);
+  grid.innerHTML = buildProjectsHTML(filtered);
+  revealCardsAndBindImages(grid);
 }
 
 export async function bindProjectFilters() {
