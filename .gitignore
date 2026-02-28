@@ -44,3 +44,7 @@ lighthouse-report.json
 *.backup
 *.bak
 *.tmp
+
+
+/dist/
+/node_modules/

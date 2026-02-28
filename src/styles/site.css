@@ -1690,7 +1690,7 @@
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
   }
 
-  /* Hero: rotating specialties */
+  /* Hero: rotating specialties — supports any number of items via staggered delay */
   .hero-rotator {
     position: relative;
     height: 1.25rem; /* h-5 */
@@ -1704,15 +1704,13 @@
     transform: translateY(8px);
     animation: hero-rotate 9s ease-in-out infinite;
   }
-  .hero-rotator > span:nth-child(1) {
-    animation-delay: 0s;
-  }
-  .hero-rotator > span:nth-child(2) {
-    animation-delay: 3s;
-  }
-  .hero-rotator > span:nth-child(3) {
-    animation-delay: 6s;
-  }
+  .hero-rotator > span:nth-child(1) { animation-delay: 0s; }
+  .hero-rotator > span:nth-child(2) { animation-delay: 3s; }
+  .hero-rotator > span:nth-child(3) { animation-delay: 6s; }
+  .hero-rotator > span:nth-child(4) { animation-delay: 9s; }
+  .hero-rotator > span:nth-child(5) { animation-delay: 12s; }
+  .hero-rotator > span:nth-child(6) { animation-delay: 15s; }
+  .hero-rotator > span:nth-child(n+7) { animation-delay: 18s; }
 
   @keyframes hero-rotate {
     0% {

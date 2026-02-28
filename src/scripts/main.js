@@ -28,7 +28,7 @@ import { bindViewTransitions, addViewTransitionStyles } from "./modules/view-tra
 import { initPWAInstall } from "./modules/pwa-install.js";
 import { initNotifications } from "./modules/notifications.js";
 import { runModernIntroOverlaySequence } from "./modules/intro.js";
-import { renderProjects } from "./modules/projects.js";
+import { renderProjects, bindProjectFilters } from "./modules/projects.js";
 import { applySiteCustomizations, mountHeroCustomSlot } from "./modules/siteCustomizations.js";
 import { initAssistant } from "./modules/assistant.js";
 
@@ -98,7 +98,14 @@ window.addEventListener("DOMContentLoaded", () => {
   const grid = document.getElementById('projects-grid');
   if (grid) {
     try {
-      renderProjects().catch(() => {});
+      renderProjects()
+        .then(() => {
+          applySiteCustomizations();
+          bindProjectFilters();
+          bindLazyImages(); // Lazy images run after inject so new project images get observed
+          bindRevealOnScroll(); // Reveal observer for dynamically injected project cards
+        })
+        .catch(() => {});
     } catch (_) {}
   }
   mountHeroCustomSlot();
@@ -267,11 +274,11 @@ function loadHeavySections() {
     threshold: 0.01
   });
 
-  // Observe all section containers
+  // Observe all section containers (handle composite selectors like #about, #services)
   sectionsToLoad.forEach(sectionConfig => {
-    const element = document.querySelector(sectionConfig.selector);
-    if (element) {
+    const elements = document.querySelectorAll(sectionConfig.selector);
+    elements.forEach((element) => {
       observer.observe(element);
-    }
+    });
   });
 }

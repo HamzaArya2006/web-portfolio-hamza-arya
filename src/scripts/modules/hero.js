@@ -1,6 +1,12 @@
+const PARALLAX_BOUND = Symbol('parallaxBound');
+
 export function bindParallax() {
   const parallaxEls = Array.from(document.querySelectorAll('[data-parallax]'));
   if (!parallaxEls.length) return;
+  const key = document.body;
+  if (key[PARALLAX_BOUND]) return;
+  key[PARALLAX_BOUND] = true;
+
   let ticking = false;
   const update = () => {
     const scrollY = window.scrollY || window.pageYOffset;
@@ -21,10 +27,15 @@ export function bindParallax() {
   update();
 }
 
+const HERO_SPOTLIGHT_BOUND = Symbol('heroSpotlightBound');
+
 export function bindHeroSpotlight() {
   const hero = document.querySelector('section#top');
   const overlay = hero ? hero.querySelector('[data-hero-spotlight]') : null;
   if (!hero || !overlay) return;
+  if (hero[HERO_SPOTLIGHT_BOUND]) return;
+  hero[HERO_SPOTLIGHT_BOUND] = true;
+
   // Respect reduced motion
   const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReducedMotion) {
@@ -92,6 +103,7 @@ export function bindHeroSpotlight() {
     if (!isPointerInside && settled) {
       active = false;
       rafId = 0;
+      overlay.style.willChange = 'auto'; // Release compositor hint when idle
       return;
     }
     rafId = requestAnimationFrame(animate);
@@ -116,6 +128,7 @@ export function bindHeroSpotlight() {
     state.currentY = state.targetY = e.clientY - rect.top;
     overlay.style.transition = 'opacity 200ms ease';
     overlay.style.opacity = '1';
+    overlay.style.willChange = 'background'; // Hint compositor before animation
     isPointerInside = true;
     if (!active) {
       active = true;
@@ -159,8 +172,7 @@ export function deferHeroAnimations() {
     if (resumed) return;
     resumed = true;
     if (hero) hero.classList.remove('hero-anim-off');
-    bindParallax();
-    bindHeroSpotlight();
+    // Spotlight and parallax are already bound in main.js; avoid double-binding
   };
   // Activate on first interaction or when hero is actually visible
   window.addEventListener('scroll', resume, { once: true, passive: true });

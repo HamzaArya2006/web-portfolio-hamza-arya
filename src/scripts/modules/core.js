@@ -27,7 +27,9 @@ export function bindSmoothScroll() {
 
 export function bindRevealOnScroll() {
   const revealables = document.querySelectorAll('[data-reveal]');
-  const observer = new IntersectionObserver(
+  const heroReveals = document.querySelectorAll('section#top [data-reveal]');
+  const heroSet = new Set(heroReveals);
+  const defaultObserver = new IntersectionObserver(
     (entries, obs) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -40,7 +42,23 @@ export function bindRevealOnScroll() {
     },
     { threshold: 0.15 }
   );
-  revealables.forEach((el) => observer.observe(el));
+  const heroObserver = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          el.classList.remove('opacity-0', 'translate-y-6');
+          el.classList.add('fade-in', 'slide-up');
+          obs.unobserve(el);
+        }
+      });
+    },
+    { threshold: 0.05, rootMargin: '0px 0px -10% 0px' }
+  );
+  revealables.forEach((el) => {
+    if (heroSet.has(el)) heroObserver.observe(el);
+    else defaultObserver.observe(el);
+  });
 }
 
 

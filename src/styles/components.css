@@ -70,7 +70,7 @@
   }
 
   .input:focus {
-    @apply border-blue-500/50 bg-white/8;
+    @apply border-blue-500/50 bg-white/10;
     transform: scale(1.01);
   }
 
