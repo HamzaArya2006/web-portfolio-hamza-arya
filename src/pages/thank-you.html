@@ -15,6 +15,17 @@
   <body class="bg-gray-900 text-gray-100">
     {{> header}}
 
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60 backdrop-blur-sm">
+      <ol class="container-pro flex items-center gap-2 py-3.5 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white transition-colors duration-200">Home</a></li>
+        <li aria-hidden="true" class="opacity-60 inline-flex items-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </li>
+        <li aria-current="page" class="text-white font-medium">Thank you</li>
+      </ol>
+    </nav>
+
     <!-- Hero / Success Message -->
     <section id="top" class="relative py-32 bg-black overflow-hidden min-h-[80vh] flex items-center">
       <!-- Professional animated background -->
@@ -30,8 +41,8 @@
         <div class="max-w-2xl mx-auto text-center">
           <div data-reveal class="opacity-0 translate-y-6">
             <!-- Success Icon -->
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-500/20 border border-emerald-500/30 mb-8">
-              <svg class="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 mb-8 shadow-lg shadow-emerald-500/10">
+              <svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
             </div>
@@ -43,20 +54,23 @@
               Your message has been received successfully. I'll review it and get back to you within 24 hours.
             </p>
 
-            <div class="glass rounded-2xl p-6 mb-8 text-left">
-              <h3 class="font-semibold text-white mb-4">What happens next?</h3>
-              <ul class="space-y-3 text-sm text-gray-300">
-                <li class="flex items-start gap-3">
-                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-semibold">1</span>
-                  <span>I'll review your message and project requirements</span>
+            <div class="glass-professional rounded-2xl p-6 mb-8 text-left border border-white/10">
+              <h3 class="font-semibold text-white mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                What happens next?
+              </h3>
+              <ul class="space-y-4 text-sm text-gray-300">
+                <li class="flex items-start gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-semibold">1</span>
+                  <span class="pt-0.5">I'll review your message and project requirements</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-semibold">2</span>
-                  <span>I'll send you a detailed response within 24 hours</span>
+                <li class="flex items-start gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-semibold">2</span>
+                  <span class="pt-0.5">I'll send you a detailed response within 24 hours</span>
                 </li>
-                <li class="flex items-start gap-3">
-                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xs font-semibold">3</span>
-                  <span>We can schedule a free 30-minute discovery call to discuss your project</span>
+                <li class="flex items-start gap-4 p-3 rounded-xl bg-white/5 border border-white/5">
+                  <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-sm font-semibold">3</span>
+                  <span class="pt-0.5">We can schedule a free 30-minute discovery call to discuss your project</span>
                 </li>
               </ul>
             </div>
@@ -67,7 +81,7 @@
             </div>
 
             <p class="text-sm text-gray-400 mt-8">
-              While you wait, feel free to explore my <a href="/pages/blog.html" class="text-blue-400 hover:text-blue-300 underline">blog</a> or check out my <a href="/pages/about.html" class="text-blue-400 hover:text-blue-300 underline">about page</a>.
+              While you wait, feel free to explore my <a href="/pages/blog.html" class="text-blue-400 hover:text-blue-300 underline underline-offset-4 transition-colors">blog</a> or check out my <a href="/pages/about.html" class="text-blue-400 hover:text-blue-300 underline underline-offset-4 transition-colors">about page</a>.
             </p>
           </div>
         </div>

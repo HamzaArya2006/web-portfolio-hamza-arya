@@ -1,11 +1,22 @@
 import { blogPosts } from '../../data/blog.js';
+import { blogPost } from '../../config/links.js';
 
 let currentBlogFilter = 'all';
 
 export function renderBlogPosts() {
   const container = document.getElementById('blog-content');
+  const emptyEl = document.getElementById('blog-empty');
   if (!container) return;
   const filtered = blogPosts.filter(post => currentBlogFilter === 'all' || post.category === currentBlogFilter);
+
+  if (filtered.length === 0) {
+    container.classList.add('hidden');
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  container.classList.remove('hidden');
+  if (emptyEl) emptyEl.classList.add('hidden');
+
   container.innerHTML = filtered
     .map((post) => {
       const formattedDate = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -34,7 +45,7 @@ export function renderBlogPosts() {
             <div class="blog-tags">
               ${post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
             </div>
-            <a href="#blog-post-${post.id}" class="blog-read-more" data-post-id="${post.id}">
+            <a href="${post.slug ? blogPost(post.slug) : `#blog-post-${post.id}`}" class="blog-read-more" data-post-id="${post.id}" ${post.slug ? '' : 'data-modal-trigger'}>
               Read Article
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M7 17L17 7M17 7H7M17 7V17"/>
@@ -62,7 +73,7 @@ export function bindBlogFilters() {
 }
 
 export function bindBlogPostHandlers() {
-  const readMoreLinks = document.querySelectorAll('.blog-read-more');
+  const readMoreLinks = document.querySelectorAll('.blog-read-more[data-modal-trigger]');
   readMoreLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
@@ -109,7 +120,8 @@ export function showBlogPost(postId) {
               </div>
             </div>
             <div class="blog-share">
-              <button class="share-btn" data-url="${window.location.origin}/blog#${post.id}" data-title="${post.title}">
+              ${post.slug ? `<a href="${blogPost(post.slug)}" class="share-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;">View full article →</a>` : ''}
+              <button class="share-btn" data-url="${post.slug ? `${window.location.origin}/pages/blog/${post.slug}.html` : `${window.location.origin}/blog#${post.id}`}" data-title="${post.title}">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                   <polyline points="16,6 12,2 8,6"></polyline>

@@ -1,4 +1,5 @@
 import { testimonials } from '../../data/testimonials.js';
+import { project } from '../../config/links.js';
 
 export function renderTestimonials() {
   const grid = document.getElementById('testimonials-grid');
@@ -15,12 +16,7 @@ export function renderTestimonials() {
       const edgePadding = `${isFirst ? 'padding-left: 1.5rem;' : ''}${isLast ? 'padding-right: 1.5rem;' : ''}`;
       return `
       <article class="testimonial-slide${isFirst ? ' is-first' : ''}${isLast ? ' is-last' : ''}" role="group" aria-roledescription="slide" aria-label="${position}" style="${edgePadding}">
-        <div class="relative h-full glass-professional rounded-2xl p-8 testimonial-card border border-white/10 hover:border-white/20">
-          <div class="absolute top-6 right-6 opacity-20 group-hover:opacity-30 transition-opacity" aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
-            </svg>
-          </div>
+        <div class="relative h-full testimonial-card">
           <div class="flex items-center gap-1 mb-4">
             <div class="text-yellow-400 text-sm" aria-label="${t.rating} out of 5 stars">${stars}</div>
             <span class="text-xs text-gray-400 ml-2">${t.rating}/5</span>
@@ -28,15 +24,26 @@ export function renderTestimonials() {
           <blockquote class="text-gray-100 text-lg leading-relaxed mb-6 relative">
             "${t.quote}"
           </blockquote>
-          ${t.project ? `
-            <div class="mb-4 p-3 bg-white/5 rounded-lg border border-white/10 flex items-center justify-between gap-3">
-              <div>
-                <div class="text-sm text-blue-300 font-medium">${t.project}</div>
-                ${t.result ? `<div class=\"text-xs text-green-300 mt-1\">📈 ${t.result}</div>` : ''}
-              </div>
-              ${projectUrl ? `<a class=\"btn-ghost text-xs\" href=\"${projectUrl}\">View case</a>` : ''}
+          ${
+            t.project || t.result
+              ? `
+            <div class="mb-4 text-xs text-gray-400">
+              ${
+                t.project
+                  ? t.projectSlug
+                    ? `<a href="${project(t.projectSlug)}" class="font-medium text-gray-200 hover:text-white transition-colors">${t.project}</a>`
+                    : `<span class="font-medium text-gray-200">${t.project}</span>`
+                  : ''
+              }
+              ${
+                t.result
+                  ? `<span class="ml-1 text-green-300">• ${t.result}</span>`
+                  : ''
+              }
             </div>
-          ` : ''}
+          `
+              : ''
+          }
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-lg" aria-hidden="true">
               ${avatar}

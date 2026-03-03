@@ -1,35 +1,72 @@
 import { projects as localProjects } from '../../data/projects.js';
+import { project } from '../../config/links.js';
 import { warn } from './logger.js';
 
-const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || '').replace(/\/$/, '');
+// Safely read Vite-style env var even when not running through Vite
+const RAW_PUBLIC_API_URL =
+  (import.meta && import.meta.env && import.meta.env.VITE_PUBLIC_API_URL) || '';
+const PUBLIC_API_BASE = RAW_PUBLIC_API_URL.replace(/\/$/, '');
 
 let projects = [...localProjects];
 let remoteLoaded = false;
 let remoteFailed = false;
 
+// Current high-level filter (e.g. "client", "ecommerce", etc.)
 let currentFilter = 'all';
+// Optional secondary tag filter (driven by the Popular Tags chips)
+let activeTag = null;
+
+// Keyword helpers for deriving richer categories from project content
 const filterKeywords = {
-  web: ['vite', 'tailwind', 'website', 'microsite'],
-  saas: ['saas', 'platform'],
-  commerce: ['commerce', 'storefront', 'stripe'],
-  data: ['etl', 'pipeline', 'bigquery', 'redis'],
+  client: ['client', 'company', 'co. ltd', 'co. ltd.', 'website', 'business'],
+  ecommerce: ['e-commerce', 'ecommerce', 'shop', 'store', 'catalog', 'product'],
+  landing: ['landing page', 'marketing', 'hero section', 'newsletter', 'signup'],
+  apps: ['appstore', 'app store', 'weather app', 'dashboard', 'mobile app'],
 };
 
 export function classifyProject(p) {
-  if (p.category) return [p.category];
-  const hay = `${p.title} ${p.description} ${p.tech}`.toLowerCase();
-  const tags = new Set(['web']);
+  const categories = new Set();
+
+  if (p.category) categories.add(String(p.category).toLowerCase());
+
+  if (Array.isArray(p.tags)) {
+    p.tags.forEach(tag => categories.add(String(tag).toLowerCase()));
+  }
+
+  const hay = `${p.id || ''} ${p.title || ''} ${p.description || ''} ${p.tech || ''} ${
+    Array.isArray(p.tags) ? p.tags.join(' ') : ''
+  }`.toLowerCase();
+
   for (const [key, needles] of Object.entries(filterKeywords)) {
     for (const word of needles) {
-      if (hay.includes(word)) tags.add(key);
+      if (hay.includes(word)) categories.add(key);
     }
   }
-  return Array.from(tags);
+
+  // Everything here is a web project by default
+  categories.add('web');
+
+  return Array.from(categories);
 }
 
 function projectMatchesFilter(p) {
-  if (currentFilter === 'all') return true;
-  return classifyProject(p).includes(currentFilter);
+  // Primary category filter (All / Client / E‑commerce / Landing / Apps)
+  const matchesCategory =
+    currentFilter === 'all' || classifyProject(p).includes(currentFilter);
+
+  if (!matchesCategory) return false;
+
+  // Optional secondary tag filter (Popular Tags section)
+  if (!activeTag) return true;
+
+  const tagList = Array.isArray(p.tags) ? p.tags : [];
+  const tech = p.tech || '';
+  const needle = activeTag.toLowerCase();
+
+  return (
+    tagList.some(tag => String(tag).toLowerCase() === needle) ||
+    tech.toLowerCase().includes(needle)
+  );
 }
 
 export function withParam(url, key, value) {
@@ -64,11 +101,22 @@ async function loadProjects(force = false) {
   if (remoteLoaded && !force) return projects;
   if (remoteFailed && !force) return projects;
 
+  // If no API base is configured, skip remote fetch and rely on local data
+  if (!PUBLIC_API_BASE) {
+    if (import.meta && import.meta.env && import.meta.env.DEV) {
+      warn('[projects] No PUBLIC_API_URL set; using local projects only.');
+    }
+    return projects;
+  }
+
   const endpoint = `${PUBLIC_API_BASE}/api/public/projects`;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 4000);
   try {
-    const response = await fetch(endpoint, { cache: 'no-store', signal: controller.signal });
+    const response = await fetch(endpoint, {
+      cache: 'no-store',
+      signal: controller.signal,
+    });
     clearTimeout(timeoutId);
     if (!response.ok) throw new Error('Failed to fetch remote projects');
     const data = await response.json();
@@ -92,124 +140,63 @@ function buildProjectsHTML(list) {
       const techArray = tech.split(' • ').filter(Boolean);
       const imgUrl = p.image || '';
       const { lazySrc, srcSet, sizes } = buildResponsiveImageAttrs(imgUrl);
-      const isCaseStudy = !!(
-        p.caseStudy ||
-        (p.metrics && Object.keys(p.metrics).length >= 3)
-      );
-      const metricsHtml = p.metrics
-        ? `
-        <div class="project-metrics">
-          ${Object.entries(p.metrics)
-            .map(
-              ([key, value]) => `
-            <div class="metric-item">
-              <span class="metric-value">${value}</span>
-              <span class="metric-label">${key}</span>
-            </div>
-          `
-            )
-            .join('')}
-        </div>
-      `
-        : '';
-      const featuresHtml = p.features
-        ? `
-        <div class="project-features">
-          <h4 class="features-title">Key Features:</h4>
-          <ul class="features-list">
-            ${p.features.map(feature => `<li>${feature}</li>`).join('')}
-          </ul>
-        </div>
-      `
-        : '';
+      const primaryCategory =
+        categories.find(c => c !== 'web') || categories[0] || 'web';
+      const metaPieces = [];
+      if (p.client) metaPieces.push(p.client);
+      if (p.duration) metaPieces.push(p.duration);
+      const metaText = metaPieces.join(' • ');
+      const detailUrl = p.slug ? project(p.slug) : '';
       return `
-      <article data-reveal class="opacity-0 translate-y-6 project-card loading">
+      <article data-reveal class="opacity-0 translate-y-6 project-card">
+        ${detailUrl ? `<a href="${detailUrl}" class="block group" aria-label="View ${p.title} project details">` : ''}
         <div class="project-image-container">
-          <div class="project-skeleton-image project-skeleton-anim"></div>
           <img 
             width="600" 
             height="400" 
             alt="${p.title}" 
             class="project-image" 
-            loading="lazy"
             decoding="async"
             data-src="${lazySrc}"
             data-srcset="${srcSet}"
             data-sizes="${sizes}"
-            onload="this.closest('article') && this.closest('article').classList.remove('loading')"
           />
-          <div class="project-overlay"></div>
           <div class="project-category">
-            <span>${categories[0]}</span>
-          </div>
-          ${
-            isCaseStudy
-              ? `
-          <div class="case-study-badge" aria-label="Case study">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-            <span>Case Study</span>
-          </div>`
-              : ''
-          }
-          <div class="project-actions">
-            <a href="${p.links?.live ?? '#'}" class="project-action-btn" title="View Live Demo" target="_blank" rel="noopener">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15,3 21,3 21,9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-            </a>
-            <a href="${p.links?.code ?? '#'}" class="project-action-btn" title="View Source Code" target="_blank" rel="noopener">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="16,18 22,12 16,6"></polyline>
-                <polyline points="8,6 2,12 8,18"></polyline>
-              </svg>
-            </a>
+            <span>${primaryCategory}</span>
           </div>
         </div>
         <div class="project-content">
           <h3 class="project-title">${p.title}</h3>
           <p class="project-description">${p.description}</p>
-          <div class="project-skeleton-text wide project-skeleton-anim"></div>
-          <div class="project-skeleton-text project-skeleton-anim" style="width: 70%; margin-top: 0.5rem;"></div>
-          ${metricsHtml}
-          ${featuresHtml}
-          <div class="project-meta">
-            ${
-              p.duration
-                ? `<span class="project-duration">⏱️ ${p.duration}</span>`
-                : ''
-            }
-            ${
-              p.client
-                ? `<span class="project-client">👤 ${p.client}</span>`
-                : ''
-            }
-          </div>
+          ${
+            p.role
+              ? `<p class="project-role text-sm text-gray-400">${p.role}</p>`
+              : ''
+          }
+          ${
+            metaText
+              ? `<p class="project-meta-line text-xs text-gray-500">${metaText}</p>`
+              : ''
+          }
           <div class="project-tech">
             ${techArray
-              .map(tech => `<span class="tech-badge">${tech}</span>`)
+              .map(t => `<span class="tech-badge">${t}</span>`)
               .join('')}
           </div>
-          <div class="project-footer">
-            <a href="${p.links?.live ?? '#'}" class="project-link primary" target="_blank" rel="noopener">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15,3 21,3 21,9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-              Live Demo
-            </a>
-            <a href="${p.links?.code ?? '#'}" class="project-link" target="_blank" rel="noopener">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="16,18 22,12 16,6"></polyline>
-                <polyline points="8,6 2,12 8,18"></polyline>
-              </svg>
-              Code
-            </a>
-          </div>
+        </div>
+        ${detailUrl ? '</a>' : ''}
+        <div class="project-links-row">
+          ${
+            p.links?.live
+              ? `<a href="${p.links.live}" class="project-link-minimal" target="_blank" rel="noopener">Live site</a>`
+              : ''
+          }
+          ${
+            p.links?.code && p.links.code !== '#'
+              ? `<a href="${p.links.code}" class="project-link-minimal" target="_blank" rel="noopener">Code</a>`
+              : ''
+          }
+          ${detailUrl ? `<a href="${detailUrl}" class="project-link-minimal">View details</a>` : ''}
         </div>
       </article>`;
     })
@@ -300,7 +287,7 @@ export async function bindProjectFilters() {
   };
   const updateCounts = async () => {
     await loadProjects();
-    const filterTypes = ['all', 'web', 'saas', 'commerce', 'data'];
+    const filterTypes = ['all', 'client', 'ecommerce', 'landing', 'apps'];
     filterTypes.forEach(filter => {
       const countElement = document.getElementById(`count-${filter}`);
       if (countElement) {
@@ -361,4 +348,75 @@ export async function bindProjectFilters() {
 
   updateActive();
   updateCounts();
+
+  // Optional secondary tag filters (Popular Tags section on projects page)
+  const tagContainer = document.getElementById('tag-filters');
+  if (tagContainer) {
+    tagContainer.setAttribute('role', 'group');
+    tagContainer.setAttribute('aria-label', 'Project tag filters');
+
+    const setupTagFilters = async () => {
+      await loadProjects();
+
+      // Collect tag frequencies from project data
+      const tagFrequency = new Map();
+      projects.forEach(p => {
+        if (Array.isArray(p.tags)) {
+          p.tags.forEach(tag => {
+            const key = String(tag);
+            tagFrequency.set(key, (tagFrequency.get(key) || 0) + 1);
+          });
+        }
+      });
+
+      const popularTags = Array.from(tagFrequency.entries())
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8)
+        .map(([tag]) => tag);
+
+      if (!popularTags.length) {
+        tagContainer.innerHTML =
+          '<p class="text-sm text-gray-500">Tags will appear here as projects are added.</p>';
+        return;
+      }
+
+      tagContainer.innerHTML = popularTags
+        .map(
+          tag => `
+        <button 
+          type="button" 
+          class="project-filter-btn tag-filter-btn" 
+          data-tag="${tag}"
+          aria-pressed="false"
+        >
+          ${tag}
+        </button>`
+        )
+        .join('');
+
+      const tagButtons = tagContainer.querySelectorAll('button[data-tag]');
+      const updateTagActive = () => {
+        tagButtons.forEach(btn => {
+          const tag = btn.getAttribute('data-tag') || '';
+          const isActive = activeTag === tag;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-pressed', String(isActive));
+        });
+      };
+
+      tagButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tag = btn.getAttribute('data-tag') || '';
+          activeTag = activeTag === tag ? null : tag;
+          renderProjects();
+          updateTagActive();
+        });
+      });
+
+      updateTagActive();
+    };
+
+    // Fire-and-forget; we don't need to await this
+    setupTagFilters();
+  }
 }

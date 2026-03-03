@@ -33,6 +33,11 @@ export function bindHeroSpotlight() {
   const hero = document.querySelector('section#top');
   const overlay = hero ? hero.querySelector('[data-hero-spotlight]') : null;
   if (!hero || !overlay) return;
+  // Skip binding on small viewports to avoid extra work on low-power devices
+  if (window.innerWidth < 768) {
+    overlay.style.opacity = '0';
+    return;
+  }
   if (hero[HERO_SPOTLIGHT_BOUND]) return;
   hero[HERO_SPOTLIGHT_BOUND] = true;
 
@@ -62,11 +67,11 @@ export function bindHeroSpotlight() {
   const setGradient = (x, y, extra = 0) => {
     const inner = baseRadius + extra;
     const outer = inner + featherWidth;
-    // Softer, more subtle accent spotlight
+    // Softer, more subtle accent spotlight that matches the services/background palette
     overlay.style.background = `radial-gradient(circle at ${x}px ${y}px,
-      rgba(37, 99, 235, 0.22) 0px,
-      rgba(37, 99, 235, 0.10) ${inner}px,
-      rgba(15, 23, 42, 0.0) ${outer}px)`;
+      rgba(37, 99, 235, 0.18) 0px,
+      rgba(37, 99, 235, 0.06) ${inner}px,
+      rgba(0, 0, 0, 0.0) ${outer}px)`;
   };
   let rafId = 0;
   let active = false;

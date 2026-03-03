@@ -70,7 +70,7 @@ function generateBlogPages(blogPosts) {
             <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </li>
-        <li><a href="./blog.html" class="hover:text-white">Blog</a></li>
+        <li><a href="/pages/blog.html" class="hover:text-white">Blog</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -120,10 +120,10 @@ function generateBlogPages(blogPosts) {
           <!-- Footer -->
           <footer class="mt-16 pt-12 border-t border-white/10">
             <div class="flex flex-wrap gap-2 mb-6">
-              ${post.tags.map(tag => `<a href="../blog.html?tag=${encodeURIComponent(tag)}" class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium hover:bg-blue-500/20 transition-colors">#${tag}</a>`).join('\n              ')}
+              ${post.tags.map(tag => `<a href="/pages/blog.html?tag=${encodeURIComponent(tag)}" class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium hover:bg-blue-500/20 transition-colors">#${tag}</a>`).join('\n              ')}
             </div>
             <div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-              <a href="../blog.html" class="btn-ghost inline-flex items-center">
+              <a href="/pages/blog.html" class="btn-ghost inline-flex items-center">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="mr-2">
                   <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -201,7 +201,7 @@ function generateProjectPages(projects) {
             <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </li>
-        <li><a href="#projects" class="hover:text-white">Projects</a></li>
+        <li><a href="/pages/projects.html" class="hover:text-white">Projects</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -316,7 +316,7 @@ function generateProjectPages(projects) {
           <!-- Footer -->
           <footer class="mt-16 pt-12 border-t border-white/10">
             <div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
-              <a href="/index.html#projects" class="btn-ghost inline-flex items-center">
+              <a href="/pages/projects.html" class="btn-ghost inline-flex items-center">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="mr-2">
                   <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>

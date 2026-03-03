@@ -1,0 +1,37 @@
+<!-- Shop page: dedicated pro nav, minimal animations (no nav-link shimmer/underline) -->
+<header class="shop-header sticky top-0 z-40 border-b border-white/10 bg-gray-900/95 backdrop-blur-sm" data-shop-nav>
+  <div class="container-pro h-14 flex items-center justify-between">
+    <a href="/index.html" class="flex items-center gap-2 font-semibold text-gray-100 hover:text-white transition-colors" aria-label="Home">
+      <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-white" aria-hidden="true">H</span>
+      <span>Hamza</span>
+    </a>
+    <nav class="hidden sm:flex items-center gap-1" aria-label="Shop navigation">
+      <a href="/index.html" class="shop-nav-link">Home</a>
+      <a href="/pages/about.html" class="shop-nav-link">About</a>
+      <a href="/pages/projects.html" class="shop-nav-link">Projects</a>
+      <a href="/pages/services.html" class="shop-nav-link">Services</a>
+      <a href="/pages/shop.html" class="shop-nav-link active">Shop</a>
+      <a href="/pages/contact.html" class="btn-minimal">Contact</a>
+      <button data-theme-toggle type="button" aria-label="Toggle theme" class="shop-nav-link p-2 rounded-md" title="Toggle light/dark mode">
+        <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+      </button>
+    </nav>
+    <div class="flex items-center gap-2 sm:hidden">
+      <a href="/pages/shop.html" class="shop-nav-link active">Shop</a>
+      <button data-mobile-nav-toggle type="button" aria-label="Open menu" class="shop-nav-link p-2 rounded-md">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div data-mobile-nav class="sm:hidden absolute top-full left-0 right-0 bg-gray-900/98 border-b border-white/10 shadow-xl" data-open="false">
+    <div class="container-pro py-4 flex flex-col gap-1">
+      <a href="/index.html" class="nav-link py-3">Home</a>
+      <a href="/pages/about.html" class="nav-link py-3">About</a>
+      <a href="/pages/projects.html" class="nav-link py-3">Projects</a>
+      <a href="/pages/services.html" class="nav-link py-3">Services</a>
+      <a href="/pages/shop.html" class="nav-link py-3 font-medium text-white">Shop</a>
+      <a href="/pages/contact.html" class="nav-link py-3">Contact</a>
+    </div>
+  </div>
+</header>

@@ -96,10 +96,11 @@ export function bindContactForm() {
           const text = await res.text().catch(() => '');
           throw new Error(text || 'Request failed');
         }
-        showStatus('Thanks! I will get back to you shortly.', 'success');
+        showStatus('Thanks! Redirecting…', 'success');
         notify.success('Message sent!', 'I will get back to you shortly.');
         form.reset();
         submitting = false;
+        window.location.href = '/pages/thank-you.html';
         return;
       } catch (err) {
         warn('Form endpoint failed, trying background sync.', err);

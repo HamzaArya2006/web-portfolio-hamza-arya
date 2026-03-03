@@ -28,13 +28,13 @@
     {{> header}}
 
     <!-- Breadcrumb / navigation path -->
-    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
-      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
-        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60 backdrop-blur-sm">
+      <ol class="container-pro flex items-center gap-2 py-3.5 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white transition-colors duration-200">Home</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </li>
-        <li aria-current="page" class="text-white">Projects</li>
+        <li aria-current="page" class="text-white font-medium">Projects</li>
       </ol>
     </nav>
 
@@ -72,17 +72,17 @@
           <button class="project-filter-btn active" data-filter="all">
             All Projects <span id="count-all" class="filter-count">0</span>
           </button>
-          <button class="project-filter-btn" data-filter="web">
-            Web <span id="count-web" class="filter-count">0</span>
+          <button class="project-filter-btn" data-filter="client">
+            Client Work <span id="count-client" class="filter-count">0</span>
           </button>
-          <button class="project-filter-btn" data-filter="saas">
-            SaaS <span id="count-saas" class="filter-count">0</span>
+          <button class="project-filter-btn" data-filter="ecommerce">
+            E‑commerce & Catalog <span id="count-ecommerce" class="filter-count">0</span>
           </button>
-          <button class="project-filter-btn" data-filter="commerce">
-            Commerce <span id="count-commerce" class="filter-count">0</span>
+          <button class="project-filter-btn" data-filter="landing">
+            Marketing & Landing <span id="count-landing" class="filter-count">0</span>
           </button>
-          <button class="project-filter-btn" data-filter="data">
-            Data <span id="count-data" class="filter-count">0</span>
+          <button class="project-filter-btn" data-filter="apps">
+            App‑style UIs <span id="count-apps" class="filter-count">0</span>
           </button>
         </div>
         <div class="mt-4 text-center">
@@ -96,23 +96,28 @@
     <!-- Projects Grid -->
     <section class="py-24 bg-gray-900" aria-label="Projects showcase">
       <div class="container-pro">
-        <div id="projects-grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div id="projects-grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
           <!-- Projects will be rendered here -->
         </div>
-        <div id="projects-empty" class="hidden text-center py-16">
-          <p class="text-gray-400 text-lg">No projects found matching the selected filter.</p>
-          <button class="mt-4 btn-ghost" onclick="document.querySelector('[data-filter=\'all\']').click();">
+        <div id="projects-empty" class="hidden text-center py-20">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/5 border border-white/10 mb-6">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <p class="text-gray-400 text-lg font-medium">No projects match the selected filter.</p>
+          <p class="text-gray-500 text-sm mt-2">Try a different category or view all projects.</p>
+          <button class="mt-6 btn-secondary" onclick="document.querySelector('[data-filter=\'all\']').click();">
             Clear filters
           </button>
         </div>
       </div>
     </section>
 
-    <!-- Tag Filter Section (Optional) -->
-    <section class="py-12 bg-black border-t border-white/10" aria-label="Popular tags">
+    <!-- Tag Filter Section -->
+    <section class="py-16 bg-black border-t border-white/10" aria-label="Popular tags">
       <div class="container-pro">
-        <div class="text-center mb-8">
-          <h3 class="text-xl font-semibold mb-4">Popular Tags</h3>
+        <div data-reveal class="opacity-0 translate-y-6 text-center">
+          <h3 class="text-xl font-semibold mb-2 text-white">Explore by technology</h3>
+          <p class="text-gray-400 text-sm mb-6 max-w-md mx-auto">Click a tag to filter projects by tech stack.</p>
           <div class="flex flex-wrap gap-2 justify-center" id="tag-filters">
             <!-- Tags will be dynamically generated -->
           </div>
@@ -121,11 +126,11 @@
     </section>
 
     <!-- CTA -->
-    <section class="py-20 bg-black" aria-label="Call to action">
+    <section class="py-24 bg-black" aria-label="Call to action">
       <div class="container-pro">
-        <div class="glass rounded-2xl p-8 max-w-2xl mx-auto text-center">
-          <h3 class="text-2xl font-bold mb-3">Interested in working together?</h3>
-          <p class="text-gray-300 mb-6">Let's discuss your project and explore how we can bring your ideas to life.</p>
+        <div data-reveal class="opacity-0 translate-y-6 glass-professional rounded-2xl p-10 max-w-2xl mx-auto text-center border border-white/10">
+          <h3 class="text-2xl sm:text-3xl font-bold mb-3">Interested in working together?</h3>
+          <p class="text-gray-300 mb-8 text-lg">Let's discuss your project and explore how we can bring your ideas to life.</p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/pages/contact.html" class="btn-primary">Get in touch</a>
             <a href="/pages/about.html" class="btn-secondary">Learn more about me</a>

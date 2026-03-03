@@ -19,23 +19,27 @@
     <meta name="twitter:image" content="/favicon.svg" />
     <!-- Canonical URL -->
     <link rel="canonical" href="https://hamzaarya.dev/blog" />
+    <!-- Performance hints -->
+    <link rel="preload" href="/src/styles/main.css" as="style" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preload" href="/src/scripts/main.js" as="script" />
   </head>
   <body class="bg-gray-900 text-gray-100">
     <!-- Simple header (brand + quick links) -->
     {{> header}}
 
     <!-- Breadcrumb / navigation path -->
-    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
-      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
-        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60 backdrop-blur-sm">
+      <ol class="container-pro flex items-center gap-2 py-3.5 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white transition-colors duration-200">Home</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </li>
-        <li aria-current="page" class="text-white">Blog</li>
+        <li aria-current="page" class="text-white font-medium">Blog</li>
       </ol>
     </nav>
 
-    <section id="top" class="relative py-20 overflow-hidden bg-black text-white">
+    <section id="top" class="relative py-24 overflow-hidden bg-black text-white" aria-label="Blog introduction">
       <!-- Professional animated background -->
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
         <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
@@ -47,24 +51,30 @@
 
       <div class="container-pro relative z-20">
         <div class="max-w-5xl mx-auto text-center">
-          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight">Blog</h1>
-          <p class="text-white/90 text-xl mt-4">Tutorials, case studies, and engineering notes.</p>
-          <div class="glass rounded-2xl p-4 mt-8">
-            <input class="input" type="search" placeholder="Search articles…" aria-label="Search articles" />
-          </div>
-          <div class="hero-rotator mt-4 text-white/80 text-sm" data-allow-motion>
-            <span>Performance</span>
-            <span>Architecture</span>
-            <span>Frontend</span>
+          <div data-reveal class="opacity-0 translate-y-6">
+            <div class="glass-professional rounded-full px-5 py-2 inline-flex items-center gap-2 w-max mb-6">
+              <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse glow-professional"></span>
+              <span class="text-xs tracking-wide uppercase text-white/90 font-medium">Articles & Insights</span>
+            </div>
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight">Blog</h1>
+            <p class="text-white/90 text-xl mt-4">Tutorials, case studies, and engineering notes.</p>
+            <div class="glass-professional rounded-2xl p-4 mt-8 max-w-xl mx-auto border border-white/10">
+              <input class="input w-full" type="search" placeholder="Search articles…" aria-label="Search articles" />
+            </div>
+            <div class="hero-rotator mt-4 text-white/80 text-sm" data-allow-motion>
+              <span>Performance</span>
+              <span>Architecture</span>
+              <span>Frontend</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Blog Filters -->
-    <section class="py-8 bg-gray-900 border-b border-white/10">
+    <section class="py-8 bg-gray-900 border-b border-white/10 sticky top-14 z-30 backdrop-blur-sm">
       <div class="container-pro">
-        <div class="flex flex-wrap gap-4 justify-center" id="blog-filters">
+        <div class="flex flex-wrap gap-3 justify-center" id="blog-filters">
           <button class="blog-filter-btn active" data-category="all">All Posts</button>
           <button class="blog-filter-btn" data-category="Performance">Performance</button>
           <button class="blog-filter-btn" data-category="React">React</button>
@@ -77,20 +87,30 @@
     </section>
 
     <!-- Blog content -->
-    <section class="py-24 bg-gray-900">
+    <section class="py-24 bg-gray-900" aria-label="Blog posts">
       <div class="container-pro">
         <div id="blog-content" class="max-w-4xl mx-auto">
           <!-- Blog posts will be rendered here -->
+        </div>
+        <div id="blog-empty" class="hidden text-center py-20">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/5 border border-white/10 mb-6">
+            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <p class="text-gray-400 text-lg font-medium">No articles match your search.</p>
+          <p class="text-gray-500 text-sm mt-2">Try a different filter or search term.</p>
         </div>
       </div>
     </section>
 
     <!-- Newsletter Signup -->
-    <section class="py-20 bg-black">
+    <section class="py-24 bg-black" aria-label="Newsletter signup">
       <div class="container-pro">
-        <div class="glass rounded-2xl p-8 max-w-2xl mx-auto text-center">
-          <h3 class="text-2xl font-bold mb-3">Stay Updated</h3>
-          <p class="text-gray-300 mb-6">Get the latest articles and insights delivered to your inbox.</p>
+        <div data-reveal class="opacity-0 translate-y-6 glass-professional rounded-2xl p-10 max-w-2xl mx-auto text-center border border-white/10">
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-blue-500/20 border border-blue-500/30 mb-6">
+            <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <h3 class="text-2xl sm:text-3xl font-bold mb-3">Stay Updated</h3>
+          <p class="text-gray-300 mb-8 text-lg">Get the latest articles and insights delivered to your inbox.</p>
           <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" data-newsletter>
             <input 
               type="email" 
@@ -100,7 +120,7 @@
             />
             <button type="submit" class="btn-primary">Subscribe</button>
           </form>
-          <p class="text-xs text-gray-400 mt-4">No spam, unsubscribe at any time.</p>
+          <p class="text-xs text-gray-400 mt-6">No spam, unsubscribe at any time.</p>
         </div>
       </div>
     </section>

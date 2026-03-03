@@ -1,6 +1,5 @@
 # Dependencies
 node_modules/
-**/node_modules/
 
 # Production build
 dist/
@@ -44,7 +43,3 @@ lighthouse-report.json
 *.backup
 *.bak
 *.tmp
-
-
-/dist/
-/node_modules/

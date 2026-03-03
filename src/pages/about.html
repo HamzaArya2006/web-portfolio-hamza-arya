@@ -20,18 +20,22 @@
     <meta name="twitter:image" content="/favicon.svg" />
     <!-- Canonical URL -->
     <link rel="canonical" href="https://hamzaarya.dev/about" />
+    <!-- Performance hints -->
+    <link rel="preload" href="/src/styles/main.css" as="style" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preload" href="/src/scripts/main.js" as="script" />
   </head>
   <body class="bg-gray-900 text-gray-100">
     {{> header}}
 
     <!-- Breadcrumb / navigation path -->
-    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
-      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
-        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60 backdrop-blur-sm">
+      <ol class="container-pro flex items-center gap-2 py-3.5 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white transition-colors duration-200">Home</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </li>
-        <li aria-current="page" class="text-white">About</li>
+        <li aria-current="page" class="text-white font-medium">About</li>
       </ol>
     </nav>
 
@@ -156,29 +160,43 @@
     </section>
 
     <!-- Values strip -->
-    <section class="py-16 bg-gradient-to-b from-gray-900 to-black text-white">
-      <div class="container-pro grid gap-6 sm:grid-cols-3">
-        <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
-          <p class="text-sm text-white/70">Quality</p>
-          <p class="mt-1 font-semibold">Production‑grade standards</p>
-        </div>
-        <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
-          <p class="text-sm text-white/70">Delivery</p>
-          <p class="mt-1 font-semibold">Fast without compromise</p>
-        </div>
-        <div data-reveal class="opacity-0 translate-y-6 glass rounded-xl p-6">
-          <p class="text-sm text-white/70">Communication</p>
-          <p class="mt-1 font-semibold">Clear and proactive</p>
+    <section class="py-20 bg-gradient-to-b from-gray-900 to-black text-white">
+      <div class="container-pro">
+        <h2 class="text-center text-2xl font-bold mb-12">
+          What I <span class="text-gradient">stand for</span>
+        </h2>
+        <div class="grid gap-6 sm:grid-cols-3">
+          <div data-reveal class="opacity-0 translate-y-6 glass-professional rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <p class="text-sm text-white/70 uppercase tracking-wider">Quality</p>
+            <p class="mt-1 font-semibold text-lg">Production‑grade standards</p>
+          </div>
+          <div data-reveal class="opacity-0 translate-y-6 glass-professional rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <p class="text-sm text-white/70 uppercase tracking-wider">Delivery</p>
+            <p class="mt-1 font-semibold text-lg">Fast without compromise</p>
+          </div>
+          <div data-reveal class="opacity-0 translate-y-6 glass-professional rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300">
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            </div>
+            <p class="text-sm text-white/70 uppercase tracking-wider">Communication</p>
+            <p class="mt-1 font-semibold text-lg">Clear and proactive</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- CTA -->
-    <section class="py-20 bg-black">
+    <section class="py-24 bg-black">
       <div class="container-pro">
-        <div class="glass rounded-2xl p-8 max-w-2xl mx-auto text-center">
-          <h3 class="text-2xl font-bold mb-3">Ready to collaborate?</h3>
-          <p class="text-gray-300 mb-6">Let's discuss your goals and craft a plan to ship impactfully.</p>
+        <div data-reveal class="opacity-0 translate-y-6 glass-professional rounded-2xl p-10 max-w-2xl mx-auto text-center border border-white/10">
+          <h3 class="text-2xl sm:text-3xl font-bold mb-3">Ready to collaborate?</h3>
+          <p class="text-gray-300 mb-8 text-lg">Let's discuss your goals and craft a plan to ship impactfully.</p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/pages/contact.html" class="btn-primary">Get in touch</a>
             <a href="/index.html#projects" class="btn-secondary">View my work</a>

@@ -34,7 +34,7 @@
     <link rel="canonical" href="https://hamzaarya.dev/" />
     <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
-    <link rel="modulepreload" href="/assets/main-B_TntkDe.js" />
+    <link rel="modulepreload" href="/assets/main-CxIt_PPM.js" />
 
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
@@ -157,12 +157,12 @@
       href="/assets/hero-vscode-bg-BkyIFd_H.svg"
       fetchpriority="high"
     />
-    <script type="module" crossorigin src="/assets/modules-content-Bjissd84.js"></script>
-    <script type="module" crossorigin src="/assets/modules-core-Cj-3j_4n.js"></script>
-    <script type="module" crossorigin src="/assets/main-CPu3sNLM.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/main-DcFcjcwl.css">
+    <script type="module" crossorigin src="/assets/modules-content-CoviM3jW.js"></script>
+    <script type="module" crossorigin src="/assets/modules-core-BfOFD8Z3.js"></script>
+    <script type="module" crossorigin src="/assets/main-9VwxFXew.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/main-CitvgMja.css">
   </head>
-  <body class="bg-gray-900 text-gray-100 page-intro-init">
+  <body class="bg-black text-gray-100 page-intro-init">
     <style>
       @media (prefers-reduced-motion: reduce) {
         *,
@@ -205,7 +205,7 @@
         >
           <div class="flex items-center gap-6">
             <a
-              href="index.html"
+              href="/index.html"
               class="flex items-center gap-2 font-semibold brand-logo"
             >
               <span
@@ -249,7 +249,7 @@
                   class="nav-glass absolute left-0 top-full z-50 mt-2 w-56 card p-2 opacity-0 translate-y-1 transition-all duration-200 ease-out group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 focus-within:visible focus-within:opacity-100 focus-within:translate-y-0"
                   role="menu"
                 >
-                  <a href="#projects" class="nav-link w-full" role="menuitem"
+                  <a href="/pages/projects.html" class="nav-link w-full" role="menuitem"
                     >Projects</a
                   >
                   <a
@@ -273,6 +273,7 @@
                 </div>
               </div>
               <a href="/pages/services.html" class="nav-link">Services</a>
+              <a href="/pages/shop.html" class="nav-link">Shop</a>
               <a href="/pages/contact.html" class="nav-link">Contact</a>
             </div>
           </div>
@@ -356,7 +357,7 @@
               </svg>
             </button>
             <div class="ml-3 mt-1 hidden flex-col" data-submenu>
-              <a href="#projects" class="nav-link">Projects</a>
+              <a href="/pages/projects.html" class="nav-link">Projects</a>
               <a href="#testimonials" class="nav-link">Testimonials</a>
               <a href="/pages/case-studies.html" class="nav-link"
                 >Case Studies</a
@@ -408,7 +409,7 @@
       <!-- Hero -->
         <section
           id="top"
-          class="relative min-h-[92vh] flex items-center overflow-hidden bg-black text-white hero-anim-off hero-pro"
+          class="relative min-h-[92vh] flex items-center overflow-hidden bg-black text-white hero-anim-off hero-pro bg-grid"
           aria-label="Hero introduction"
         >
           <!-- VS Code Window Background -->
@@ -426,8 +427,8 @@
               class="opacity-10"
               style="width: 100%; height: 100%"
               decoding="async"
-              loading="lazy"
-              fetchpriority="low"
+              loading="eager"
+              fetchpriority="high"
             />
           </div>
 
@@ -1541,6 +1542,44 @@
         </div>
       </section>
 
+      <!-- Skills -->
+      <section
+        id="skills"
+        class="py-24 bg-black relative overflow-hidden cv-auto"
+        aria-labelledby="skills-heading"
+      >
+        <!-- Background decoration -->
+        <div
+          class="absolute inset-0 bg-grid opacity-20"
+          data-parallax="0.02"
+        ></div>
+        <div
+          class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"
+          data-parallax="0.05"
+        ></div>
+        <div
+          class="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"
+          data-parallax="0.08"
+        ></div>
+
+        <div class="container-pro relative">
+          <div class="text-center mb-16">
+            <h2 id="skills-heading" class="text-4xl font-bold mb-4">
+              Technical <span class="text-gradient">Skills</span>
+            </h2>
+            <p class="text-gray-300 text-lg max-w-2xl mx-auto">
+              A modern full‑stack toolkit used actively in recent projects, from frontend to backend and infrastructure.
+            </p>
+          </div>
+          <div
+            id="skills-container"
+            class="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
+          >
+            <!-- Skills will be rendered here -->
+          </div>
+        </div>
+      </section>
+
       <!-- Projects -->
       <section
         id="projects"
@@ -1584,21 +1623,21 @@
                 <span>All Projects</span>
                 <span class="filter-count" id="count-all">0</span>
               </button>
-              <button data-filter="web" class="project-filter-btn">
-                <span>Web Apps</span>
-                <span class="filter-count" id="count-web">0</span>
+              <button data-filter="client" class="project-filter-btn">
+                <span>Client Work</span>
+                <span class="filter-count" id="count-client">0</span>
               </button>
-              <button data-filter="saas" class="project-filter-btn">
-                <span>SaaS Platforms</span>
-                <span class="filter-count" id="count-saas">0</span>
+              <button data-filter="ecommerce" class="project-filter-btn">
+                <span>E‑commerce & Catalog</span>
+                <span class="filter-count" id="count-ecommerce">0</span>
               </button>
-              <button data-filter="commerce" class="project-filter-btn">
-                <span>E-commerce</span>
-                <span class="filter-count" id="count-commerce">0</span>
+              <button data-filter="landing" class="project-filter-btn">
+                <span>Marketing & Landing</span>
+                <span class="filter-count" id="count-landing">0</span>
               </button>
-              <button data-filter="data" class="project-filter-btn">
-                <span>Data & Analytics</span>
-                <span class="filter-count" id="count-data">0</span>
+              <button data-filter="apps" class="project-filter-btn">
+                <span>App‑style UIs</span>
+                <span class="filter-count" id="count-apps">0</span>
               </button>
             </div>
             <div class="text-sm text-gray-400">
@@ -1614,8 +1653,10 @@
           <div
             id="projects-grid"
             class="projects-grid grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
-          ></div>
-
+          >
+            <p class="col-span-full text-gray-400 text-center py-8" id="projects-grid-placeholder">Loading projects…</p>
+          </div>
+ 
           <!-- View More Button -->
           <div class="text-center mt-16">
             <a href="#contact" class="btn-primary text-lg px-8 py-4">

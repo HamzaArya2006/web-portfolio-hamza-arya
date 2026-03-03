@@ -1,7 +1,10 @@
 import { notify } from './notifications.js';
 import { warn } from './logger.js';
 
-const PUBLIC_API_BASE = (import.meta.env.VITE_PUBLIC_API_URL || '').replace(/\/$/, '');
+// Safely read Vite-style env var even when not running through Vite
+const RAW_PUBLIC_API_URL =
+  (import.meta && import.meta.env && import.meta.env.VITE_PUBLIC_API_URL) || '';
+const PUBLIC_API_BASE = RAW_PUBLIC_API_URL.replace(/\/$/, '');
 
 // Basic HTML sanitizer to prevent XSS attacks
 // Note: For production, consider using DOMPurify library (npm install dompurify) for more robust sanitization
@@ -48,6 +51,13 @@ let applied = false;
 
 export async function applySiteCustomizations() {
   if (applied) return;
+  // If no API base is configured, skip remote fetch and rely on defaults
+  if (!PUBLIC_API_BASE) {
+    if (import.meta && import.meta.env && import.meta.env.DEV) {
+      warn('[customizations] No PUBLIC_API_URL set; using default values.');
+    }
+    return;
+  }
   try {
     const response = await fetch(`${PUBLIC_API_BASE}/api/public/customizations`, { cache: 'no-store' });
     if (!response.ok) throw new Error('Failed to load customizations');

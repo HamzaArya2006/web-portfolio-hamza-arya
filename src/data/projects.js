@@ -1,345 +1,209 @@
 export const projects = [
   {
-    "id": "ecommerce-analytics-dashboard",
-    "title": "E‑commerce Analytics Dashboard",
-    "slug": "ecommerce-analytics-dashboard",
-    "description": "Real-time analytics platform that increased checkout conversion by 18% through optimized user flows and intelligent caching strategies.",
-    "role": "Full-Stack Developer",
-    "stack": [
-      "React",
-      "Node.js",
-      "PostgreSQL",
-      "Redis",
-      "Chart.js"
-    ],
-    "tags": [
-      "SaaS",
-      "Analytics",
-      "Dashboard",
-      "Real-time"
-    ],
-    "tech": "React • Node.js • PostgreSQL • Redis • Chart.js",
-    "image": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop",
-    "images": [
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"
-    ],
-    "links": {
-      "live": "https://analytics-demo.hamzaarya.dev",
-      "code": "https://github.com/hamza/ecommerce-analytics"
-    },
-    "category": "saas",
-    "metrics": {
-      "conversion": "+18%",
-      "performance": "95/100",
-      "users": "10K+"
-    },
-    "features": [
-      "Real-time dashboards",
-      "Custom reporting",
-      "A/B testing",
-      "Mobile responsive"
-    ],
-    "duration": "6 weeks",
-    "client": "TechFlow Solutions",
-    "order_index": 0,
-    "is_featured": false
-  },
-  {
-    "id": "b2b-saas-platform",
-    "title": "B2B SaaS Platform",
-    "slug": "b2b-saas-platform",
-    "description": "Comprehensive project management platform that reduced client onboarding time by 40% with intuitive guided tours and comprehensive API documentation.",
-    "role": "Lead Full-Stack Developer",
-    "stack": [
-      "React",
-      "Express",
-      "PostgreSQL",
-      "Stripe",
-      "Docker"
-    ],
-    "tags": [
-      "SaaS",
-      "B2B",
-      "Project Management",
-      "API"
-    ],
-    "tech": "React • Express • PostgreSQL • Stripe • Docker",
-    "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop",
-    "images": [
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop"
-    ],
-    "links": {
-      "live": "https://saas-platform.hamzaarya.dev",
-      "code": "https://github.com/hamza/b2b-saas-platform"
-    },
-    "category": "saas",
-    "metrics": {
-      "onboarding": "-40%",
-      "satisfaction": "4.8/5",
-      "retention": "92%"
-    },
-    "features": [
-      "Team collaboration",
-      "Project tracking",
-      "Payment integration",
-      "API documentation"
-    ],
-    "duration": "12 weeks",
-    "client": "CloudScale Inc."
-  },
-  {
-    "id": "local-services-website",
-    "title": "Local Services Website",
-    "slug": "local-services-website",
-    "description": "High-converting local business website that boosted qualified leads by 2.3× through performance optimization and strategic local SEO implementation.",
+    "id": "farah-gostar-solar-website",
+    "title": "Farah Gostar – Solar Solutions in Afghanistan",
+    "slug": "farah-gostar-solar-afghanistan",
+    "description": "Production marketing and product catalog website for a leading solar energy company in Afghanistan, with shop-style product listings that feel similar to an e-commerce experience.",
     "role": "Frontend Developer",
     "stack": [
-      "Vite",
-      "Tailwind CSS",
-      "Netlify",
-      "Google Analytics"
+      "HTML",
+      "CSS",
+      "JavaScript"
     ],
     "tags": [
       "Web",
+      "Business Website",
+      "Multilingual",
       "SEO",
-      "Marketing",
-      "Performance"
+      "E-commerce"
     ],
-    "tech": "Vite • Tailwind CSS • Netlify • Google Analytics",
-    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop",
+    "tech": "HTML • CSS • JavaScript • Multilingual • E-commerce-style catalog",
+    "image": "/src/assets/img/projects/farah-gostar-home.png",
     "images": [
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop"
+      "/src/assets/img/projects/farah-gostar-home.png"
     ],
     "links": {
-      "live": "https://localservices.hamzaarya.dev",
-      "code": "https://github.com/hamza/local-services-site"
+      "live": "https://farahgostar.com",
+      "code": "https://github.com/HamzaArya2006/web-fgc-website"
     },
-    "category": "web",
     "metrics": {
-      "leads": "+230%",
-      "speed": "98/100",
-      "seo": "95/100"
+      "years_experience": "25+",
+      "projects": "1000+",
+      "provinces_served": "34"
     },
     "features": [
-      "Local SEO",
-      "Contact forms",
-      "Service booking",
-      "Mobile-first design"
+      "Multilingual support (English, Dari, Pashto, Chinese, Arabic, Spanish, Turkish)",
+      "Detailed service and product pages for solar solutions",
+      "Shop-style product and project listings similar to an e-commerce site",
+      "Projects, testimonials, and FAQ sections to build trust",
+      "Responsive design optimized for desktop and mobile",
+      "Multiple contact options via phone, WhatsApp, email, and forms"
     ],
     "duration": "3 weeks",
-    "client": "Local Business Co."
+    "client": "Farah Gostar Co. Ltd"
   },
   {
-    "id": "headless-commerce-storefront",
-    "title": "Headless Commerce Storefront",
-    "slug": "headless-commerce-storefront",
-    "description": "Lightning-fast e-commerce platform with SSR and CDN caching delivering sub-second product pages even under peak traffic loads.",
-    "role": "Full-Stack Developer",
+    "id": "ptn-energy-solutions-website",
+    "title": "PTN – Power Trade National Website",
+    "slug": "ptn-energy-solutions-website",
+    "description": "WordPress-based site for Power Trade National Co. Ltd with product catalog and shop-style pages for solar, irrigation, and power products, alongside ongoing maintenance and design assistance.",
+    "role": "WordPress Maintenance & Design Assistant",
     "stack": [
-      "Next.js",
-      "Stripe",
-      "Cloudflare",
-      "Sanity CMS"
-    ],
-    "tags": [
-      "E-commerce",
-      "Headless",
-      "Performance",
-      "SSR"
-    ],
-    "tech": "Next.js • Stripe • Cloudflare • Sanity CMS",
-    "image": "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop",
-    "images": [
-      "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop"
-    ],
-    "links": {
-      "live": "https://storefront.hamzaarya.dev",
-      "code": "https://github.com/hamza/headless-commerce"
-    },
-    "category": "commerce",
-    "metrics": {
-      "speed": "0.8s",
-      "conversion": "+25%",
-      "uptime": "99.9%"
-    },
-    "features": [
-      "Headless CMS",
-      "Payment processing",
-      "Inventory management",
-      "Order tracking"
-    ],
-    "duration": "8 weeks",
-    "client": "RetailTech"
-  },
-  {
-    "id": "analytics-etl-pipeline",
-    "title": "Analytics ETL Pipeline",
-    "slug": "analytics-etl-pipeline",
-    "description": "Automated data processing pipeline that handles nightly ETL operations into data warehouse with comprehensive quality checks and monitoring.",
-    "role": "Backend/Data Engineer",
-    "stack": [
-      "Node.js",
-      "Apache Airflow",
-      "BigQuery",
-      "Python"
-    ],
-    "tags": [
-      "Data",
-      "ETL",
-      "Analytics",
-      "Backend"
-    ],
-    "tech": "Node.js • Apache Airflow • BigQuery • Python",
-    "image": "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=1200&auto=format&fit=crop",
-    "images": [
-      "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=1200&auto=format&fit=crop"
-    ],
-    "links": {
-      "live": "https://etl-dashboard.hamzaarya.dev",
-      "code": "https://github.com/hamza/analytics-etl"
-    },
-    "category": "data",
-    "metrics": {
-      "processing": "1M+ rows/day",
-      "accuracy": "99.8%",
-      "latency": "&lt;5min"
-    },
-    "features": [
-      "Data validation",
-      "Error handling",
-      "Monitoring",
-      "Scalable architecture"
-    ],
-    "duration": "4 weeks",
-    "client": "DataCorp Analytics"
-  },
-  {
-    "id": "marketing-microsite-engine",
-    "title": "Marketing Microsite Engine",
-    "slug": "marketing-microsite-engine",
-    "description": "Rapid deployment system that launched multi-region marketing microsites with a flexible templating system in just 1 week.",
-    "role": "Full-Stack Developer",
-    "stack": [
-      "Vite",
-      "Tailwind CSS",
-      "Cloudflare Pages",
-      "Netlify Forms"
+      "WordPress",
+      "PHP",
+      "Elementor / Theme Builder"
     ],
     "tags": [
       "Web",
-      "Marketing",
-      "Microsites",
-      "Templates"
+      "WordPress",
+      "Maintenance",
+      "Design",
+      "E-commerce"
     ],
-    "tech": "Vite • Tailwind CSS • Cloudflare Pages • Netlify Forms",
-    "image": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=1200&auto=format&fit=crop",
+    "tech": "WordPress • PHP • Elementor / Theme Builder • E-commerce-style catalog",
+    "image": "https://ptn.com.af/wp-content/uploads/2026/02/8000W-1024x1024.jpg",
     "images": [
-      "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=1200&auto=format&fit=crop"
+      "https://ptn.com.af/wp-content/uploads/2026/02/8000W-1024x1024.jpg"
     ],
     "links": {
-      "live": "https://microsites.hamzaarya.dev",
-      "code": "https://github.com/hamza/microsite-engine"
+      "live": "https://ptn.com.af",
+      "code": "#"
+    },
+    "metrics": {
+      "availability": "24/7",
+      "focus": "Solar & irrigation solutions"
+    },
+    "features": [
+      "Shop-style catalog for solar panels, batteries, inverters, UPS systems, and irrigation products",
+      "Service and product sections tailored for Afghan residential and industrial clients",
+      "Ongoing WordPress maintenance and content/design assistance",
+      "Contact and quick inquiry flows optimized for leads",
+      "Built on WordPress with theme customization and plugin configuration"
+    ],
+    "duration": "Ongoing",
+    "client": "Power Trade National Co. Ltd"
+  },
+  {
+    "id": "nexus-coffee-shop-landing",
+    "title": "Nexus Coffee – Artisan Coffee Shop Landing Page",
+    "slug": "nexus-coffee-shop-landing",
+    "description": "Single-page marketing site for a modern coffee shop brand, highlighting signature drinks, social proof, and calls-to-action to drive online orders and signups.",
+    "role": "Frontend Developer",
+    "stack": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "tags": [
+      "Web",
+      "Landing Page",
+      "UI Design"
+    ],
+    "tech": "HTML • CSS • JavaScript",
+    "image": "https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop",
+    "images": [
+      "https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "links": {
+      "live": "https://sample-coffeeshop.netlify.app/",
+      "code": "https://github.com/HamzaArya2006/web-coffee-shop"
     },
     "category": "web",
     "metrics": {
-      "deployment": "1 week",
-      "sites": "15+",
-      "performance": "100/100"
+      "customers": "10,000+",
+      "locations": "5",
+      "rating": "4.9/5"
     },
     "features": [
-      "Template system",
-      "Multi-region",
-      "Form handling",
-      "Analytics integration"
+      "Hero section focused on premium coffee experience and clear primary CTA",
+      "Why-us section explaining quality, passion, and convenient locations",
+      "Signature products grid with pricing, ratings, and add-to-cart style buttons",
+      "Testimonial section with highlighted customer reviews and social proof",
+      "Stats and awards section to build trust and brand authority",
+      "Newsletter signup to capture leads and keep customers engaged"
+    ],
+    "duration": "2 weeks",
+    "client": "Nexus Coffee (Sample Project)"
+  },
+  {
+    "id": "appstore-discovery-platform",
+    "title": "AppStore – Modern App Discovery Platform",
+    "slug": "appstore-discovery-platform",
+    "description": "Landing experience for a modern app discovery platform with featured apps, rich categories, and trending sections to help users find the right apps quickly.",
+    "role": "Frontend Developer",
+    "stack": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "tags": [
+      "Web",
+      "Landing Page",
+      "App Store UI"
+    ],
+    "tech": "HTML • CSS • JavaScript",
+    "image": "https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=1200&auto=format&fit=crop",
+    "images": [
+      "https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "links": {
+      "live": "https://sample-online-appstore.netlify.app/",
+      "code": "#"
+    },
+    "category": "web",
+    "metrics": {
+      "downloads": "12.3M+",
+      "apps": "10,000",
+      "featured": "512"
+    },
+    "features": [
+      "Hero section describing the intelligent app discovery engine with primary CTAs",
+      "Featured apps grid with ratings, downloads, pricing, and detail links",
+      "Browse-by-category section with many app categories and app counts",
+      "Trending apps section with ranking, reviews, downloads, and quick actions",
+      "Trust metrics and platform statistics for social proof",
+      "Security, performance, and global availability highlights"
+    ],
+    "duration": "2 weeks",
+    "client": "Sample AppStore Project"
+  },
+  {
+    "id": "simple-weather-app",
+    "title": "Weather App – City Weather Lookup",
+    "slug": "simple-weather-app",
+    "description": "Minimal weather application that lets users search for a city and see current conditions, temperature, humidity, wind speed, and a short forecast.",
+    "role": "Frontend Developer",
+    "stack": [
+      "HTML",
+      "CSS",
+      "JavaScript"
+    ],
+    "tags": [
+      "Web",
+      "Weather",
+      "API Integration"
+    ],
+    "tech": "HTML • CSS • JavaScript • Weather API",
+    "image": "https://images.unsplash.com/photo-1519692933481-e162a57d6721?q=80&w=1200&auto=format&fit=crop",
+    "images": [
+      "https://images.unsplash.com/photo-1519692933481-e162a57d6721?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "links": {
+      "live": "https://sample-weather-app1.netlify.app/",
+      "code": "#"
+    },
+    "category": "web",
+    "metrics": {
+      "default_location": "Jakarta",
+      "supports_search": "Yes"
+    },
+    "features": [
+      "Search interface to look up weather by city",
+      "Displays current temperature, conditions, humidity, and wind speed",
+      "Simple card-style layout focused on readability",
+      "Supports quick repeated searches to check multiple cities"
     ],
     "duration": "1 week",
-    "client": "Marketing Agency Pro"
-  },
-  {
-    "id": "real-time-chat-application",
-    "title": "Real-time Chat Application",
-    "slug": "real-time-chat-application",
-    "description": "Scalable chat platform with real-time messaging, file sharing, and video calls supporting thousands of concurrent users.",
-    "role": "Full-Stack Developer",
-    "stack": [
-      "React",
-      "Socket.io",
-      "Node.js",
-      "MongoDB",
-      "WebRTC"
-    ],
-    "tags": [
-      "SaaS",
-      "Real-time",
-      "WebSockets",
-      "Communication"
-    ],
-    "tech": "React • Socket.io • Node.js • MongoDB • WebRTC",
-    "image": "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?q=80&w=1200&auto=format&fit=crop",
-    "images": [
-      "https://images.unsplash.com/photo-1577563908411-5077b6dc7624?q=80&w=1200&auto=format&fit=crop"
-    ],
-    "links": {
-      "live": "https://chat-app.hamzaarya.dev",
-      "code": "https://github.com/hamza/realtime-chat"
-    },
-    "category": "saas",
-    "metrics": {
-      "users": "5K+ concurrent",
-      "latency": "&lt;100ms",
-      "uptime": "99.95%"
-    },
-    "features": [
-      "Real-time messaging",
-      "File sharing",
-      "Video calls",
-      "Group management"
-    ],
-    "duration": "10 weeks",
-    "client": "Communication Solutions"
-  },
-  {
-    "id": "ai-powered-content-generator",
-    "title": "AI-Powered Content Generator",
-    "slug": "ai-powered-content-generator",
-    "description": "Intelligent content creation platform that generates SEO-optimized articles and social media posts using advanced AI models.",
-    "role": "Full-Stack Developer",
-    "stack": [
-      "Next.js",
-      "OpenAI API",
-      "Prisma",
-      "PostgreSQL",
-      "Vercel"
-    ],
-    "tags": [
-      "SaaS",
-      "AI",
-      "Content",
-      "Automation"
-    ],
-    "tech": "Next.js • OpenAI API • Prisma • PostgreSQL • Vercel",
-    "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop",
-    "images": [
-      "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop"
-    ],
-    "links": {
-      "live": "https://ai-content.hamzaarya.dev",
-      "code": "https://github.com/hamza/ai-content-generator"
-    },
-    "category": "saas",
-    "metrics": {
-      "content": "1000+ articles",
-      "quality": "4.7/5",
-      "time_saved": "80%"
-    },
-    "features": [
-      "AI writing",
-      "SEO optimization",
-      "Content scheduling",
-      "Analytics"
-    ],
-    "duration": "8 weeks",
-    "client": "Content Marketing Co."
+    "client": "Sample Weather App Project"
   }
 ];
