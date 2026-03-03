@@ -211,7 +211,7 @@
               >
               <span>Hamza</span>
             </a>
-            <div class="hidden md:flex items-center gap-2 text-sm">
+            <div class="hidden lg:flex items-center gap-2 text-sm">
               <a href="/index.html" class="nav-link">Home</a>
               <!-- About dropdown -->
               <div class="relative group">
@@ -311,7 +311,7 @@
               <a href="/pages/contact.html" class="nav-link">Contact</a>
             </div>
           </div>
-          <div class="hidden md:flex items-center gap-2">
+          <div class="hidden lg:flex items-center gap-2">
             <a href="/pages/shop.html" aria-label="Shop" class="btn-minimal">
               <svg
                 width="18"
@@ -343,7 +343,7 @@
           </div>
           <button
             data-mobile-nav-toggle
-            class="md:hidden btn-ghost"
+            class="lg:hidden btn-ghost"
             aria-controls="mobile-menu"
             aria-expanded="false"
           >
@@ -356,49 +356,68 @@
         data-mobile-nav
         id="mobile-menu"
         data-open="false"
-        class="hidden md:hidden border-t border-white/10 bg-gray-900/80 backdrop-blur"
+        class="hidden lg:hidden fixed top-0 right-0 h-screen w-[250px] bg-gray-900/95 backdrop-blur border-l border-white/10 shadow-2xl z-40"
         role="navigation"
         aria-label="Mobile navigation"
       >
-        <div class="container-pro py-4 flex flex-col gap-3">
-          <a href="/pages/about.html" class="nav-link">About</a>
-          <a href="/pages/resume.html" class="nav-link">Resume</a>
-          <a href="/pages/uses.html" class="nav-link">Uses</a>
-          <div data-submenu-container>
-            <button
-              class="w-full flex items-center justify-between py-2"
-              data-submenu-toggle
-              aria-expanded="false"
-            >
-              <span>Work</span>
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
+        <div class="h-full py-6 px-4 pb-28 flex flex-col gap-4 overflow-y-auto">
+          <!-- Sidebar header -->
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span
+                class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-white text-sm font-semibold"
+                >H</span
               >
-                <path
-                  d="M6 9l6 6 6-6"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-            <div class="ml-3 mt-1 hidden flex-col" data-submenu>
-              <a href="/pages/projects.html" class="nav-link">Projects</a>
-              <a href="#testimonials" class="nav-link">Testimonials</a>
-              <a href="/pages/speaking.html" class="nav-link">Speaking</a>
+              <span class="font-semibold text-sm text-white/90">Navigation</span>
             </div>
+            <span class="text-[11px] uppercase tracking-wide text-gray-400"
+              >Browse</span
+            >
           </div>
-          <a href="/pages/blog.html" class="nav-link">Blog</a>
-          <a href="/pages/services.html" class="nav-link">Services</a>
-          <a href="/pages/contact.html" class="nav-link">Contact</a>
-          <div class="flex gap-3 pt-2">
-            <a href="/pages/shop.html" aria-label="Shop" class="btn-ghost">
+
+          <!-- Primary links -->
+          <div class="flex flex-col gap-1 pt-2 border-t border-white/10">
+            <a href="/pages/about.html" class="nav-link">About</a>
+            <a href="/pages/resume.html" class="nav-link">Resume</a>
+            <a href="/pages/uses.html" class="nav-link">Uses</a>
+            <div data-submenu-container>
+              <button
+                class="w-full flex items-center justify-between py-2 text-sm text-gray-100"
+                data-submenu-toggle
+                aria-expanded="false"
+              >
+                <span>Work</span>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M6 9l6 6 6-6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+              <div class="ml-3 mt-1 hidden flex-col" data-submenu>
+                <a href="/pages/projects.html" class="nav-link">Projects</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+                <a href="/pages/speaking.html" class="nav-link">Speaking</a>
+              </div>
+            </div>
+            <a href="/pages/blog.html" class="nav-link">Blog</a>
+            <a href="/pages/services.html" class="nav-link">Services</a>
+            <a href="/pages/contact.html" class="nav-link">Contact</a>
+          </div>
+
+          <!-- Actions pinned to bottom -->
+          <div class="mt-auto pt-4 border-t border-white/10 flex gap-3">
+            <a href="/pages/shop.html" aria-label="Shop" class="btn-ghost flex-1 justify-center">
               <svg
                 width="18"
                 height="18"
@@ -425,7 +444,9 @@
                 <circle cx="18" cy="20" r="1.5" fill="currentColor" />
               </svg>
             </a>
-            <a href="/pages/contact.html" class="btn-minimal">Hire Me</a>
+            <a href="/pages/contact.html" class="btn-minimal flex-1 justify-center">
+              Hire Me
+            </a>
           </div>
         </div>
       </div>
@@ -575,344 +596,7 @@
               </a>
             </div>
           </div>
-          <!-- Professional Development Visual -->
-          <div data-reveal class="opacity-0 translate-y-6 relative">
-            <div
-              class="glass-professional rounded-2xl p-8 h-96 sm:h-[28rem] lg:h-[32rem] hover-lift group glow-professional"
-            >
-              <!-- Modern portfolio dashboard SVG -->
-              <div class="h-full flex items-center justify-center p-3 sm:p-4">
-                <svg
-                  viewBox="0 0 480 360"
-                  class="w-full h-full max-w-lg"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <defs>
-                    <linearGradient
-                      id="hero-card-gradient"
-                      x1="0"
-                      y1="0"
-                      x2="1"
-                      y2="1"
-                    >
-                      <stop
-                        offset="0%"
-                        stop-color="#1d4ed8"
-                        stop-opacity="0.35"
-                      />
-                      <stop
-                        offset="50%"
-                        stop-color="#4f46e5"
-                        stop-opacity="0.18"
-                      />
-                      <stop
-                        offset="100%"
-                        stop-color="#0f172a"
-                        stop-opacity="0"
-                      />
-                    </linearGradient>
-                    <linearGradient
-                      id="hero-accent"
-                      x1="0"
-                      y1="0"
-                      x2="1"
-                      y2="0"
-                    >
-                      <stop offset="0%" stop-color="#38bdf8" />
-                      <stop offset="100%" stop-color="#8b5cf6" />
-                    </linearGradient>
-                  </defs>
-
-                  <rect
-                    x="10"
-                    y="10"
-                    width="460"
-                    height="340"
-                    rx="24"
-                    fill="#020617"
-                    stroke="rgba(148, 163, 184, 0.2)"
-                  />
-                  <rect
-                    x="20"
-                    y="20"
-                    width="440"
-                    height="320"
-                    rx="20"
-                    fill="url(#hero-card-gradient)"
-                    stroke="rgba(15, 23, 42, 0.9)"
-                  />
-
-                  <!-- Top bar -->
-                  <rect
-                    x="30"
-                    y="30"
-                    width="420"
-                    height="32"
-                    rx="16"
-                    fill="rgba(15,23,42,0.96)"
-                  />
-                  <circle cx="46" cy="46" r="4" fill="#ef4444" />
-                  <circle cx="60" cy="46" r="4" fill="#f97316" />
-                  <circle cx="74" cy="46" r="4" fill="#22c55e" />
-                  <rect
-                    x="100"
-                    y="38"
-                    width="90"
-                    height="16"
-                    rx="8"
-                    fill="rgba(15,23,42,0.9)"
-                  />
-                  <text
-                    x="145"
-                    y="50"
-                    text-anchor="middle"
-                    fill="rgba(148,163,184,0.95)"
-                    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-                    font-size="10"
-                  >
-                    portfolio.tsx
-                  </text>
-
-                  <!-- Left code block -->
-                  <rect
-                    x="32"
-                    y="72"
-                    width="230"
-                    height="176"
-                    rx="14"
-                    fill="rgba(15,23,42,0.96)"
-                  />
-                  <g
-                    font-family="monospace"
-                    font-size="9"
-                    fill="rgba(148,163,184,0.85)"
-                  >
-                    <text x="44" y="96">1</text>
-                    <text x="44" y="112">2</text>
-                    <text x="44" y="128">3</text>
-                    <text x="44" y="144">4</text>
-                    <text x="44" y="160">5</text>
-                    <text x="44" y="176">6</text>
-                    <text x="44" y="192">7</text>
-                    <text x="44" y="208">8</text>
-                  </g>
-                  <g font-family="monospace" font-size="10">
-                    <text x="66" y="96">
-                      <tspan fill="#38bdf8">export</tspan>
-                      <tspan fill="#e5e7eb">default</tspan>
-                      <tspan fill="#38bdf8">function</tspan>
-                      <tspan fill="#e5e7eb">Hero()</tspan>
-                    </text>
-                    <text x="66" y="112" fill="#e5e7eb">{`{`}</text>
-                    <text x="78" y="128">
-                      <tspan fill="#38bdf8">return</tspan>
-                      <tspan fill="#e5e7eb">&lt;</tspan>
-                      <tspan fill="#a855f7">Section</tspan>
-                      <tspan fill="#e5e7eb">&gt;</tspan>
-                    </text>
-                    <text x="90" y="144" fill="#e5e7eb">
-                      {" "}
-                      <tspan fill="#22c55e">&lt;Headline</tspan>
-                      <tspan fill="#e5e7eb">value=</tspan>
-                      <tspan fill="#fbbf24">"Ship faster"</tspan>
-                      <tspan fill="#22c55e">/&gt;</tspan>
-                    </text>
-                    <text x="90" y="160" fill="#e5e7eb">
-                      {" "}
-                      <tspan fill="#22c55e">&lt;CTA</tspan>
-                      <tspan fill="#e5e7eb">href=</tspan>
-                      <tspan fill="#fbbf24">"#projects"</tspan>
-                      <tspan fill="#22c55e">/&gt;</tspan>
-                    </text>
-                    <text x="78" y="176" fill="#e5e7eb">
-                      <tspan>&lt;/</tspan>
-                      <tspan fill="#a855f7">Section</tspan>
-                      <tspan>&gt;</tspan>
-                    </text>
-                    <text x="66" y="192" fill="#e5e7eb">{`}`}</text>
-                  </g>
-                  <rect
-                    x="32"
-                    y="72"
-                    width="230"
-                    height="176"
-                    rx="14"
-                    fill="url(#hero-accent)"
-                    opacity="0.08"
-                  />
-
-                  <!-- Right mini analytics card -->
-                  <rect
-                    x="262"
-                    y="72"
-                    width="186"
-                    height="100"
-                    rx="14"
-                    fill="rgba(15,23,42,0.96)"
-                  />
-                  <text
-                    x="276"
-                    y="94"
-                    fill="rgba(156,163,175,0.9)"
-                    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-                    font-size="10"
-                  >
-                    Project impact
-                  </text>
-                  <polyline
-                    points="278,120 298,128 318,118 338,130 358,110 378,116 398,104"
-                    fill="none"
-                    stroke="url(#hero-accent)"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                  <polyline
-                    points="278,136 298,142 318,136 338,144 358,132 378,138 398,130"
-                    fill="none"
-                    stroke="rgba(55,65,81,0.9)"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-                  <g fill="#38bdf8">
-                    <circle cx="278" cy="120" r="2" />
-                    <circle cx="318" cy="118" r="2" />
-                    <circle cx="358" cy="110" r="2.4" />
-                    <circle cx="398" cy="104" r="2" />
-                  </g>
-                  <rect
-                    x="272"
-                    y="148"
-                    width="70"
-                    height="18"
-                    rx="9"
-                    fill="rgba(15,23,42,0.9)"
-                    stroke="rgba(34,197,94,0.5)"
-                    stroke-width="1"
-                  />
-                  <text
-                    x="307"
-                    y="161"
-                    text-anchor="middle"
-                    fill="#22c55e"
-                    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-                    font-size="10"
-                  >
-                    20+ launches
-                  </text>
-                  <rect
-                    x="350"
-                    y="148"
-                    width="86"
-                    height="18"
-                    rx="9"
-                    fill="rgba(15,23,42,0.9)"
-                    stroke="rgba(59,130,246,0.5)"
-                    stroke-width="1"
-                  />
-                  <text
-                    x="393"
-                    y="161"
-                    text-anchor="middle"
-                    fill="#60a5fa"
-                    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-                    font-size="10"
-                  >
-                    Core Web Vitals: A
-                  </text>
-
-                  <!-- Bottom tech stack pills -->
-                  <rect
-                    x="32"
-                    y="260"
-                    width="416"
-                    height="70"
-                    rx="16"
-                    fill="rgba(15,23,42,0.96)"
-                  />
-                  <text
-                    x="52"
-                    y="282"
-                    fill="rgba(156,163,175,0.95)"
-                    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-                    font-size="10"
-                  >
-                    Ship-ready stack
-                  </text>
-                  <g
-                    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
-                    font-size="10"
-                    fill="#e5e7eb"
-                  >
-                    <rect
-                      x="48"
-                      y="292"
-                      width="76"
-                      height="22"
-                      rx="11"
-                      fill="rgba(15,23,42,0.9)"
-                      stroke="rgba(59,130,246,0.6)"
-                      stroke-width="1"
-                    />
-                    <text x="86" y="306" text-anchor="middle">React</text>
-
-                    <rect
-                      x="140"
-                      y="292"
-                      width="84"
-                      height="22"
-                      rx="11"
-                      fill="rgba(15,23,42,0.9)"
-                      stroke="rgba(96,165,250,0.7)"
-                      stroke-width="1"
-                    />
-                    <text x="182" y="306" text-anchor="middle">
-                      Node &amp; API
-                    </text>
-
-                    <rect
-                      x="238"
-                      y="292"
-                      width="96"
-                      height="22"
-                      rx="11"
-                      fill="rgba(15,23,42,0.9)"
-                      stroke="rgba(52,211,153,0.7)"
-                      stroke-width="1"
-                    />
-                    <text x="286" y="306" text-anchor="middle">Postgres</text>
-
-                    <rect
-                      x="348"
-                      y="292"
-                      width="84"
-                      height="22"
-                      rx="11"
-                      fill="rgba(15,23,42,0.9)"
-                      stroke="rgba(129,140,248,0.7)"
-                      stroke-width="1"
-                    />
-                    <text x="390" y="306" text-anchor="middle">
-                      AWS &amp; CI/CD
-                    </text>
-                  </g>
-                </svg>
-              </div>
-            </div>
-
-            <!-- Enhanced floating elements -->
-            <div
-              data-parallax="0.12"
-              class="absolute -top-4 -right-4 w-6 h-6 rounded-full bg-blue-500/20 blur-sm animate-float"
-            ></div>
-            <div
-              data-parallax="0.09"
-              class="absolute -bottom-6 -left-6 w-4 h-4 rounded-full bg-indigo-500/20 blur-sm animate-bounce-slow"
-            ></div>
-            <div
-              data-parallax="0.07"
-              class="absolute top-1/4 -left-8 w-3 h-3 rounded-full bg-cyan-500/30 blur-sm animate-pulse"
-            ></div>
-          </div>
+          <!-- Professional Development Visual (intentionally minimal now) -->
         </div>
         <!-- Enhanced scroll cue -->
         <a
