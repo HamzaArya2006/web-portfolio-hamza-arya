@@ -38,7 +38,6 @@ web-portfolio-hamza-arya/
 ├─ index.html               # Landing page
 ├─ about.html               # About page
 ├─ blog.html                # Blog index
-├─ case-studies.html        # Case studies
 ├─ contact.html             # Contact page
 ├─ services.html            # Services page
 ├─ resume.html              # Resume page

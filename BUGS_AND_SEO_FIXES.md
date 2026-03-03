@@ -41,11 +41,11 @@
 - **Issues:**
   - URLs missing `/pages/` prefix and `.html` extension
   - Future date (`2025-10-10`) instead of current date
-  - Missing pages (open-source, speaking)
+  - Missing pages (speaking)
 - **Fixes:**
   - Updated all URLs to correct format: `/pages/about.html`, etc.
   - Updated `lastmod` to current date (`2025-01-27`)
-  - Added missing pages (open-source.html, speaking.html)
+  - Added missing page (speaking.html)
 - **Impact:** Better search engine indexing
 
 ## 🎨 Theme & Standards

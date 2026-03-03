@@ -21,8 +21,6 @@ export const RESUME = `${PAGES_BASE}/resume.html`;
 export const THANK_YOU = `${PAGES_BASE}/thank-you.html`;
 export const PRIVACY = `${PAGES_BASE}/privacy.html`;
 export const TERMS = `${PAGES_BASE}/terms.html`;
-export const CASE_STUDIES = `${PAGES_BASE}/case-studies.html`;
-export const OPEN_SOURCE = `${PAGES_BASE}/open-source.html`;
 export const SPEAKING = `${PAGES_BASE}/speaking.html`;
 
 /**

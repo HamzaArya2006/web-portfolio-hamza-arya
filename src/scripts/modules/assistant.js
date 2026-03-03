@@ -325,7 +325,7 @@ const WEBSITE_PAGES = {
   services: { name: "Services", url: "/pages/services.html", description: "Detailed service offerings" },
   contact: { name: "Contact", url: "/pages/contact.html", description: "Contact form and information" },
   resume: { name: "Resume", url: "/pages/resume.html", description: "Professional resume and experience" },
-  "case-studies": { name: "Case Studies", url: "/pages/case-studies.html", description: "Detailed project case studies" }
+  // "case-studies" page removed from navigation
 };
 
 // ============================================================================
@@ -405,7 +405,7 @@ const KNOWLEDGE_BASE = {
   projects: {
     patterns: ['project', 'portfolio', 'work', 'examples', 'showcase', 'built', 'what have you built', 'projects done'],
     responses: () => [
-      "Hamza has shipped **20+ production projects** across various domains:\n\n🚀 **SaaS Platforms**\n• B2B solutions\n• Analytics dashboards\n• Management systems\n\n🛒 **E-commerce Stores**\n• Custom online stores\n• Payment integrations\n• Inventory systems\n\n⚡ **Real-time Applications**\n• Chat applications\n• Live collaboration tools\n• WebSocket implementations\n\n📊 **Data & Analytics**\n• ETL pipelines\n• Dashboard visualizations\n• Reporting systems\n\n🎯 **Key Highlights:**\n• All projects achieve Core Web Vitals Grade A\n• Production-grade code quality\n• Measurable business impact\n\nCheck out the Projects section or visit /pages/projects.html for detailed case studies!",
+      "Hamza has shipped **20+ production projects** across various domains:\n\n🚀 **SaaS Platforms**\n• B2B solutions\n• Analytics dashboards\n• Management systems\n\n🛒 **E-commerce Stores**\n• Custom online stores\n• Payment integrations\n• Inventory systems\n\n⚡ **Real-time Applications**\n• Chat applications\n• Live collaboration tools\n• WebSocket implementations\n\n📊 **Data & Analytics**\n• ETL pipelines\n• Dashboard visualizations\n• Reporting systems\n\n🎯 **Key Highlights:**\n• All projects achieve Core Web Vitals Grade A\n• Production-grade code quality\n• Measurable business impact\n\nCheck out the Projects section or visit /pages/projects.html to explore the work!",
       "View featured projects in the Projects section. Each project includes:\n• Tech stack details\n• Challenges solved\n• Measurable results\n• Live demos (where available)\n\nHamza has worked on SaaS platforms, e-commerce stores, real-time apps, and data analytics solutions.",
       "Portfolio includes:\n\n• 20+ shipped projects\n• SaaS platforms\n• E-commerce solutions\n• Real-time applications\n• Data analytics dashboards\n• B2B solutions\n\nAll with Core Web Vitals Grade A performance! Visit /pages/projects.html for details."
     ]
@@ -446,7 +446,7 @@ const KNOWLEDGE_BASE = {
     patterns: ['blog', 'article', 'write', 'tutorial', 'learn', 'posts', 'content'],
     responses: () => [
       "Hamza writes about web development, architecture patterns, and best practices:\n\n📝 **Blog Topics:**\n• React Architecture Patterns\n• API Design Best Practices\n• Modern Web Performance\n• TypeScript Tips & Tricks\n• Docker Development Workflows\n• CSS Grid vs Flexbox\n• And much more!\n\n🔗 **Visit the blog:** /pages/blog.html\n\nEach article includes:\n• Practical examples\n• Code snippets\n• Real-world applications\n• Best practices\n\nCheck it out for technical insights and tutorials!",
-      "Visit the blog section at /pages/blog.html for technical articles, tutorials, and case studies on modern web development. Topics include React, TypeScript, performance, and more!",
+      "Visit the blog section at /pages/blog.html for technical articles, tutorials, and deep dives on modern web development. Topics include React, TypeScript, performance, and more!",
       "Blog covers:\n\n• React architecture\n• API design\n• Performance tips\n• TypeScript tricks\n• Docker workflows\n\nVisit /pages/blog.html!"
     ]
   },
@@ -454,7 +454,7 @@ const KNOWLEDGE_BASE = {
     patterns: ['tour', 'guide', 'show me around', 'navigate', 'walk me through', 'explore', 'where to go', 'what to see'],
     responses: () => [
       "I'd love to give you a tour! 🎯\n\nHere's what you can explore:\n\n🏠 **Homepage Sections:**\n• Hero - Introduction\n• Services - What's offered\n• About - Background\n• Projects - Portfolio\n• Testimonials - Client feedback\n• Contact - Get in touch\n\n📄 **Other Pages:**\n• About - Detailed info\n• Blog - Articles & tutorials\n• Projects - Full portfolio\n• Services - Detailed offerings\n• Contact - Contact form\n• Resume - Professional experience\n\nWould you like me to:\n• Scroll to a specific section?\n• Navigate to a page?\n• Tell you more about any area?\n\nJust ask!",
-      "Let me guide you around! The site has:\n\n**Main sections:** Hero, Services, About, Projects, Testimonials, Contact\n**Pages:** About, Blog, Projects, Services, Contact, Resume, Case Studies\n\nWhat would you like to explore? I can scroll to sections or navigate to pages!",
+      "Let me guide you around! The site has:\n\n**Main sections:** Hero, Services, About, Projects, Testimonials, Contact\n**Pages:** About, Blog, Projects, Services, Contact, Resume\n\nWhat would you like to explore? I can scroll to sections or navigate to pages!",
       "Tour time! 🚀\n\n**Sections:** #hero #services #about #projects #testimonials #contact\n**Pages:** /pages/about.html, /pages/blog.html, /pages/projects.html\n\nTell me where you want to go!"
     ]
   },
@@ -474,7 +474,7 @@ const KNOWLEDGE_BASE = {
         : '';
       
       return [
-        `I can help you with lots of things! 🎉\n\n💬 **Conversation:**\n• Answer questions about services, projects, skills\n• Have friendly, intelligent chats\n• Tell jokes and have fun\n• Remember our conversation context\n\n🗺️ **Navigation:**\n• Guide you around the website\n• Scroll to specific sections\n• Navigate to different pages\n• Smart suggestions based on your interests\n\n📚 **Information:**\n• Explain services and offerings in detail\n• Share project details and case studies\n• Provide contact information\n• Discuss tech stack and expertise\n• Context-aware responses\n\n🎤 **Voice Features:**\n• Natural text-to-speech with female voice\n• Voice input recognition\n• Hands-free interaction\n\n🎭 **Intelligence:**\n• Context-aware conversations\n• Smart follow-up suggestions\n• Learning from interactions\n• Personalized assistance${suggestions}\n\nWhat would you like to explore?`,
+        `I can help you with lots of things! 🎉\n\n💬 **Conversation:**\n• Answer questions about services, projects, skills\n• Have friendly, intelligent chats\n• Tell jokes and have fun\n• Remember our conversation context\n\n🗺️ **Navigation:**\n• Guide you around the website\n• Scroll to specific sections\n• Navigate to different pages\n• Smart suggestions based on your interests\n\n📚 **Information:**\n• Explain services and offerings in detail\n• Share project details and success stories\n• Provide contact information\n• Discuss tech stack and expertise\n• Context-aware responses\n\n🎤 **Voice Features:**\n• Natural text-to-speech with female voice\n• Voice input recognition\n• Hands-free interaction\n\n🎭 **Intelligence:**\n• Context-aware conversations\n• Smart follow-up suggestions\n• Learning from interactions\n• Personalized assistance${suggestions}\n\nWhat would you like to explore?`,
         `I'm Nova, and I'm here to help! 🤖\n\n**I can:**\n• Answer questions intelligently\n• Guide you around the site\n• Tell jokes and have fun\n• Navigate to any section\n• Use voice features\n• Remember our conversation\n• Provide smart suggestions\n\nJust ask me anything!`,
         `I'm your AI assistant Nova! Here's what I do:\n\n✨ **Smart Assistance:**\n• Context-aware responses\n• Intelligent navigation\n• Personalized help\n• Voice interaction\n• Learning from our chats\n\nWhat would you like to know?`
       ];
@@ -2180,7 +2180,7 @@ class AIAssistant {
     // Add relevant follow-ups based on category
     const followUps = {
       services: "\n\nWould you like to know more about any specific service, or see examples of previous work?",
-      projects: "\n\nI can show you detailed case studies or help you navigate to the projects page. What interests you most?",
+      projects: "\n\nI can help you explore detailed project breakdowns or navigate to the projects page. What interests you most?",
       contact: "\n\nIs there anything specific you'd like to discuss? I can help you prepare your message!",
       skills: "\n\nWould you like to see how these skills are applied in real projects?",
       pricing: "\n\nI can help you understand what factors influence pricing, or connect you directly with Hamza for a personalized quote."
@@ -2981,7 +2981,7 @@ services:
       },
       {
         q: "What kind of projects has Hamza worked on?",
-        a: "Diverse project portfolio:\n• **SaaS Platforms:** B2B solutions, analytics dashboards, management systems\n• **E-commerce:** Custom online stores, payment integrations, inventory systems\n• **Real-time Apps:** Chat applications, live collaboration tools, WebSocket implementations\n• **Data & Analytics:** ETL pipelines, dashboard visualizations, reporting systems\nCheck the Projects section for detailed case studies!"
+        a: "Diverse project portfolio:\n• **SaaS Platforms:** B2B solutions, analytics dashboards, management systems\n• **E-commerce:** Custom online stores, payment integrations, inventory systems\n• **Real-time Apps:** Chat applications, live collaboration tools, WebSocket implementations\n• **Data & Analytics:** ETL pipelines, dashboard visualizations, reporting systems\nCheck the Projects section for detailed project stories!"
       },
       {
         q: "How do I get a quote for a project?",

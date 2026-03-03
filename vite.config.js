@@ -32,7 +32,6 @@ function getPageInputs() {
     main: resolve(__dirname, 'index.html'),
     'pages/about': resolve(__dirname, 'src/pages/about.html'),
     'pages/blog': resolve(__dirname, 'src/pages/blog.html'),
-    'pages/case-studies': resolve(__dirname, 'src/pages/case-studies.html'),
     'pages/contact': resolve(__dirname, 'src/pages/contact.html'),
     'pages/projects': resolve(__dirname, 'src/pages/projects.html'),
     'pages/services': resolve(__dirname, 'src/pages/services.html'),
@@ -41,7 +40,6 @@ function getPageInputs() {
     'pages/thank-you': resolve(__dirname, 'src/pages/thank-you.html'),
     'pages/privacy': resolve(__dirname, 'src/pages/privacy.html'),
     'pages/terms': resolve(__dirname, 'src/pages/terms.html'),
-    'pages/open-source': resolve(__dirname, 'src/pages/open-source.html'),
     'pages/speaking': resolve(__dirname, 'src/pages/speaking.html'),
   };
 

@@ -382,15 +382,6 @@ function loadHeavySections() {
       },
     },
     {
-      selector: '#open-source, .open-source-section',
-      load: async () => {
-        const { renderOpenSourceContributions, renderPinnedRepos } =
-          await import('./modules/openSource.js');
-        renderOpenSourceContributions();
-        renderPinnedRepos();
-      },
-    },
-    {
       selector: '#speaking, .speaking-section',
       load: async () => {
         const { renderSpeakingEngagements, renderPublications } =
