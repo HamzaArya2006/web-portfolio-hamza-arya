@@ -10,7 +10,6 @@ export function renderTestimonials() {
       const stars = '★'.repeat(t.rating);
       const avatar = t.avatar || t.author.split(' ').map(n => n[0]).join('');
       const position = `${idx + 1} of ${testimonials.length}`;
-      const projectUrl = t.projectSlug ? `/pages/projects/${t.projectSlug}.html` : '';
       const isFirst = idx === 0;
       const isLast = idx === testimonials.length - 1;
       const edgePadding = `${isFirst ? 'padding-left: 1.5rem;' : ''}${isLast ? 'padding-right: 1.5rem;' : ''}`;

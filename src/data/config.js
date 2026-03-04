@@ -12,8 +12,8 @@ export const siteConfig = {
   },
   site: {
     name: 'Hamza Arya',
-    url: 'https://hamzaarya.dev',
-    title: 'Hamza — Full-Stack Developer | Fast, Reliable Web Apps'
+    url: 'https://hamzaarya.com',
+    title: 'Hamza Arya | Full-Stack Developer'
   }
 };
 

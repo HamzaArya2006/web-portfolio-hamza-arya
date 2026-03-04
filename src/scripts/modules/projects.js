@@ -97,6 +97,251 @@ export function buildResponsiveImageAttrs(originalUrl) {
   }
 }
 
+function normalizeMetrics(metrics) {
+  if (!metrics || typeof metrics !== 'object') return [];
+  return Object.entries(metrics).map(([key, value]) => {
+    const label = String(key)
+      .replace(/_/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return {
+      label: label.charAt(0).toUpperCase() + label.slice(1),
+      value: String(value),
+    };
+  });
+}
+
+function buildProjectDetailHTML(p) {
+  const tags = Array.isArray(p.tags) ? p.tags : [];
+  const techStack =
+    Array.isArray(p.stack) && p.stack.length
+      ? p.stack
+      : String(p.tech || '')
+          .split('•')
+          .map(t => t.trim())
+          .filter(Boolean);
+  const features = Array.isArray(p.features) ? p.features : [];
+  const metrics = normalizeMetrics(p.metrics);
+  const mainImage = p.image || (Array.isArray(p.images) && p.images[0]) || '';
+  const galleryImages = Array.isArray(p.images) && p.images.length ? p.images : mainImage ? [mainImage] : [];
+  const { lazySrc, srcSet, sizes } = mainImage
+    ? buildResponsiveImageAttrs(mainImage)
+    : { lazySrc: '', srcSet: '', sizes: '' };
+
+  const shareUrl = (() => {
+    try {
+      return window.location.href;
+    } catch (_) {
+      return '';
+    }
+  })();
+  const encodedShareUrl = encodeURIComponent(shareUrl);
+  const encodedTitle = encodeURIComponent(p.title || '');
+
+  return `
+    <header class="mb-12">
+      ${
+        tags.length
+          ? `<div class="flex flex-wrap items-center gap-3 mb-6">
+        ${tags
+          .map(
+            tag => `
+          <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 text-xs font-medium">
+            ${tag}
+          </span>`
+          )
+          .join('')}
+      </div>`
+          : ''
+      }
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+        ${p.title || 'Project'}
+      </h1>
+      ${
+        p.description
+          ? `<p class="text-xl text-gray-300 mb-8">${p.description}</p>`
+          : ''
+      }
+      <div class="flex flex-wrap items-center gap-4 text-sm text-gray-400">
+        ${
+          p.role
+            ? `<div class="flex items-center gap-2">
+          <span class="font-semibold text-white">Role:</span>
+          <span>${p.role}</span>
+        </div>`
+            : ''
+        }
+        ${
+          p.client
+            ? `<div class="flex items-center gap-2">
+          <span class="font-semibold text-white">Client:</span>
+          <span>${p.client}</span>
+        </div>`
+            : ''
+        }
+        ${
+          p.duration
+            ? `<div class="flex items-center gap-2">
+          <span class="font-semibold text-white">Duration:</span>
+          <span>${p.duration}</span>
+        </div>`
+            : ''
+        }
+      </div>
+    </header>
+
+    ${
+      mainImage
+        ? `<div class="mb-12 project-image-container">
+      <img
+        width="1200"
+        height="800"
+        alt="${p.title || 'Project image'}"
+        class="w-full rounded-2xl object-cover project-image"
+        decoding="async"
+        data-src="${lazySrc}"
+        data-srcset="${srcSet}"
+        data-sizes="${sizes}"
+      />
+    </div>`
+        : ''
+    }
+
+    ${
+      techStack.length
+        ? `<section class="mb-12" aria-label="Tech stack">
+      <h2 class="text-2xl font-bold mb-6">Tech Stack</h2>
+      <div class="flex flex-wrap gap-3">
+        ${techStack
+          .map(
+            tech => `
+          <span class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 border border-white/10 text-gray-200 text-sm font-medium">
+            ${tech}
+          </span>`
+          )
+          .join('')}
+      </div>
+    </section>`
+        : ''
+    }
+
+    ${
+      features.length
+        ? `<section class="mb-12" aria-label="Key features">
+      <h2 class="text-2xl font-bold mb-6">Key Features</h2>
+      <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        ${features
+          .map(
+            feature => `
+          <li class="flex items-center gap-3 p-4 rounded-lg bg-gray-800/50 border border-white/5">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="flex-shrink-0 text-green-400" aria-hidden="true">
+              <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="text-gray-200">${feature}</span>
+          </li>`
+          )
+          .join('')}
+      </ul>
+    </section>`
+        : ''
+    }
+
+    ${
+      metrics.length
+        ? `<section class="mb-12" aria-label="Project results">
+      <h2 class="text-2xl font-bold mb-6">Results</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        ${metrics
+          .map(
+            m => `
+          <div class="glass rounded-xl p-6 hover-lift">
+            <div class="text-3xl font-bold text-blue-300 mb-2">${m.value}</div>
+            <div class="text-sm text-gray-400 font-medium">${m.label}</div>
+          </div>`
+          )
+          .join('')}
+      </div>
+    </section>`
+        : ''
+    }
+
+    ${
+      galleryImages.length > 1
+        ? `<section class="mb-12" aria-label="Project gallery">
+      <h2 class="text-2xl font-bold mb-6">Gallery</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        ${galleryImages
+          .map(
+            (img, index) => `
+          <img
+            src="${img}"
+            alt="${p.title || 'Project'} — image ${index + 1}"
+            class="w-full rounded-xl object-cover"
+            loading="lazy"
+          />`
+          )
+          .join('')}
+      </div>
+    </section>`
+        : ''
+    }
+
+    ${
+      p.links && (p.links.live || (p.links.code && p.links.code !== '#'))
+        ? `<section class="mb-12" aria-label="Project links">
+      <div class="flex flex-wrap gap-4">
+        ${
+          p.links.live
+            ? `<a href="${p.links.live}" target="_blank" rel="noopener" class="btn-primary inline-flex items-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="mr-2" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          View Live
+        </a>`
+            : ''
+        }
+        ${
+          p.links.code && p.links.code !== '#'
+            ? `<a href="${p.links.code}" target="_blank" rel="noopener" class="btn-secondary inline-flex items-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="mr-2" aria-hidden="true">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          View Code
+        </a>`
+            : ''
+        }
+      </div>
+    </section>`
+        : ''
+    }
+
+    <footer class="mt-16 pt-12 border-t border-white/10">
+      <div class="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+        <a href="/pages/projects.html" class="btn-ghost inline-flex items-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="mr-2" aria-hidden="true">
+            <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back to Portfolio
+        </a>
+        ${
+          shareUrl
+            ? `<div class="flex items-center gap-4 text-sm text-gray-400">
+          <span>Share:</span>
+          <a href="https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedShareUrl}" target="_blank" rel="noopener" class="hover:text-white">
+            Twitter
+          </a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodedShareUrl}" target="_blank" rel="noopener" class="hover:text-white">
+            LinkedIn
+          </a>
+        </div>`
+            : ''
+        }
+      </div>
+    </footer>
+  `;
+}
+
 async function loadProjects(force = false) {
   if (remoteLoaded && !force) return projects;
   if (remoteFailed && !force) return projects;
@@ -188,12 +433,12 @@ function buildProjectsHTML(list) {
         <div class="project-links-row">
           ${
             p.links?.live
-              ? `<a href="${p.links.live}" class="project-link-minimal" target="_blank" rel="noopener">Live site</a>`
+              ? `<a href="${p.links.live}" class="project-link-minimal" target="_blank" rel="noopener">Live demo</a>`
               : ''
           }
           ${
             p.links?.code && p.links.code !== '#'
-              ? `<a href="${p.links.code}" class="project-link-minimal" target="_blank" rel="noopener">Code</a>`
+              ? `<a href="${p.links.code}" class="project-link-minimal" target="_blank" rel="noopener">GitHub</a>`
               : ''
           }
           ${detailUrl ? `<a href="${detailUrl}" class="project-link-minimal">View details</a>` : ''}
@@ -237,6 +482,7 @@ export function renderProjectsSync() {
   const grid = document.getElementById('projects-grid');
   const count = document.getElementById('projects-count');
   const totalCount = document.getElementById('total-projects');
+  const emptyEl = document.getElementById('projects-empty');
   if (!grid) return;
   const dataSource = projects.length ? projects : localProjects;
   const filtered = dataSource.filter(projectMatchesFilter);
@@ -244,12 +490,16 @@ export function renderProjectsSync() {
   if (totalCount) totalCount.textContent = String(dataSource.length);
   grid.innerHTML = buildProjectsHTML(filtered);
   revealCardsAndBindImages(grid);
+  if (emptyEl) {
+    emptyEl.classList.toggle('hidden', filtered.length > 0);
+  }
 }
 
 export async function renderProjects() {
   const grid = document.getElementById('projects-grid');
   const count = document.getElementById('projects-count');
   const totalCount = document.getElementById('total-projects');
+  const emptyEl = document.getElementById('projects-empty');
   if (!grid) return;
 
   // 1) Sync first paint from current data (local fallback) so cards show immediately
@@ -259,6 +509,7 @@ export async function renderProjects() {
   if (totalCount) totalCount.textContent = String(dataSource.length);
   grid.innerHTML = buildProjectsHTML(filteredInitial);
   revealCardsAndBindImages(grid);
+  if (emptyEl) emptyEl.classList.toggle('hidden', filteredInitial.length > 0);
 
   // 2) Load remote (if any) and re-render when ready
   const data = await loadProjects();
@@ -267,6 +518,79 @@ export async function renderProjects() {
   if (totalCount) totalCount.textContent = String(data.length);
   grid.innerHTML = buildProjectsHTML(filtered);
   revealCardsAndBindImages(grid);
+  if (emptyEl) emptyEl.classList.toggle('hidden', filtered.length > 0);
+}
+
+export async function renderProjectDetail() {
+  const root = document.getElementById('project-detail-root');
+  if (!root) return;
+
+  let slug = null;
+  try {
+    const url = new URL(window.location.href);
+    slug = url.searchParams.get('slug');
+  } catch (_) {
+    slug = null;
+  }
+
+  const breadcrumbTitle = document.getElementById('project-breadcrumb-title');
+
+  if (!slug) {
+    root.innerHTML =
+      '<p class="text-gray-300 py-12 text-center">Project not found. <a href="/pages/projects.html" class="underline hover:text-white">Back to projects</a></p>';
+    if (breadcrumbTitle) breadcrumbTitle.textContent = 'Project not found';
+    return;
+  }
+
+  const data = await loadProjects();
+  const project = data.find(p => p.slug === slug);
+
+  if (!project) {
+    root.innerHTML =
+      '<p class="text-gray-300 py-12 text-center">Project not found. It may have been removed or renamed. <a href="/pages/projects.html" class="underline hover:text-white">Back to projects</a></p>';
+    if (breadcrumbTitle) breadcrumbTitle.textContent = 'Project not found';
+    return;
+  }
+
+  if (breadcrumbTitle) breadcrumbTitle.textContent = project.title || 'Project';
+
+  try {
+    document.title = `${project.title} — Hamza Arya's Portfolio`;
+  } catch (_) {}
+
+  try {
+    const desc = project.description || '';
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc && desc) metaDesc.setAttribute('content', desc);
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle && project.title) ogTitle.setAttribute('content', project.title);
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc && desc) ogDesc.setAttribute('content', desc);
+
+    const ogImage = document.querySelector('meta[property="og:image"]');
+    if (ogImage && project.image) ogImage.setAttribute('content', project.image);
+
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', window.location.href);
+  } catch (_) {}
+
+  root.innerHTML = buildProjectDetailHTML(project);
+  const container = root.closest('.container-pro');
+  if (container) {
+    try {
+      const images = container.querySelectorAll('img[data-src]');
+      images.forEach(img => {
+        const ds = img.getAttribute('data-src');
+        if (ds) img.setAttribute('src', ds);
+        const dss = img.getAttribute('data-srcset');
+        if (dss) img.setAttribute('srcset', dss);
+        const dsizes = img.getAttribute('data-sizes');
+        if (dsizes) img.setAttribute('sizes', dsizes);
+      });
+    } catch (_) {}
+  }
 }
 
 export async function bindProjectFilters() {

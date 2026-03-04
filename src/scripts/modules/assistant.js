@@ -41,6 +41,7 @@ import {
   THINKING_PHRASES,
   EASTER_EGGS
 } from '../../data/ai.js';
+import portfolioData from '../../data/portfolio.json';
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -403,20 +404,29 @@ const KNOWLEDGE_BASE = {
     ]
   },
   projects: {
-    patterns: ['project', 'portfolio', 'work', 'examples', 'showcase', 'built', 'what have you built', 'projects done'],
-    responses: () => [
-      "Hamza has shipped **20+ production projects** across various domains:\n\n🚀 **SaaS Platforms**\n• B2B solutions\n• Analytics dashboards\n• Management systems\n\n🛒 **E-commerce Stores**\n• Custom online stores\n• Payment integrations\n• Inventory systems\n\n⚡ **Real-time Applications**\n• Chat applications\n• Live collaboration tools\n• WebSocket implementations\n\n📊 **Data & Analytics**\n• ETL pipelines\n• Dashboard visualizations\n• Reporting systems\n\n🎯 **Key Highlights:**\n• All projects achieve Core Web Vitals Grade A\n• Production-grade code quality\n• Measurable business impact\n\nCheck out the Projects section or visit /pages/projects.html to explore the work!",
-      "View featured projects in the Projects section. Each project includes:\n• Tech stack details\n• Challenges solved\n• Measurable results\n• Live demos (where available)\n\nHamza has worked on SaaS platforms, e-commerce stores, real-time apps, and data analytics solutions.",
-      "Portfolio includes:\n\n• 20+ shipped projects\n• SaaS platforms\n• E-commerce solutions\n• Real-time applications\n• Data analytics dashboards\n• B2B solutions\n\nAll with Core Web Vitals Grade A performance! Visit /pages/projects.html for details."
-    ]
+    patterns: ['project', 'portfolio', 'work', 'examples', 'showcase', 'built', 'what have you built', 'projects done', 'projects has hamza', 'hamza built'],
+    responses: () => {
+      const p = portfolioData;
+      const projectList = p.projects.slice(0, 5).map(proj =>
+        `• **${proj.name}** — ${proj.description.substring(0, 80)}...`
+      ).join('\n');
+      return [
+        `Hamza has built several web applications including:\n\n${projectList}\n\n🎯 **Highlights:**\n• Production marketing sites (solar, energy)\n• E-commerce-style catalogs\n• Landing pages & app discovery UIs\n• Weather app with API integration\n\nAll projects use modern tech: HTML, CSS, JavaScript, WordPress, and more. Visit /pages/projects.html to explore!`,
+        `Hamza's portfolio includes:\n\n${projectList}\n\nEach project includes tech stack details, live demos, and GitHub links where available. Check /pages/projects.html for the full showcase!`,
+        `**Projects Hamza has built:**\n\n${projectList}\n\nVisit /pages/projects.html for details, live links, and case studies.`
+      ];
+    }
   },
   skills: {
-    patterns: ['skill', 'technology', 'tech stack', 'stack', 'technologies', 'tools', 'expertise', 'what technologies', 'programming languages'],
-    responses: () => [
-      "**Tech Stack & Expertise:**\n\n🎨 **Frontend:**\n• React, Vue.js\n• TypeScript, JavaScript\n• Vite, Webpack\n• Tailwind CSS, CSS3\n• HTML5, Semantic HTML\n\n⚙️ **Backend:**\n• Node.js, Express\n• REST APIs, GraphQL\n• Serverless functions\n• Microservices architecture\n\n💾 **Databases:**\n• PostgreSQL\n• MongoDB\n• Redis\n• Database optimization\n\n☁️ **DevOps & Cloud:**\n• AWS (EC2, S3, Lambda)\n• Vercel, Netlify\n• Docker, Kubernetes\n• CI/CD (GitHub Actions)\n• Git, GitHub\n\n🛠️ **Tools & Practices:**\n• TypeScript\n• Testing (Jest, Vitest)\n• Performance optimization\n• SEO best practices\n• Agile methodologies\n\nAll projects prioritize **Core Web Vitals Grade A** performance!",
-      "Expertise includes modern JavaScript frameworks, server-side development, database design, cloud infrastructure, and performance optimization. Hamza works with React, Node.js, PostgreSQL, AWS, and modern DevOps tools.",
-      "Tech stack:\n\n**Frontend:** React, Vue, TypeScript, Tailwind\n**Backend:** Node.js, Express, REST APIs\n**Database:** PostgreSQL, MongoDB\n**DevOps:** AWS, Docker, CI/CD\n\nAll focused on performance and maintainability!"
-    ]
+    patterns: ['skill', 'technology', 'tech stack', 'stack', 'technologies', 'tools', 'expertise', 'what technologies', 'programming languages', 'technologies does hamza'],
+    responses: () => {
+      const s = portfolioData.skills;
+      return [
+        `**Hamza's Tech Stack:**\n\n🎨 **Frontend:** ${s.frontend.join(', ')}\n\n⚙️ **Backend:** ${s.backend.join(', ')}\n\n💾 **Databases:** ${s.databases.join(', ')}\n\n☁️ **DevOps:** ${s.devops.join(', ')}\n\n🛠️ **Tools:** ${s.tools.join(', ')}\n\n✨ **Practices:** ${s.practices.join(', ')}\n\nAll projects prioritize **Core Web Vitals Grade A** performance!`,
+        `Hamza uses: **Frontend** — ${s.frontend.slice(0, 5).join(', ')}; **Backend** — ${s.backend.join(', ')}; **Databases** — ${s.databases.join(', ')}; **DevOps** — ${s.devops.slice(0, 4).join(', ')}.`,
+        `Tech stack: ${[...s.frontend, ...s.backend, ...s.tools].slice(0, 12).join(', ')} — focused on performance and maintainability!`
+      ];
+    }
   },
   pricing: {
     patterns: ['price', 'cost', 'rate', 'budget', 'how much', 'pricing', 'fee', 'charges', 'payment'],
@@ -427,11 +437,60 @@ const KNOWLEDGE_BASE = {
     ]
   },
   experience: {
-    patterns: ['experience', 'years', 'how long', 'background', 'history', 'career', 'how many years'],
+    patterns: ['experience', 'years', 'how long', 'background', 'history', 'career', 'how many years', 'hamza experience', 'explain hamza'],
+    responses: () => {
+      const e = portfolioData.experience;
+      const highlights = e.highlights.map(h => `• ${h}`).join('\n');
+      return [
+        `Hamza has **${e.years}** of full-stack development experience:\n\n📈 **Track Record:**\n• ${e.projectsShipped} projects shipped\n${highlights}\n\n🎯 **Focus Areas:**\n• Clean architecture\n• Performance optimization\n• Maintainable code\n• Best practices\n\nCheck /pages/about.html or /pages/resume.html for more!`,
+        `${e.years} of experience building production web applications. ${e.projectsShipped} projects shipped. Focus on clean architecture, performance, and maintainable code.`,
+        `**Experience:** ${e.years} full-stack • ${e.projectsShipped} projects • ${e.highlights[0]} • Check /pages/resume.html!`
+      ];
+    }
+  },
+  recruiter: {
+    patterns: ['hire hamza', 'hiring hamza', 'recruiter', 'about hiring', 'want to hire', 'consider hiring'],
+    responses: () => {
+      const p = portfolioData;
+      const projectHighlights = p.projects.slice(0, 3).map(proj => `• ${proj.name} (${proj.links.live ? 'Live' : 'Code'})`).join('\n');
+      return [
+        `**Considering Hamza for your team?** 🎯\n\n📋 **Experience Summary:**\n• ${p.experience.years} full-stack development\n• ${p.experience.projectsShipped} projects shipped\n• Core Web Vitals Grade A on all projects\n\n🛠️ **Tech Stack:**\n${Object.values(p.skills).flat().slice(0, 15).join(', ')}\n\n🚀 **Portfolio Highlights:**\n${projectHighlights}\n\n📧 **Contact:** ${p.email}\n📍 **Location:** ${p.location} (Remote-friendly)\n⏱️ **Response:** ${p.responseTime}\n\n🔗 **Links:** [GitHub](${p.github}) | [LinkedIn](${p.linkedin})\n\nVisit /pages/contact.html or email directly to discuss hiring!`,
+        `**Hiring Hamza — Quick Info:**\n\n• **Role:** ${p.role}\n• **Experience:** ${p.experience.years} • ${p.experience.projectsShipped} projects\n• **Stack:** React, Node.js, WordPress, PostgreSQL, AWS\n• **Contact:** ${p.email}\n• **Availability:** Remote, ${p.responseTime}\n\nCheck /pages/resume.html for full details!`,
+        `**Recruiter Summary:**\n\nHamza Arya — ${p.role} • ${p.location}\n\n✅ ${p.experience.years} experience • ${p.experience.projectsShipped} projects\n✅ Tech: ${p.skills.frontend.slice(0, 4).join(', ')}, ${p.skills.backend.slice(0, 2).join(', ')}\n✅ Contact: ${p.email}\n✅ GitHub: ${p.github}\n\nReady for freelance, remote, or full-time roles!`
+      ];
+    }
+  },
+  best_project: {
+    patterns: ['best project', 'show hamza best', 'hamza best project', 'highlighted project', 'flagship project'],
+    responses: () => {
+      const best = portfolioData.projects.find(p => p.id === portfolioData.bestProject) || portfolioData.projects[0];
+      if (!best) return ["Check /pages/projects.html for Hamza's portfolio!"];
+      return [
+        `**Hamza's standout project:** ${best.name} ⭐\n\n${best.description}\n\n🛠️ **Tech:** ${best.tech.join(', ')}\n✨ **Highlights:** ${best.highlights.join(', ')}\n\n🔗 **Live:** ${best.links.live || 'N/A'}\n${best.links.code ? `📂 **Code:** ${best.links.code}` : ''}\n\nView full case study: /pages/project.html?slug=${best.slug}`,
+        `**Best project:** ${best.name}\n\n${best.description}\n\nTech: ${best.tech.join(', ')}\nClient: ${best.client}\n\n🔗 ${best.links.live || 'See /pages/projects.html'}`
+      ];
+    }
+  },
+  github: {
+    patterns: ['github', 'hamza github', 'show github', 'repository', 'repos', 'code on github'],
     responses: () => [
-      "Hamza has **4+ years** of full-stack development experience:\n\n📈 **Track Record:**\n• 20+ projects shipped\n• Core Web Vitals Grade A on all projects\n• Production-grade code quality\n• Strong focus on developer experience\n\n🎯 **Focus Areas:**\n• Clean architecture\n• Performance optimization\n• Maintainable code\n• Best practices\n\n📚 **Continuous Learning:**\n• Stays updated with latest technologies\n• Follows industry best practices\n• Contributes to open source\n\nCheck the About section for more details!",
-      "4+ years of experience building production web applications. Focus on clean architecture, performance, and maintainable code. Has shipped 20+ successful projects.",
-      "**Experience:**\n\n• 4+ years full-stack development\n• 20+ projects shipped\n• Core Web Vitals Grade A\n• Production-ready code\n\nCheck /pages/about.html for more!"
+      `**Hamza's GitHub:** ${portfolioData.github}\n\nExplore his repositories and projects. Open source contributions and code samples available!`,
+      `🔗 **GitHub:** ${portfolioData.github}\n\nCheck out Hamza's projects and code on GitHub.`
+    ]
+  },
+  architecture: {
+    patterns: ['architecture', 'scalable system', 'system design', 'suggest architecture', 'scalable architecture'],
+    responses: () => [
+      "**Scalable System Architecture Suggestions:**\n\n🏗️ **Common Patterns:**\n• **Microservices** — Separate concerns, independent scaling\n• **API Gateway** — Single entry point, rate limiting, auth\n• **Database:** PostgreSQL for relational, Redis for cache\n• **Caching:** Redis for sessions, CDN for static assets\n• **Queue:** Celery/Bull for async jobs\n\n📐 **Example Stack:**\n• Frontend: React/Next.js\n• API: Node.js + Express or FastAPI\n• DB: PostgreSQL + Redis\n• Deploy: AWS/Vercel + Docker\n\n**Want specifics?** Ask: \"Design a scalable e-commerce API\" or \"Architecture for real-time chat\"!",
+      "**System Architecture Tips:**\n\n• Use **load balancers** for horizontal scaling\n• **Stateless** services for easy scaling\n• **Event-driven** for async workflows\n• **CDN** for static assets\n• **Database read replicas** for read-heavy workloads\n\nPaste your use case and I can suggest a concrete architecture!",
+      "**Scalable Architecture:**\n\n1. **Frontend:** React/Vue + CDN\n2. **API:** Node.js/Python microservices\n3. **Database:** PostgreSQL + Redis cache\n4. **Queue:** For async jobs\n5. **Deploy:** Docker + Kubernetes or serverless\n\nAsk for a specific architecture (e.g., \"real-time chat\" or \"e-commerce\")!"
+    ]
+  },
+  paste_code: {
+    patterns: ['paste code', 'paste your code', 'review my code', 'code review'],
+    responses: () => [
+      "**Code Review Ready:** 📝\n\nPaste your code and I will:\n• Analyze the logic\n• Suggest improvements\n• Detect potential bugs\n• Explain best practices\n\n**How to paste:**\n1. Wrap code in triple backticks: \\`\\`\\`javascript\\n// your code\\n\\`\\`\\`\n2. Or paste it directly in your message\n3. Mention the language if you can\n\nGo ahead and paste! 🔍",
+      "**Ready for code review!**\n\nPaste your code (use \\`\\`\\` for blocks) and I'll:\n• Review it\n• Suggest improvements\n• Point out bugs\n• Explain the logic\n\nWhat would you like me to review?"
     ]
   },
   location: {
@@ -946,12 +1005,27 @@ class AIAssistant {
     button.setAttribute('aria-label', 'Open AI Assistant');
     button.setAttribute('aria-expanded', 'false');
     button.innerHTML = `
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4L3 21l8-2.3c1.1.8 2.4 1.3 3.8 1.3 3.87 0 7-3.13 7-7s-3.13-7-7-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
-        <circle cx="9" cy="9" r="1.5" fill="white"/>
-        <circle cx="15" cy="9" r="1.5" fill="white"/>
-        <path d="M9 13h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="novaIconGradient" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#38bdf8"/>
+            <stop offset="0.5" stop-color="#6366f1"/>
+            <stop offset="1" stop-color="#a855f7"/>
+          </linearGradient>
+        </defs>
+        <path
+          d="M6.5 5.5A3.5 3.5 0 0 1 10 2h6a3 3 0 0 1 3 3v5.5A3.5 3.5 0 0 1 15.5 14H12l-2.8 2.8c-.5.5-1.2.15-1.2-.47V14H8A3.5 3.5 0 0 1 4.5 10.5v-3A2.5 2.5 0 0 1 6.5 5.5Z"
+          fill="url(#novaIconGradient)"
+        />
+        <path
+          d="M9.25 8.5h.01M13.25 8.5h.01M9.75 10.75c.6.5 1.3.75 2.25.75s1.65-.25 2.25-.75"
+          stroke="white"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
+      <span class="ai-assistant-btn-label">Ask Nova</span>
       <span class="ai-assistant-pulse"></span>
     `;
     button.id = 'ai-assistant-btn';
@@ -965,17 +1039,31 @@ class AIAssistant {
     popup.innerHTML = `
       <div class="ai-assistant-header">
         <div class="ai-assistant-header-content">
-          <div class="ai-assistant-avatar">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4L3 21l8-2.3c1.1.8 2.4 1.3 3.8 1.3 3.87 0 7-3.13 7-7s-3.13-7-7-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
-              <circle cx="9" cy="9" r="1.5" fill="white"/>
-              <circle cx="15" cy="9" r="1.5" fill="white"/>
-              <path d="M9 13h6" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <div class="ai-assistant-avatar" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="novaAvatarGradient" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#38bdf8"/>
+                  <stop offset="0.5" stop-color="#6366f1"/>
+                  <stop offset="1" stop-color="#a855f7"/>
+                </linearGradient>
+              </defs>
+              <path
+                d="M6.5 5.5A3.5 3.5 0 0 1 10 2h6a3 3 0 0 1 3 3v5.5A3.5 3.5 0 0 1 15.5 14H12l-2.5 2.5c-.45.45-1.2.13-1.2-.5V14H8A3.5 3.5 0 0 1 4.5 10.5v-3A2.5 2.5 0 0 1 6.5 5.5Z"
+                fill="url(#novaAvatarGradient)"
+              />
+              <path
+                d="M9.1 8.5h.01M13.1 8.5h.01M9.7 10.7c.55.48 1.25.75 2.15.75s1.6-.27 2.15-.75"
+                stroke="white"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
           </div>
           <div>
             <h3 id="ai-assistant-title" class="ai-assistant-title">Nova</h3>
-            <p class="ai-assistant-subtitle">Your intelligent AI companion</p>
+            <p class="ai-assistant-subtitle">AI Developer Assistant</p>
           </div>
         </div>
         <div class="ai-assistant-header-actions">
@@ -1010,25 +1098,14 @@ class AIAssistant {
       <div class="ai-assistant-body">
         <div class="ai-assistant-messages" id="ai-assistant-messages"></div>
         <div class="ai-assistant-suggestions" id="ai-assistant-suggestions">
-          <p class="ai-assistant-suggestions-label">Quick actions:</p>
+          <p class="ai-assistant-suggestions-label">Try asking:</p>
           <div class="ai-assistant-chips">
-            <button class="ai-assistant-chip" data-question="Tell me a joke">😄 Joke</button>
-            <button class="ai-assistant-chip" data-question="Share a fun fact">🤓 Fact</button>
-            <button class="ai-assistant-chip" data-question="Show me around the website">🗺️ Tour</button>
-            <button class="ai-assistant-chip" data-question="What services do you offer?">💼 Services</button>
-            <button class="ai-assistant-chip" data-question="Show me your projects">🚀 Projects</button>
-            <button class="ai-assistant-chip" data-question="Give me a riddle">🧩 Riddle</button>
-            <button class="ai-assistant-chip" data-question="What can you do?">🤖 Features</button>
-            <button class="ai-assistant-chip" data-question="Show me code examples">💻 Code</button>
-            <button class="ai-assistant-chip" data-question="Start a quiz">🎯 Quiz</button>
-            <button class="ai-assistant-chip" data-question="FAQ">❓ FAQ</button>
-            <button class="ai-assistant-chip" data-question="Learn React">📚 Learn</button>
-            <button class="ai-assistant-chip" data-question="Beginner project ideas">🚀 Projects</button>
-            <button class="ai-assistant-chip" data-question="Best practices">✨ Tips</button>
-            <button class="ai-assistant-chip" data-question="Review my code">🔍 Review</button>
-            <button class="ai-assistant-chip" data-question="Explain step by step">📖 Explain</button>
-            <button class="ai-assistant-chip" data-question="Performance optimization">⚡ Optimize</button>
-            <button class="ai-assistant-chip" data-question="Security best practices">🔒 Security</button>
+            <button class="ai-assistant-chip" data-question="Show Hamza's projects">Show Hamza's projects</button>
+            <button class="ai-assistant-chip" data-question="What tech stack does Hamza use?">What tech stack does Hamza use?</button>
+            <button class="ai-assistant-chip" data-question="Review my code">Review my code</button>
+            <button class="ai-assistant-chip" data-question="Explain Hamza's experience">Explain Hamza's experience</button>
+            <button class="ai-assistant-chip" data-question="Ask Nova about hiring Hamza">Hire Hamza</button>
+            <button class="ai-assistant-chip" data-question="What projects has Hamza built recently?">Recent projects</button>
           </div>
         </div>
       </div>
@@ -1046,7 +1123,7 @@ class AIAssistant {
             type="text" 
             class="ai-assistant-input" 
             id="ai-assistant-input"
-            placeholder="Type or speak your question..."
+            placeholder="Ask Nova about Hamza's projects or paste code..."
             autocomplete="off"
             aria-label="Message input"
           />
@@ -1085,13 +1162,9 @@ class AIAssistant {
       const returnNote = isReturning ? `Welcome back! (Visit #${this.context.visitCount}) ` : "";
       const timeGreet = getTimeBasedGreeting();
       
-      const welcomeMessages = [
-        `${timeGreet}! 👋 ${returnNote}I'm **Nova**, your next-generation AI assistant! 🤖\n\n🚀 **Advanced Capabilities:**\n• **Code Intelligence:** Review, analyze, debug, optimize code\n• **Learning:** Step-by-step explanations, tutorials, recommendations\n• **Architecture:** System design, patterns, best practices\n• **Performance:** Optimization, analysis, Core Web Vitals\n• **Security:** Vulnerability analysis, best practices\n• **Algorithms:** Explanations, complexity analysis\n• **Testing:** Strategies, examples, best practices\n• **Entertainment:** Jokes, facts, quizzes, riddles\n• **Tools:** Search, export, multilingual (15+ languages)\n\nTry: "Review my code", "Explain React", "Optimize performance", or ask anything! 💡`,
-        `Hey there! ${timeGreet}! 👋 ${returnNote}I'm **Nova** - your advanced AI companion!\n\n🎯 **Powerful Features:**\n🔍 Code Review & Analysis | 📖 Step-by-Step Explanations\n⚡ Performance Optimization | 🔒 Security Analysis\n🏗️ Architecture Design | 🧮 Algorithm Explanations\n💻 Code Examples (10+ languages) | 🧪 Testing Strategies\n🎮 Quizzes & Games | 🌍 Multilingual Support\n\nReady to level up your coding? Let's go! 🚀`,
-        `${timeGreet}! Welcome! 🎉 ${returnNote}I'm **Nova**, your next-gen AI assistant!\n\n🌟 **Advanced Features:**\n• **Code Intelligence:** Review, debug, optimize, explain\n• **Architecture:** Design patterns, system structure\n• **Performance:** Analysis, optimization, monitoring\n• **Security:** Vulnerability checks, best practices\n• **Learning:** Tutorials, step-by-step guides\n• **Entertainment:** Quizzes, jokes, facts, riddles\n• **Tools:** Search, export, multilingual support\n\nWhat would you like to explore? 💡`,
-        `Hello! 👋 ${timeGreet}! ${returnNote}I'm **Nova** 🤖 - ChatGPT-5 Level AI!\n\n🚀 **Next-Gen Capabilities:**\n\n🔍 **Code Intelligence:** Review, Analyze, Debug, Optimize\n📖 **Learning:** Step-by-Step Explanations, Tutorials\n🏗️ **Architecture:** Design Patterns, System Design\n⚡ **Performance:** Optimization, Analysis, Monitoring\n🔒 **Security:** Vulnerability Analysis, Best Practices\n🧮 **Algorithms:** Explanations, Complexity Analysis\n💻 **Code:** Examples (10+ languages), Snippets\n🧪 **Testing:** Strategies, Examples, Best Practices\n🎮 **Fun:** Quizzes, Jokes, Facts, Riddles\n🌍 **Multilingual:** 15+ Languages Supported\n\nTry: "Review my code", "Explain React step by step", "Optimize performance", or ask anything! 😊`
-      ];
-      this.addMessage(welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)], 'assistant', true);
+      const welcomeMessage = `Hi, I'm Nova 👋\n\nHamza's AI assistant.\n\nYou can ask me about his **projects**, **skills**, or even **paste code** for review.`;
+      
+      this.addMessage(welcomeMessage, 'assistant', true);
     }, 100);
   }
 
@@ -1948,6 +2021,7 @@ class AIAssistant {
       </div>
       <div class="ai-assistant-message-content">
         <div class="ai-assistant-message-text ai-assistant-typing">
+          <span class="ai-assistant-typing-label">Nova is thinking</span>
           <span class="ai-assistant-typing-dot"></span>
           <span class="ai-assistant-typing-dot"></span>
           <span class="ai-assistant-typing-dot"></span>

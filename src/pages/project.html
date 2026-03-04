@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project — Hamza Arya Portfolio</title>
+    <meta
+      name="description"
+      content="Detailed case study from Hamza Arya's web projects portfolio."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Open Graph (will be refined by JS on load) -->
+    <meta property="og:title" content="Project — Hamza Arya Portfolio" />
+    <meta
+      property="og:description"
+      content="Detailed case study from Hamza Arya's web projects portfolio."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://hamzaarya.dev/projects" />
+    <meta property="og:image" content="/favicon.svg" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Project — Hamza Arya Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Detailed case study from Hamza Arya's web projects portfolio."
+    />
+    <meta name="twitter:image" content="/favicon.svg" />
+    <!-- Canonical URL (updated by JS when possible) -->
+    <link rel="canonical" href="https://hamzaarya.dev/projects" />
+    <!-- Performance hints -->
+    <link rel="preload" href="/src/styles/main.css" as="style" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preload" href="/src/scripts/main.js" as="script" />
+  </head>
+  <body class="bg-gray-900 text-gray-100">
+    {{> header}}
+
+    <!-- Breadcrumb -->
+    <nav
+      aria-label="Breadcrumb"
+      class="border-b border-white/10 bg-black/60 backdrop-blur-sm"
+    >
+      <ol
+        class="container-pro flex items-center gap-2 py-3.5 text-sm text-gray-300"
+      >
+        <li>
+          <a
+            href="/index.html"
+            class="hover:text-white transition-colors duration-200"
+            >Home</a
+          >
+        </li>
+        <li
+          aria-hidden="true"
+          class="opacity-60 inline-flex items-center"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </li>
+        <li>
+          <a
+            href="/pages/projects.html"
+            class="hover:text-white transition-colors duration-200"
+            >Projects</a
+          >
+        </li>
+        <li
+          aria-hidden="true"
+          class="opacity-60 inline-flex items-center"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M9 6l6 6-6 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </li>
+        <li
+          aria-current="page"
+          class="text-white font-medium"
+          id="project-breadcrumb-title"
+        >
+          Project
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Project Detail Shell -->
+    <article
+      class="py-16 bg-black relative overflow-hidden"
+      aria-label="Project details"
+    >
+      <div
+        class="absolute inset-0 bg-grid opacity-20"
+        data-parallax="0.02"
+        aria-hidden="true"
+      ></div>
+      <div class="container-pro relative">
+        <div class="max-w-5xl mx-auto" id="project-detail-root">
+          <p class="text-gray-400 py-12 text-center">
+            Loading project details…
+          </p>
+        </div>
+      </div>
+    </article>
+
+    {{> footer}}
+
+    <script type="module" src="/src/scripts/main.js"></script>
+  </body>
+</html>
+

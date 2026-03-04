@@ -1,0 +1,111 @@
+{
+  "name": "Hamza Arya",
+  "role": "Full-Stack Developer",
+  "tagline": "Building modern web applications with React, Node.js, and scalable backend systems",
+  "location": "Kabul, Afghanistan",
+  "remoteFriendly": true,
+  "email": "hamzaarya123@gmail.com",
+  "responseTime": "Under 24 hours",
+  "skills": {
+    "frontend": ["React", "Vue.js", "TypeScript", "JavaScript", "HTML", "CSS", "Tailwind CSS", "Vite", "Webpack"],
+    "backend": ["Node.js", "Express", "REST APIs", "GraphQL", "Serverless", "PHP"],
+    "databases": ["PostgreSQL", "MongoDB", "Redis"],
+    "devops": ["AWS", "Vercel", "Netlify", "Docker", "CI/CD", "GitHub Actions"],
+    "tools": ["WordPress", "Elementor", "Git", "GitHub"],
+    "practices": ["Core Web Vitals", "SEO", "Performance Optimization", "Agile"]
+  },
+  "experience": {
+    "years": "4+",
+    "projectsShipped": "20+",
+    "highlights": [
+      "Core Web Vitals Grade A on all projects",
+      "Production-grade code quality",
+      "Clean architecture and maintainable code",
+      "International client collaboration"
+    ]
+  },
+  "education": "Self-taught and continuous learner in web development",
+  "github": "https://github.com/hamzaarya",
+  "linkedin": "https://linkedin.com/in/hamzaarya",
+  "projects": [
+    {
+      "id": "farah-gostar-solar-website",
+      "name": "Farah Gostar – Solar Solutions in Afghanistan",
+      "slug": "farah-gostar-solar-afghanistan",
+      "description": "Production marketing and product catalog website for a leading solar energy company in Afghanistan, with shop-style product listings similar to e-commerce.",
+      "role": "Frontend Developer",
+      "tech": ["HTML", "CSS", "JavaScript", "Multilingual", "E-commerce-style catalog"],
+      "highlights": ["7 languages", "Shop-style catalog", "34 provinces served"],
+      "links": {
+        "live": "https://farahgostar.com",
+        "code": "https://github.com/HamzaArya2006/web-fgc-website"
+      },
+      "client": "Farah Gostar Co. Ltd"
+    },
+    {
+      "id": "ptn-energy-solutions-website",
+      "name": "PTN – Power Trade National Website",
+      "slug": "ptn-energy-solutions-website",
+      "description": "WordPress-based site for Power Trade National with product catalog and shop-style pages for solar, irrigation, and power products.",
+      "role": "WordPress Maintenance & Design Assistant",
+      "tech": ["WordPress", "PHP", "Elementor", "E-commerce-style catalog"],
+      "highlights": ["24/7 availability", "Solar & irrigation solutions"],
+      "links": {
+        "live": "https://ptn.com.af",
+        "code": null
+      },
+      "client": "Power Trade National Co. Ltd"
+    },
+    {
+      "id": "nexus-coffee-shop-landing",
+      "name": "Nexus Coffee – Artisan Coffee Shop Landing Page",
+      "slug": "nexus-coffee-shop-landing",
+      "description": "Single-page marketing site for a modern coffee shop brand with signature drinks, social proof, and CTAs.",
+      "role": "Frontend Developer",
+      "tech": ["HTML", "CSS", "JavaScript"],
+      "highlights": ["Premium UX", "Newsletter signup", "Testimonials"],
+      "links": {
+        "live": "https://sample-coffeeshop.netlify.app/",
+        "code": "https://github.com/HamzaArya2006/web-coffee-shop"
+      },
+      "client": "Nexus Coffee (Sample Project)"
+    },
+    {
+      "id": "appstore-discovery-platform",
+      "name": "AppStore – Modern App Discovery Platform",
+      "slug": "appstore-discovery-platform",
+      "description": "Landing experience for a modern app discovery platform with featured apps, categories, and trending sections.",
+      "role": "Frontend Developer",
+      "tech": ["HTML", "CSS", "JavaScript"],
+      "highlights": ["Featured apps grid", "Browse by category", "Trending section"],
+      "links": {
+        "live": "https://sample-online-appstore.netlify.app/",
+        "code": null
+      },
+      "client": "Sample AppStore Project"
+    },
+    {
+      "id": "simple-weather-app",
+      "name": "Weather App – City Weather Lookup",
+      "slug": "simple-weather-app",
+      "description": "Minimal weather application for city search with current conditions, temperature, humidity, wind speed, and forecast.",
+      "role": "Frontend Developer",
+      "tech": ["HTML", "CSS", "JavaScript", "Weather API"],
+      "highlights": ["API integration", "Search by city", "Clean UI"],
+      "links": {
+        "live": "https://sample-weather-app1.netlify.app/",
+        "code": null
+      },
+      "client": "Sample Weather App Project"
+    }
+  ],
+  "bestProject": "farah-gostar-solar-website",
+  "services": [
+    "Full-stack web development",
+    "E-commerce solutions",
+    "WordPress development & maintenance",
+    "API development",
+    "Performance optimization",
+    "Technical consulting"
+  ]
+}

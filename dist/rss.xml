@@ -3,7 +3,7 @@
   <channel>
     <title>Hamza Arya — Blog</title>
     <link>https://hamzaarya.dev</link>
-    <description>Articles on web development, performance, architecture, and real-world case studies by Hamza Arya.</description>
+    <description>Articles on web development, performance, and architecture by Hamza Arya.</description>
     <language>en-US</language>
     <lastBuildDate>Mon, 15 Jan 2024 12:00:00 +0000</lastBuildDate>
     <atom:link href="https://hamzaarya.dev/rss.xml" rel="self" type="application/rss+xml"/>
