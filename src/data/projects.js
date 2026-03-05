@@ -61,9 +61,9 @@ export const projects = [
       "E-commerce"
     ],
     "tech": "WordPress • PHP • Elementor / Theme Builder • E-commerce-style catalog",
-    "image": "https://ptn.com.af/wp-content/uploads/2026/02/8000W-1024x1024.jpg",
+    "image": "/src/assets/img/projects/ptn-energy-solutions-website.webp",
     "images": [
-      "https://ptn.com.af/wp-content/uploads/2026/02/8000W-1024x1024.jpg"
+      "/src/assets/img/projects/ptn-energy-solutions-website.webp"
     ],
     "links": {
       "live": "https://ptn.com.af",
@@ -100,9 +100,9 @@ export const projects = [
       "UI Design"
     ],
     "tech": "HTML • CSS • JavaScript",
-    "image": "https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop",
+    "image": "/src/assets/img/projects/nexus-coffee-shop-landing.webp",
     "images": [
-      "https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop"
+      "/src/assets/img/projects/nexus-coffee-shop-landing.webp"
     ],
     "links": {
       "live": "https://sample-coffeeshop.netlify.app/",
@@ -142,9 +142,9 @@ export const projects = [
       "App Store UI"
     ],
     "tech": "HTML • CSS • JavaScript",
-    "image": "https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=1200&auto=format&fit=crop",
+    "image": "/src/assets/img/projects/appstore-discovery-platform.webp",
     "images": [
-      "https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=1200&auto=format&fit=crop"
+      "/src/assets/img/projects/appstore-discovery-platform.webp"
     ],
     "links": {
       "live": "https://sample-online-appstore.netlify.app/",
@@ -184,9 +184,9 @@ export const projects = [
       "API Integration"
     ],
     "tech": "HTML • CSS • JavaScript • Weather API",
-    "image": "https://images.unsplash.com/photo-1519692933481-e162a57d6721?q=80&w=1200&auto=format&fit=crop",
+    "image": "/src/assets/img/projects/simple-weather-app.webp",
     "images": [
-      "https://images.unsplash.com/photo-1519692933481-e162a57d6721?q=80&w=1200&auto=format&fit=crop"
+      "/src/assets/img/projects/simple-weather-app.webp"
     ],
     "links": {
       "live": "https://sample-weather-app1.netlify.app/",

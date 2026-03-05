@@ -12,6 +12,7 @@ export function initTheme() {
 
 export function bindSmoothScroll() {
   const links = document.querySelectorAll('a[href^="#"]');
+  const useSmooth = !document.documentElement.classList.contains('perf-lite');
   links.forEach((link) => {
     link.addEventListener('click', (e) => {
       const targetId = link.getAttribute('href');
@@ -19,7 +20,7 @@ export function bindSmoothScroll() {
       const target = document.querySelector(targetId);
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.scrollIntoView({ behavior: useSmooth ? 'smooth' : 'auto', block: 'start' });
       }
     });
   });
@@ -29,14 +30,22 @@ export function bindRevealOnScroll() {
   const revealables = document.querySelectorAll('[data-reveal]');
   const heroReveals = document.querySelectorAll('section#top [data-reveal]');
   const heroSet = new Set(heroReveals);
+  const perfLite = document.documentElement.classList.contains('perf-lite');
+  const show = (el) => {
+    el.classList.remove('opacity-0', 'translate-y-6');
+    if (perfLite) {
+      el.style.opacity = '1';
+      el.style.transform = '';
+    } else {
+      el.classList.add('fade-in', 'slide-up');
+    }
+  };
   const defaultObserver = new IntersectionObserver(
     (entries, obs) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const el = entry.target;
-          el.classList.remove('opacity-0', 'translate-y-6');
-          el.classList.add('fade-in', 'slide-up');
-          obs.unobserve(el);
+          show(entry.target);
+          obs.unobserve(entry.target);
         }
       });
     },
@@ -46,10 +55,8 @@ export function bindRevealOnScroll() {
     (entries, obs) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const el = entry.target;
-          el.classList.remove('opacity-0', 'translate-y-6');
-          el.classList.add('fade-in', 'slide-up');
-          obs.unobserve(el);
+          show(entry.target);
+          obs.unobserve(entry.target);
         }
       });
     },
@@ -60,17 +67,13 @@ export function bindRevealOnScroll() {
     else defaultObserver.observe(el);
   });
 
-  // Reveal any [data-reveal] elements already in view (e.g. on load or after layout)
   function revealVisible() {
     const rect = (el) => el.getBoundingClientRect();
     const vh = window.innerHeight;
     revealables.forEach((el) => {
       if (heroSet.has(el)) return;
       const r = rect(el);
-      if (r.top < vh - 50 && r.bottom > 0) {
-        el.classList.remove('opacity-0', 'translate-y-6');
-        el.classList.add('fade-in', 'slide-up');
-      }
+      if (r.top < vh - 50 && r.bottom > 0) show(el);
     });
   }
   requestAnimationFrame(revealVisible);

@@ -33,6 +33,7 @@ function getPageInputs() {
     'pages/about': resolve(__dirname, 'src/pages/about.html'),
     'pages/blog': resolve(__dirname, 'src/pages/blog.html'),
     'pages/contact': resolve(__dirname, 'src/pages/contact.html'),
+    'pages/project': resolve(__dirname, 'src/pages/project.html'),
     'pages/projects': resolve(__dirname, 'src/pages/projects.html'),
     'pages/services': resolve(__dirname, 'src/pages/services.html'),
     'pages/shop': resolve(__dirname, 'src/pages/shop.html'),
@@ -208,6 +209,7 @@ export default defineConfig({
       input: getPageInputs(),
       output: {
         manualChunks: (id) => {
+          if (id.includes('assistant.js')) return 'assistant';
           // Split node_modules into vendor chunks
           if (id.includes('node_modules')) {
             // Sharp is a large image processing library

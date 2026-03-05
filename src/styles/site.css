@@ -498,7 +498,10 @@
 }
 
 @layer utilities {
-  /* Perf-lite: aggressively reduce expensive effects for ultra-smooth feel */
+  /* Perf-lite: aggressively reduce expensive effects for smoothness on old/slow devices */
+  .perf-lite {
+    scroll-behavior: auto !important;
+  }
   .perf-lite *:not([data-allow-motion]) {
     animation: none !important;
     transition-duration: 120ms !important;
@@ -552,13 +555,16 @@
     opacity: 0.15 !important;
   }
 
-  /* Performance: hint the compositor for frequently transformed elements */
-  [data-parallax],
-  [data-reveal],
-  [data-hero-spotlight] {
-    will-change: transform, opacity;
-    transform: translateZ(0); /* promote to its own layer */
+  /* Performance: hint the compositor for frequently transformed elements (skip in perf-lite to reduce layers) */
+  :root:not(.perf-lite) [data-parallax],
+  :root:not(.perf-lite) [data-reveal],
+  :root:not(.perf-lite) [data-hero-spotlight] {
+    will-change: transform;
     backface-visibility: hidden;
+  }
+  .perf-lite [data-parallax],
+  .perf-lite [data-reveal] {
+    will-change: auto;
   }
 
   /* Hero spotlight visual polish */
@@ -799,11 +805,10 @@
   }
   /* Interactive hover effects */
   .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.2s ease;
   }
   .hover-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
   }
   /* Testimonial cards — minimal, professional */
   .testimonial-card {

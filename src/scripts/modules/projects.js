@@ -402,6 +402,7 @@ function buildProjectsHTML(list) {
             alt="${p.title}" 
             class="project-image" 
             decoding="async"
+            loading="lazy"
             data-src="${lazySrc}"
             data-srcset="${srcSet}"
             data-sizes="${sizes}"

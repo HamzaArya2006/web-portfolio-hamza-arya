@@ -999,12 +999,17 @@ class AIAssistant {
 
   createUI() {
     debug('createUI started', {bodyExists:!!document.body,documentReady:document.readyState});
-    // Create floating button
-    const button = document.createElement('button');
-    button.className = 'ai-assistant-btn';
-    button.setAttribute('aria-label', 'Open AI Assistant');
-    button.setAttribute('aria-expanded', 'false');
-    button.innerHTML = `
+    const existingButton = document.getElementById('ai-assistant-btn');
+    let button;
+
+    if (existingButton) {
+      button = existingButton;
+    } else {
+      button = document.createElement('button');
+      button.className = 'ai-assistant-btn';
+      button.setAttribute('aria-label', 'Open AI Assistant');
+      button.setAttribute('aria-expanded', 'false');
+      button.innerHTML = `
       <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="novaIconGradient" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse">
@@ -1029,6 +1034,7 @@ class AIAssistant {
       <span class="ai-assistant-pulse"></span>
     `;
     button.id = 'ai-assistant-btn';
+    }
 
     // Create popup window
     const popup = document.createElement('div');
@@ -1139,22 +1145,24 @@ class AIAssistant {
 
     // Append to body - ensure body exists
     if (document.body) {
-      document.body.appendChild(button);
+      if (!existingButton) document.body.appendChild(button);
       document.body.appendChild(popup);
       debug('Elements appended to body', {buttonInDOM:!!document.getElementById('ai-assistant-btn'),popupInDOM:!!document.getElementById('ai-assistant-popup'),buttonParent:button.parentElement?.tagName});
     } else {
       // Fallback: wait for DOM to be ready
       warn('Body not found, using DOMContentLoaded fallback');
       document.addEventListener('DOMContentLoaded', () => {
-        document.body.appendChild(button);
+        if (!existingButton) document.body.appendChild(button);
         document.body.appendChild(popup);
       });
     }
     
-    // Ensure button is visible
-    button.style.display = 'flex';
-    button.style.visibility = 'visible';
-    button.style.opacity = '1';
+    // Ensure button is visible (only when we created it)
+    if (!existingButton) {
+      button.style.display = 'flex';
+      button.style.visibility = 'visible';
+      button.style.opacity = '1';
+    }
 
     // Add personalized welcome message
     setTimeout(() => {
@@ -1197,14 +1205,16 @@ class AIAssistant {
       }
     });
 
-    // Form submission
+    // Form submission (debounced to prevent double-send)
+    let submitLock = false;
     form.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (submitLock) return;
       const message = input.value.trim();
       if (message) {
+        submitLock = true;
         this.hideSuggestions();
         
-        // Check if in search mode
         if (input.getAttribute('data-search-mode') === 'true') {
           this.handleSearch(message);
         } else {
@@ -1212,6 +1222,7 @@ class AIAssistant {
         }
         
         input.value = '';
+        setTimeout(() => { submitLock = false; }, 400);
       }
     });
 
@@ -3841,7 +3852,8 @@ Controller: Handles input, updates model/view`,
 let assistantInstance = null;
 
 export function initAssistant() {
-  if (assistantInstance) return;
+  if (assistantInstance) return assistantInstance;
   assistantInstance = new AIAssistant();
   log('[assistant] Initialized successfully with advanced features');
+  return assistantInstance;
 }

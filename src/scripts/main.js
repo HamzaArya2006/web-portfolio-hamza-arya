@@ -40,7 +40,6 @@ import {
   applySiteCustomizations,
   mountHeroCustomSlot,
 } from './modules/siteCustomizations.js';
-import { initAssistant } from './modules/assistant.js';
 
 window.addEventListener('error', e =>
   console.error(
@@ -75,7 +74,7 @@ window.addEventListener('DOMContentLoaded', () => {
     console.error('[projects] Sync render failed:', e);
   }
 
-  // Perf-lite: favor ultra-smooth feel on low/medium devices or when user prefers less motion
+  // Perf-lite: smooth experience on low/medium devices, slow connections, or reduced motion
   try {
     const prefersReduced =
       window.matchMedia &&
@@ -83,7 +82,15 @@ window.addEventListener('DOMContentLoaded', () => {
     const cores = navigator.hardwareConcurrency || 4;
     const mem = navigator.deviceMemory || 4;
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    if (prefersReduced || cores <= 4 || mem <= 4 || isMobile) {
+    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const slowConnection = conn && (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.saveData === true);
+    if (
+      prefersReduced ||
+      slowConnection ||
+      isMobile ||
+      cores <= 6 ||
+      mem <= 6
+    ) {
       document.documentElement.classList.add('perf-lite');
       window.__PERF_LITE__ = true;
     }
@@ -155,17 +162,9 @@ window.addEventListener('DOMContentLoaded', () => {
   initNotifications();
   bindLazyImages();
 
-  try {
-    initAssistant();
-  } catch (e) {
-    console.error(
-      '%c[ERROR:H1]',
-      'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px',
-      'initAssistant FAILED',
-      { error: e.message, stack: e.stack }
-    );
-  }
-  // #endregion
+  // Nova AI: lazy-load on first click, preload after 60% scroll
+  initNovaLazy();
+
   // Eagerly render projects if grid exists to avoid relying solely on intersection
   // Shop page: carousel, featured, offers
   const shopHero = document.getElementById('shop-hero');
@@ -277,20 +276,56 @@ window.addEventListener('DOMContentLoaded', () => {
   } catch (_) {}
 });
 
-// Deferred: Load after initial render
+// Nova AI: lazy-load on first click; preload chunk after 60% scroll
+let novaPreloadDone = false;
+let novaInitialized = false;
+
+function initNovaLazy() {
+  if (document.getElementById('ai-assistant-btn')) return;
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.id = 'ai-assistant-btn';
+  button.className = 'ai-assistant-btn';
+  button.setAttribute('aria-label', 'Open AI Assistant');
+  button.setAttribute('aria-expanded', 'false');
+  button.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="novaIconGradient" x1="4" y1="3" x2="20" y2="21" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#38bdf8"/><stop offset="0.5" stop-color="#6366f1"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><path d="M6.5 5.5A3.5 3.5 0 0 1 10 2h6a3 3 0 0 1 3 3v5.5A3.5 3.5 0 0 1 15.5 14H12l-2.8 2.8c-.5.5-1.2.15-1.2-.47V14H8A3.5 3.5 0 0 1 4.5 10.5v-3A2.5 2.5 0 0 1 6.5 5.5Z" fill="url(#novaIconGradient)"/><path d="M9.25 8.5h.01M13.25 8.5h.01M9.75 10.75c.6.5 1.3.75 2.25.75s1.65-.25 2.25-.75" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="ai-assistant-btn-label">Ask Nova</span><span class="ai-assistant-pulse"></span>`;
+  button.style.display = 'flex';
+  button.style.visibility = 'visible';
+  button.style.opacity = '1';
+  document.body.appendChild(button);
+
+  button.addEventListener('click', function onNovaClick() {
+    if (novaInitialized) return;
+    novaInitialized = true;
+    import('./modules/assistant.js')
+      .then(({ initAssistant }) => initAssistant())
+      .then((instance) => {
+        if (instance && typeof instance.open === 'function') instance.open();
+      })
+      .catch((e) => {
+        console.error('[Nova] Failed to load:', e);
+        novaInitialized = false;
+      });
+  });
+}
+
+function preloadNovaAtScroll() {
+  if (novaPreloadDone) return;
+  const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+  if (scrollHeight <= 0) return;
+  if (window.scrollY / scrollHeight >= 0.6) {
+    novaPreloadDone = true;
+    import('./modules/assistant.js').catch(() => {});
+  }
+}
+
+window.addEventListener('scroll', preloadNovaAtScroll, { passive: true });
 window.addEventListener('load', () => {
-  // Load heavy sections conditionally when in viewport
   loadHeavySections();
-
-  // Load analytics after page load
-  import('./modules/analytics.js').then(({ initAnalytics }) => {
-    initAnalytics();
-  });
-
-  // Initialize Web Vitals monitoring
-  import('./modules/web-vitals.js').then(({ initWebVitals }) => {
-    initWebVitals();
-  });
+  preloadNovaAtScroll();
+  import('./modules/analytics.js').then(({ initAnalytics }) => initAnalytics());
+  import('./modules/web-vitals.js').then(({ initWebVitals }) => initWebVitals());
 });
 
 // Conditionally load heavy sections on viewport intersection

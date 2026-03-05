@@ -1,85 +1,55 @@
 /**
- * Micro-interactions and enhanced hover effects
+ * Micro-interactions – reduced for calmer experience
  */
 
 @layer components {
-  /* Enhanced button hover effects */
+  /* Subtle button transitions only */
   .btn-primary,
   .btn-secondary,
   .btn-ghost {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .btn-primary::before,
-  .btn-secondary::before,
-  .btn-ghost::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-  }
-
-  .btn-primary:hover::before,
-  .btn-secondary:hover::before,
-  .btn-ghost:hover::before {
-    width: 300px;
-    height: 300px;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
   }
 
   .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
   }
 
   .btn-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.08);
   }
 
   .btn-ghost:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
   }
 
-  /* Card hover effects */
+  /* Card hover – subtle only */
   .glass,
   .glass-testimonial {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
   .glass:hover,
   .glass-testimonial:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   }
 
-  /* Project card hover effects */
+  /* Project card – minimal hover */
   [data-project-card] {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: box-shadow 0.2s ease;
   }
 
   [data-project-card]:hover {
-    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
   }
 
   [data-project-card]:hover img {
-    transform: scale(1.05);
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* No image scale – reduces motion */
   }
 
-  /* Link hover effects - no underline */
+  /* Link hover – color only */
   a:not(.btn):not(.btn-primary):not(.btn-secondary):not(.btn-ghost):not(.btn-minimal) {
-    position: relative;
-    transition: color 0.2s;
+    transition: color 0.2s ease;
     text-decoration: none;
   }
 
@@ -88,26 +58,23 @@
     text-decoration: none;
   }
 
-  /* Underline on hover disabled site-wide */
   a:not(.btn):not(.btn-primary):not(.btn-secondary):not(.btn-ghost):not(.btn-minimal)::after {
     display: none;
   }
 
-  /* Input focus effects */
+  /* Input focus – border/outline only, no scale */
   .input:focus {
-    transform: scale(1.01);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
   }
 
-  /* Enhanced focus-visible for keyboard navigation */
+  /* Focus-visible for accessibility */
   .btn-primary:focus-visible,
   .btn-secondary:focus-visible,
   .btn-ghost:focus-visible,
   .btn-minimal:focus-visible {
     outline: 2px solid rgba(59, 130, 246, 0.8);
-    outline-offset: 3px;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    outline-offset: 2px;
   }
 
   a:focus-visible {
@@ -124,92 +91,78 @@
   /* Form validation states */
   .input:invalid:not(:placeholder-shown) {
     border-color: rgba(239, 68, 68, 0.5);
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
   }
 
   .input:valid:not(:placeholder-shown) {
     border-color: rgba(34, 197, 94, 0.5);
   }
 
-  /* Shake animation for errors */
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-    20%, 40%, 60%, 80% { transform: translateX(4px); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
   }
 
   .animate-shake {
-    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    animation: shake 0.4s ease-out both;
   }
 
-  /* Smooth scale on interactive elements */
+  /* Minimal active state */
   button:not(:disabled),
   [role="button"]:not(:disabled) {
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.15s ease;
   }
 
   button:not(:disabled):active,
   [role="button"]:not(:disabled):active {
-    transform: scale(0.98);
+    opacity: 0.9;
   }
 
-  /* Enhanced button loading states */
   .btn-primary:disabled,
   .btn-secondary:disabled,
   .btn-ghost:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none !important;
   }
 
-  /* Smooth transitions for all interactive elements */
+  /* Single property transitions for inputs/buttons */
   a, button, input, textarea, select {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   }
 
-  /* Stagger animation for lists */
+  /* Stagger – shorter */
   @keyframes stagger-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   [data-stagger] > * {
-    animation: stagger-in 0.5s ease-out both;
+    animation: stagger-in 0.35s ease-out both;
   }
 
-  [data-stagger] > *:nth-child(1) { animation-delay: 0.05s; }
-  [data-stagger] > *:nth-child(2) { animation-delay: 0.1s; }
-  [data-stagger] > *:nth-child(3) { animation-delay: 0.15s; }
-  [data-stagger] > *:nth-child(4) { animation-delay: 0.2s; }
-  [data-stagger] > *:nth-child(5) { animation-delay: 0.25s; }
-  [data-stagger] > *:nth-child(6) { animation-delay: 0.3s; }
-  [data-stagger] > *:nth-child(n+7) { animation-delay: 0.35s; }
+  [data-stagger] > *:nth-child(1) { animation-delay: 0.03s; }
+  [data-stagger] > *:nth-child(2) { animation-delay: 0.06s; }
+  [data-stagger] > *:nth-child(3) { animation-delay: 0.09s; }
+  [data-stagger] > *:nth-child(4) { animation-delay: 0.12s; }
+  [data-stagger] > *:nth-child(5) { animation-delay: 0.15s; }
+  [data-stagger] > *:nth-child(6) { animation-delay: 0.18s; }
+  [data-stagger] > *:nth-child(n+7) { animation-delay: 0.2s; }
 
-  /* Skeleton loading animation */
+  /* Skeleton loading */
   @keyframes skeleton-loading {
-    0% {
-      background-position: -200px 0;
-    }
-    100% {
-      background-position: calc(200px + 100%) 0;
-    }
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
   }
 
   .skeleton {
     background: linear-gradient(
       90deg,
       rgba(255, 255, 255, 0.05) 0%,
-      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.08) 50%,
       rgba(255, 255, 255, 0.05) 100%
     );
     background-size: 200px 100%;
-    animation: skeleton-loading 1.5s ease-in-out infinite;
+    animation: skeleton-loading 2s ease-in-out infinite;
     border-radius: 0.375rem;
     position: relative;
     overflow: hidden;
@@ -218,17 +171,9 @@
   .skeleton::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      transparent 100%
-    );
-    animation: skeleton-shimmer 2s ease-in-out infinite;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
+    animation: skeleton-shimmer 2.5s ease-in-out infinite;
   }
 
   @keyframes skeleton-shimmer {
@@ -236,7 +181,6 @@
     100% { transform: translateX(100%); }
   }
 
-  /* Loading spinner */
   @keyframes spin-smooth {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
@@ -252,85 +196,63 @@
     animation: spin-smooth 0.8s linear infinite;
   }
 
-  /* Pulse animation for loading states */
   @keyframes pulse-subtle {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.7;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
   }
 
   .animate-pulse-subtle {
-    animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: pulse-subtle 2s ease-in-out infinite;
   }
 
-  /* Fade in animation */
   @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .animate-fade-in {
-    animation: fade-in 0.4s ease-out;
+    animation: fade-in 0.3s ease-out;
   }
 
-  /* Smooth reveal animation for sections */
+  /* Reveal – shorter distance and duration */
   @keyframes reveal-up {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   [data-reveal] {
-    animation: reveal-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: reveal-up 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) both;
   }
 
-  /* Stagger reveal for grid items */
   [data-reveal-stagger] > * {
     opacity: 0;
-    transform: translateY(20px);
-    animation: reveal-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+    transform: translateY(12px);
+    animation: reveal-up 0.35s cubic-bezier(0.25, 0.1, 0.25, 1) both;
   }
 
-  [data-reveal-stagger] > *:nth-child(1) { animation-delay: 0.05s; }
-  [data-reveal-stagger] > *:nth-child(2) { animation-delay: 0.1s; }
-  [data-reveal-stagger] > *:nth-child(3) { animation-delay: 0.15s; }
-  [data-reveal-stagger] > *:nth-child(4) { animation-delay: 0.2s; }
-  [data-reveal-stagger] > *:nth-child(5) { animation-delay: 0.25s; }
-  [data-reveal-stagger] > *:nth-child(6) { animation-delay: 0.3s; }
-  [data-reveal-stagger] > *:nth-child(n+7) { animation-delay: 0.35s; }
+  [data-reveal-stagger] > *:nth-child(1) { animation-delay: 0.03s; }
+  [data-reveal-stagger] > *:nth-child(2) { animation-delay: 0.06s; }
+  [data-reveal-stagger] > *:nth-child(3) { animation-delay: 0.09s; }
+  [data-reveal-stagger] > *:nth-child(4) { animation-delay: 0.12s; }
+  [data-reveal-stagger] > *:nth-child(5) { animation-delay: 0.15s; }
+  [data-reveal-stagger] > *:nth-child(6) { animation-delay: 0.18s; }
+  [data-reveal-stagger] > *:nth-child(n+7) { animation-delay: 0.2s; }
 
-  /* Enhanced card hover with glow */
+  /* Card hover – shadow/border only */
+  .glass-professional {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
   .glass-professional:hover,
   .service-card:hover {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(59, 130, 246, 0.1);
-  }
-
-  /* Enhanced glass effect on hover */
-  .glass-professional {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
   }
 
   .glass-professional:hover {
-    backdrop-filter: blur(12px);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.12);
   }
 
-  /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

@@ -33,6 +33,7 @@ lerna-debug.log*
 coverage/
 lighthouse-report.html
 lighthouse-report.json
+lighthouse-reports/
 .nyc_output
 
 # Hosting providers

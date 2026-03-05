@@ -1,6 +1,6 @@
 export function project(slug) {
   const encoded = encodeURIComponent(String(slug || '').trim());
-  return `/pages/project.html?slug=${encoded}`;
+  return `/pages/projects/${encoded}.html`;
 }
 
 export function blogPost(slug) {

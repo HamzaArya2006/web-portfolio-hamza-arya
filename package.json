@@ -10,6 +10,8 @@
     "preview": "vite preview",
     "lh:build": "vite build",
     "lh:serve": "vite preview --port 4173 --strictPort --open=false",
+    "perf:report": "node scripts/performance-test.mjs http://localhost:4173",
+    "perf": "node scripts/performance-test.mjs",
     "generate-pages": "node scripts/generate-pages.mjs"
   },
   "dependencies": {
