@@ -41,27 +41,25 @@ import {
   mountHeroCustomSlot,
 } from './modules/siteCustomizations.js';
 
-window.addEventListener('error', e =>
-  console.error(
-    '%c[DEBUG:ERROR]',
-    'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px',
-    'Global JS Error',
-    {
-      message: e.message,
-      filename: e.filename,
-      lineno: e.lineno,
-      colno: e.colno,
-    }
-  )
-);
-window.addEventListener('unhandledrejection', e =>
-  console.error(
-    '%c[DEBUG:PROMISE]',
-    'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px',
-    'Unhandled Promise Rejection',
-    { reason: e.reason?.message || e.reason }
-  )
-);
+const isDev = import.meta.env?.DEV;
+if (isDev) {
+  window.addEventListener('error', e =>
+    console.error(
+      '%c[DEBUG:ERROR]',
+      'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px',
+      'Global JS Error',
+      { message: e.message, filename: e.filename, lineno: e.lineno, colno: e.colno }
+    )
+  );
+  window.addEventListener('unhandledrejection', e =>
+    console.error(
+      '%c[DEBUG:PROMISE]',
+      'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px',
+      'Unhandled Promise Rejection',
+      { reason: e.reason?.message || e.reason }
+    )
+  );
+}
 
 // Critical: Load immediately
 window.addEventListener('DOMContentLoaded', () => {
@@ -110,38 +108,23 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   bindSmoothScroll();
-  bindRevealOnScroll();
+  // bindRevealOnScroll already called above after sync render
 
   try {
     bindMobileNav();
   } catch (e) {
-    console.error(
-      '%c[ERROR:H4]',
-      'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px',
-      'bindMobileNav FAILED',
-      { error: e.message, stack: e.stack }
-    );
+    if (isDev) console.error('bindMobileNav failed', e);
   }
   try {
     bindDesktopDropdown();
   } catch (e) {
-    console.error(
-      '%c[ERROR:H5]',
-      'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px',
-      'bindDesktopDropdown FAILED',
-      { error: e.message, stack: e.stack }
-    );
+    if (isDev) console.error('bindDesktopDropdown failed', e);
   }
 
   try {
     bindStickyHeader();
   } catch (e) {
-    console.error(
-      '%c[ERROR:H6]',
-      'background:#dc2626;color:#fff;padding:2px 6px;border-radius:3px',
-      'bindStickyHeader FAILED',
-      { error: e.message, stack: e.stack }
-    );
+    if (isDev) console.error('bindStickyHeader failed', e);
   }
 
   bindMobileSubmenu();
@@ -160,9 +143,9 @@ window.addEventListener('DOMContentLoaded', () => {
   initPerformanceMonitoring();
   initPWAInstall();
   initNotifications();
-  bindLazyImages();
+  // bindLazyImages already called above after sync render
 
-  // Nova AI: lazy-load on first click, preload after 60% scroll
+  // Nova AI:
   initNovaLazy();
 
   // Eagerly render projects if grid exists to avoid relying solely on intersection
@@ -322,7 +305,6 @@ function preloadNovaAtScroll() {
 
 window.addEventListener('scroll', preloadNovaAtScroll, { passive: true });
 window.addEventListener('load', () => {
-  loadHeavySections();
   preloadNovaAtScroll();
   import('./modules/analytics.js').then(({ initAnalytics }) => initAnalytics());
   import('./modules/web-vitals.js').then(({ initWebVitals }) => initWebVitals());

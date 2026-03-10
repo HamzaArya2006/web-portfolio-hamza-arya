@@ -1,9 +1,11 @@
-#!/usr/bin/env node
 /**
  * Performance test: run Lighthouse and print scores + Core Web Vitals.
  * Start the site first: npm run lh:serve (or npm run preview)
  * Then: node scripts/performance-test.mjs [url]
  * Or use npm run perf:report (runs against http://localhost:4173 by default)
+ *
+ * Requires: Chrome or Chromium installed (Lighthouse uses it in headless mode).
+ * Alternative: Test the live site at https://pagespeed.web.dev/analysis?url=https://hamzaarya.com
  */
 import { spawn } from 'child_process';
 import { readFileSync, mkdirSync, existsSync } from 'fs';

@@ -53,8 +53,12 @@ export function bindMobileNav() {
       lastFocusedElement = document.activeElement;
       btn.setAttribute('aria-label', 'Close menu');
       menu.style.display = 'block';
-      menu.offsetHeight;
-      menu.classList.remove('hidden');
+      // Defer class change to next frame so transition runs without forcing reflow
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          menu.classList.remove('hidden');
+        });
+      });
       // Focus first focusable element inside menu
       const focusables = getFocusable();
       if (focusables && focusables.length) {
@@ -250,8 +254,8 @@ export function bindStickyHeader() {
     }
   };
 
-  // Initial state
-  updateHeaderState();
+  // Initial state: defer to next frame to avoid forced reflow with other DOM work
+  requestAnimationFrame(updateHeaderState);
 
   window.addEventListener('scroll', updateHeaderState, { passive: true });
   window.addEventListener('resize', () => {

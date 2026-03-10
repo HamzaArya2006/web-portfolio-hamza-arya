@@ -12,6 +12,13 @@
 # Netlify will copy _redirects from public/ to dist/ during build
 
 # Headers for security and caching
+# Long-lived cache for hashed assets in /assets/ (Vite output)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    X-Content-Type-Options = "nosniff"
+
 [[headers]]
   for = "/*.js"
   [headers.values]

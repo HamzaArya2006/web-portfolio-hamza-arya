@@ -46,14 +46,17 @@ export function bindHeroSpotlight() {
 
   // Static gradient only – no pointer tracking for fewer interactions
   overlay.style.pointerEvents = 'none';
-  const cx = hero.clientWidth / 2;
-  const cy = hero.clientHeight / 2;
-  const r = Math.max(180, Math.min(280, Math.floor(hero.clientWidth * 0.2)));
-  overlay.style.background = `radial-gradient(circle at ${cx}px ${cy}px,
+  // Defer dimension read and style writes to next frame to avoid forced reflow
+  requestAnimationFrame(() => {
+    const cx = hero.clientWidth / 2;
+    const cy = hero.clientHeight / 2;
+    const r = Math.max(180, Math.min(280, Math.floor(hero.clientWidth * 0.2)));
+    overlay.style.background = `radial-gradient(circle at ${cx}px ${cy}px,
     rgba(37, 99, 235, 0.12) 0px,
     rgba(37, 99, 235, 0.04) ${r}px,
     transparent ${r + 120}px)`;
-  overlay.style.opacity = '1';
+    overlay.style.opacity = '1';
+  });
 }
 
 export function deferHeroAnimations() {

@@ -2,6 +2,9 @@
 
 import { initTheme as initThemeSystem, applyTheme, getTheme } from './theme.js';
 
+/** @type {Set<Element>} Elements already observed by reveal (idempotent re-calls) */
+const revealedElements = new Set();
+
 export function initTheme() {
   // Use the new theme system
   initThemeSystem();
@@ -36,6 +39,8 @@ export function bindRevealOnScroll() {
     if (perfLite) {
       el.style.opacity = '1';
       el.style.transform = '';
+    } else if (heroSet.has(el)) {
+      el.classList.add('fade-in');
     } else {
       el.classList.add('fade-in', 'slide-up');
     }
@@ -63,18 +68,22 @@ export function bindRevealOnScroll() {
     { threshold: 0.05, rootMargin: '0px 0px -10% 0px' }
   );
   revealables.forEach((el) => {
+    if (revealedElements.has(el)) return;
+    revealedElements.add(el);
     if (heroSet.has(el)) heroObserver.observe(el);
     else defaultObserver.observe(el);
   });
 
   function revealVisible() {
-    const rect = (el) => el.getBoundingClientRect();
     const vh = window.innerHeight;
+    // Batch all layout reads first to avoid forced reflow
+    const toShow = [];
     revealables.forEach((el) => {
       if (heroSet.has(el)) return;
-      const r = rect(el);
-      if (r.top < vh - 50 && r.bottom > 0) show(el);
+      const r = el.getBoundingClientRect();
+      if (r.top < vh - 50 && r.bottom > 0) toShow.push(el);
     });
+    toShow.forEach(show);
   }
   requestAnimationFrame(revealVisible);
   setTimeout(revealVisible, 150);

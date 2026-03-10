@@ -9,6 +9,7 @@ This document outlines the performance optimizations implemented in the portfoli
 - **Modern Formats**: AVIF and WebP variants generated automatically
 - **Blur-up Placeholders**: Base64-encoded low-quality placeholders for instant visual feedback
 - **Metadata Generation**: JSON files with image dimensions, aspect ratios, and placeholder data
+- **LCP image dimensions**: Hero and key images use explicit `width`/`height` (or aspect-ratio) to reduce CLS
 
 ### Implementation
 - Enhanced `scripts/optimize-images.mjs` to generate:
@@ -49,8 +50,14 @@ const picture = generatePictureElement({
 
 ### Tailwind Configuration
 - Content purging configured in `tailwind.config.js`
+- Content paths include `./src/pages/**/*.html` for generated blog/project pages
 - Only used classes are included in production build
 - PostCSS configured for autoprefixing
+
+### Critical CSS & Async Loading
+- **Critical inline**: Minimal above-the-fold CSS inlined in `index.html` (body, #top, .container-pro, skip-link) to improve first paint and reduce CLS.
+- **Preload**: Main CSS is preloaded for faster discovery.
+- For non-blocking CSS loading, a post-build step or Vite plugin would be needed so the built asset URL is used with `media="print"` + `onload="this.media='all'"`.
 
 ### Future: Critical CSS Inlining
 - `src/styles/critical.css` prepared for build-time inlining
@@ -176,4 +183,5 @@ npm run lighthouse
 - [ ] Image CDN integration for even faster delivery
 - [ ] Advanced prefetching for likely next pages
 - [ ] Service worker precaching for predicted routes
+- [ ] **Speed insights**: See `SPEED_INSIGHTS.md` for latest test results (e.g. Reduce unused CSS, CLS) and recommendations.
 

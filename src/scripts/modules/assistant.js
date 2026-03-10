@@ -1104,14 +1104,14 @@ class AIAssistant {
       <div class="ai-assistant-body">
         <div class="ai-assistant-messages" id="ai-assistant-messages"></div>
         <div class="ai-assistant-suggestions" id="ai-assistant-suggestions">
-          <p class="ai-assistant-suggestions-label">Try asking:</p>
+          <p class="ai-assistant-suggestions-label">Try asking</p>
           <div class="ai-assistant-chips">
-            <button class="ai-assistant-chip" data-question="Show Hamza's projects">Show Hamza's projects</button>
-            <button class="ai-assistant-chip" data-question="What tech stack does Hamza use?">What tech stack does Hamza use?</button>
-            <button class="ai-assistant-chip" data-question="Review my code">Review my code</button>
-            <button class="ai-assistant-chip" data-question="Explain Hamza's experience">Explain Hamza's experience</button>
-            <button class="ai-assistant-chip" data-question="Ask Nova about hiring Hamza">Hire Hamza</button>
-            <button class="ai-assistant-chip" data-question="What projects has Hamza built recently?">Recent projects</button>
+            <button type="button" class="ai-assistant-chip" data-question="Show Hamza's projects">Projects</button>
+            <button type="button" class="ai-assistant-chip" data-question="What tech stack does Hamza use?">Tech stack</button>
+            <button type="button" class="ai-assistant-chip" data-question="Review my code">Review my code</button>
+            <button type="button" class="ai-assistant-chip" data-question="Explain Hamza's experience">Experience</button>
+            <button type="button" class="ai-assistant-chip" data-question="Ask Nova about hiring Hamza">Hire Hamza</button>
+            <button type="button" class="ai-assistant-chip" data-question="What projects has Hamza built recently?">Recent work</button>
           </div>
         </div>
       </div>
@@ -2023,11 +2023,9 @@ class AIAssistant {
     typingEl.className = 'ai-assistant-message ai-assistant-message-assistant ai-assistant-typing-indicator';
     typingEl.innerHTML = `
       <div class="ai-assistant-message-avatar">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4L3 21l8-2.3c1.1.8 2.4 1.3 3.8 1.3 3.87 0 7-3.13 7-7s-3.13-7-7-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
-          <circle cx="9" cy="9" r="1.2" fill="white"/>
-          <circle cx="15" cy="9" r="1.2" fill="white"/>
-          <path d="M9 13h6" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+        <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <path d="M6.5 5.5A3.5 3.5 0 0 1 10 2h6a3 3 0 0 1 3 3v5.5A3.5 3.5 0 0 1 15.5 14H12l-2.8 2.8c-.5.5-1.2.15-1.2-.47V14H8A3.5 3.5 0 0 1 4.5 10.5v-3A2.5 2.5 0 0 1 6.5 5.5Z" fill="#6366f1"/>
+          <path d="M9.25 8.5h.01M13.25 8.5h.01M9.75 10.75c.6.5 1.3.75 2.25.75s1.65-.25 2.25-.75" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <div class="ai-assistant-message-content">
@@ -2373,11 +2371,9 @@ class AIAssistant {
     if (role === 'assistant') {
       messageEl.innerHTML = `
         <div class="ai-assistant-message-avatar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 1.5.5 2.9 1.3 4L3 21l8-2.3c1.1.8 2.4 1.3 3.8 1.3 3.87 0 7-3.13 7-7s-3.13-7-7-7zm0 12c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
-            <circle cx="9" cy="9" r="1.2" fill="white"/>
-            <circle cx="15" cy="9" r="1.2" fill="white"/>
-            <path d="M9 13h6" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+          <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+            <path d="M6.5 5.5A3.5 3.5 0 0 1 10 2h6a3 3 0 0 1 3 3v5.5A3.5 3.5 0 0 1 15.5 14H12l-2.8 2.8c-.5.5-1.2.15-1.2-.47V14H8A3.5 3.5 0 0 1 4.5 10.5v-3A2.5 2.5 0 0 1 6.5 5.5Z" fill="#6366f1"/>
+            <path d="M9.25 8.5h.01M13.25 8.5h.01M9.75 10.75c.6.5 1.3.75 2.25.75s1.65-.25 2.25-.75" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <div class="ai-assistant-message-content">
@@ -2397,13 +2393,12 @@ class AIAssistant {
     messagesContainer.appendChild(messageEl);
     
     if (!skipAnimation) {
-      // Trigger animation by forcing reflow
-      void messageEl.offsetHeight;
-      
-      // Add visible class after a tiny delay to ensure animation triggers
-      setTimeout(() => {
-        messageEl.classList.add('ai-assistant-message-visible');
-      }, 10);
+      // Trigger animation after next paint without forcing reflow
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          messageEl.classList.add('ai-assistant-message-visible');
+        });
+      });
     }
     
     // Scroll to bottom after message is added

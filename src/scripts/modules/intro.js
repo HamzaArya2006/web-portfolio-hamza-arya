@@ -40,7 +40,12 @@ export function runModernIntroOverlaySequence() {
     document.body.classList.add('page-ready');
     document.body.classList.remove('page-intro-init');
     overlay.classList.add('intro-exit');
-    setTimeout(() => overlay.remove(), prefersReduced ? 400 : 1250);
+    const removeDelay = prefersReduced ? 400 : 1250;
+    setTimeout(() => {
+      overlay.classList.add('intro-hidden');
+      overlay.setAttribute('aria-hidden', 'true');
+      overlay.classList.remove('intro-exit');
+    }, removeDelay);
   }, revealDelay);
 }
 

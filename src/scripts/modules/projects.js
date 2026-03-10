@@ -421,7 +421,7 @@ function buildProjectsHTML(list) {
           }
           ${
             metaText
-              ? `<p class="project-meta-line text-xs text-gray-500">${metaText}</p>`
+              ? `<p class="project-meta-line text-xs text-gray-400">${metaText}</p>`
               : ''
           }
           <div class="project-tech">
@@ -434,15 +434,15 @@ function buildProjectsHTML(list) {
         <div class="project-links-row">
           ${
             p.links?.live
-              ? `<a href="${p.links.live}" class="project-link-minimal" target="_blank" rel="noopener">Live demo</a>`
+              ? `<a href="${p.links.live}" class="project-link-minimal" target="_blank" rel="noopener" aria-label="Live demo – ${p.title}">Live demo</a>`
               : ''
           }
           ${
             p.links?.code && p.links.code !== '#'
-              ? `<a href="${p.links.code}" class="project-link-minimal" target="_blank" rel="noopener">GitHub</a>`
+              ? `<a href="${p.links.code}" class="project-link-minimal" target="_blank" rel="noopener" aria-label="GitHub – ${p.title}">GitHub</a>`
               : ''
           }
-          ${detailUrl ? `<a href="${detailUrl}" class="project-link-minimal">View details</a>` : ''}
+          ${detailUrl ? `<a href="${detailUrl}" class="project-link-minimal" aria-label="View details – ${p.title}">View details</a>` : ''}
         </div>
       </article>`;
     })
@@ -485,10 +485,14 @@ export function renderProjectsSync() {
   const totalCount = document.getElementById('total-projects');
   const emptyEl = document.getElementById('projects-empty');
   if (!grid) return;
+  const featuredOnly = grid.dataset.featuredOnly === 'true';
   const dataSource = projects.length ? projects : localProjects;
-  const filtered = dataSource.filter(projectMatchesFilter);
+  const baseList = featuredOnly
+    ? dataSource.filter(p => p.featured)
+    : dataSource;
+  const filtered = featuredOnly ? baseList : baseList.filter(projectMatchesFilter);
   if (count) count.textContent = String(filtered.length);
-  if (totalCount) totalCount.textContent = String(dataSource.length);
+  if (totalCount) totalCount.textContent = String(baseList.length);
   grid.innerHTML = buildProjectsHTML(filtered);
   revealCardsAndBindImages(grid);
   if (emptyEl) {
@@ -502,21 +506,28 @@ export async function renderProjects() {
   const totalCount = document.getElementById('total-projects');
   const emptyEl = document.getElementById('projects-empty');
   if (!grid) return;
+  const featuredOnly = grid.dataset.featuredOnly === 'true';
 
   // 1) Sync first paint from current data (local fallback) so cards show immediately
   const dataSource = projects.length ? projects : localProjects;
-  const filteredInitial = dataSource.filter(projectMatchesFilter);
+  const baseInitial = featuredOnly
+    ? dataSource.filter(p => p.featured)
+    : dataSource;
+  const filteredInitial = featuredOnly
+    ? baseInitial
+    : baseInitial.filter(projectMatchesFilter);
   if (count) count.textContent = String(filteredInitial.length);
-  if (totalCount) totalCount.textContent = String(dataSource.length);
+  if (totalCount) totalCount.textContent = String(baseInitial.length);
   grid.innerHTML = buildProjectsHTML(filteredInitial);
   revealCardsAndBindImages(grid);
   if (emptyEl) emptyEl.classList.toggle('hidden', filteredInitial.length > 0);
 
   // 2) Load remote (if any) and re-render when ready
   const data = await loadProjects();
-  const filtered = data.filter(projectMatchesFilter);
+  const baseList = featuredOnly ? data.filter(p => p.featured) : data;
+  const filtered = featuredOnly ? baseList : baseList.filter(projectMatchesFilter);
   if (count) count.textContent = String(filtered.length);
-  if (totalCount) totalCount.textContent = String(data.length);
+  if (totalCount) totalCount.textContent = String(baseList.length);
   grid.innerHTML = buildProjectsHTML(filtered);
   revealCardsAndBindImages(grid);
   if (emptyEl) emptyEl.classList.toggle('hidden', filtered.length > 0);

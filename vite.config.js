@@ -162,35 +162,134 @@ export default defineConfig({
       configureServer(server) {
         return () => {
           server.middlewares.use(async (req, res, next) => {
-            if (req.url && req.url.startsWith('/pages/')) {
-              let url = req.url;
-              if (!url.endsWith('.html')) {
-                url = url.endsWith('/') ? url.slice(0, -1) : url;
-                url = `${url}.html`;
-              }
-              const filePath = resolve(__dirname, 'src', url.slice(1));
+            const url = req.url?.split('?')[0] || '/';
+
+            // Skip asset and internal Vite requests
+            if (
+              url.startsWith('/@') ||
+              url.startsWith('/assets/') ||
+              url.includes('.')
+            ) {
+              return next();
+            }
+
+            // Root pretty URLs like /about, /contact, etc.
+            if (url !== '/') {
+              const pageName = url.replace(/^\/+|\/+$/g, '');
+              const htmlPath = resolve(__dirname, 'src', 'pages', `${pageName}.html`);
+              const indexPath = resolve(__dirname, 'src', 'pages', pageName, 'index.html');
+
               try {
-                const rawHtml = readFileSync(filePath, 'utf-8');
+                const rawHtml = readFileSync(htmlPath, 'utf-8');
                 const transformed = await server.transformIndexHtml(url, rawHtml);
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'text/html; charset=utf-8');
                 res.end(transformed);
                 return;
-              } catch (err) {
-                // fallback: try directory index.html (e.g. /pages/admin -> /pages/admin/index.html)
-                const dirIndex = resolve(__dirname, 'src', url.slice(1).replace(/\.html$/, '/index.html'));
+              } catch {
                 try {
-                  const rawHtml = readFileSync(dirIndex, 'utf-8');
+                  const rawHtml = readFileSync(indexPath, 'utf-8');
                   const transformed = await server.transformIndexHtml(url, rawHtml);
                   res.statusCode = 200;
                   res.setHeader('Content-Type', 'text/html; charset=utf-8');
                   res.end(transformed);
                   return;
-                } catch (err2) {
+                } catch {
+                  // fall through to /pages/ handling below
+                }
+              }
+            }
+
+            // Existing /pages/ behavior (keeps support for /pages/about, etc.)
+            if (url.startsWith('/pages/')) {
+              let rewritten = url;
+              if (!rewritten.endsWith('.html')) {
+                rewritten = rewritten.endsWith('/') ? rewritten.slice(0, -1) : rewritten;
+                rewritten = `${rewritten}.html`;
+              }
+              const filePath = resolve(__dirname, 'src', rewritten.slice(1));
+              try {
+                const rawHtml = readFileSync(filePath, 'utf-8');
+                const transformed = await server.transformIndexHtml(rewritten, rawHtml);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                res.end(transformed);
+                return;
+              } catch {
+                // fallback: try directory index.html (e.g. /pages/admin -> /pages/admin/index.html)
+                const dirIndex = resolve(__dirname, 'src', rewritten.slice(1).replace(/\.html$/, '/index.html'));
+                try {
+                  const rawHtml = readFileSync(dirIndex, 'utf-8');
+                  const transformed = await server.transformIndexHtml(rewritten, rawHtml);
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                  res.end(transformed);
+                  return;
+                } catch {
                   // fall through to next middleware (likely 404 handler)
                 }
               }
             }
+
+            next();
+          });
+        };
+      },
+      // Apply similar rewrites for `vite preview` so localhost:4173/about works
+      configurePreviewServer(server) {
+        return () => {
+          server.middlewares.use((req, res, next) => {
+            const url = req.url?.split('?')[0] || '/';
+
+            if (
+              url.startsWith('/@') ||
+              url.startsWith('/assets/') ||
+              url.includes('.')
+            ) {
+              return next();
+            }
+
+            if (url !== '/') {
+              const pageName = url.replace(/^\/+|\/+$/g, '');
+                const htmlPath = resolve(__dirname, 'dist', 'pages', `${pageName}.html`);
+              const indexPath = resolve(__dirname, 'dist', 'pages', pageName, 'index.html');
+
+              // Try /dist/pages/<name>.html
+              if (existsSync(htmlPath)) {
+                const rawHtml = readFileSync(htmlPath, 'utf-8');
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                res.end(rawHtml);
+                return;
+              }
+
+              // Try /dist/pages/<name>/index.html
+              if (existsSync(indexPath)) {
+                const rawHtml = readFileSync(indexPath, 'utf-8');
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                res.end(rawHtml);
+                return;
+              }
+            }
+
+            // Also keep supporting /pages/about style URLs in preview
+            if (url.startsWith('/pages/')) {
+              let rewritten = url;
+              if (!rewritten.endsWith('.html')) {
+                rewritten = rewritten.endsWith('/') ? rewritten.slice(0, -1) : rewritten;
+                rewritten = `${rewritten}.html`;
+              }
+              const filePath = resolve(__dirname, 'dist', rewritten.slice(1));
+              if (existsSync(filePath)) {
+                const rawHtml = readFileSync(filePath, 'utf-8');
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'text/html; charset=utf-8');
+                res.end(rawHtml);
+                return;
+              }
+            }
+
             next();
           });
         };

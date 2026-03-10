@@ -40,7 +40,8 @@ export const projects = [
       "Multiple contact options via phone, WhatsApp, email, and forms"
     ],
     "duration": "3 weeks",
-    "client": "Farah Gostar Co. Ltd"
+    "client": "Farah Gostar Co. Ltd",
+    "featured": true
   },
   {
     "id": "ptn-energy-solutions-website",
@@ -81,7 +82,8 @@ export const projects = [
       "Built on WordPress with theme customization and plugin configuration"
     ],
     "duration": "Ongoing",
-    "client": "Power Trade National Co. Ltd"
+    "client": "Power Trade National Co. Ltd",
+    "featured": true
   },
   {
     "id": "nexus-coffee-shop-landing",
@@ -123,7 +125,8 @@ export const projects = [
       "Newsletter signup to capture leads and keep customers engaged"
     ],
     "duration": "2 weeks",
-    "client": "Nexus Coffee (Sample Project)"
+    "client": "Nexus Coffee (Sample Project)",
+    "featured": true
   },
   {
     "id": "appstore-discovery-platform",

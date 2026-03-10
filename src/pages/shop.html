@@ -18,10 +18,10 @@
     <link rel="preload" href="/src/styles/main.css" as="style" />
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
-  <body class="bg-gray-900 text-gray-100">
+  <body class="bg-black text-gray-100">
     {{> header-shop}}
 
-    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60 backdrop-blur-sm">
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/95 backdrop-blur-sm">
       <ol class="container-pro flex items-center gap-2 py-3.5 text-sm text-gray-300">
         <li><a href="/index.html" class="hover:text-white transition-colors duration-200">Home</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
@@ -51,9 +51,11 @@
     </section>
 
     <!-- Featured -->
-    <section id="shop-featured" class="py-16 md:py-20 bg-gray-900 border-t border-white/10" aria-label="Featured offers">
-      <div class="container-pro">
-        <h2 class="text-2xl md:text-3xl font-bold mb-2 text-white">Featured</h2>
+    <section id="shop-featured" class="py-16 md:py-20 bg-black relative overflow-hidden cv-auto border-t border-white/10" aria-label="Featured offers">
+      <div class="absolute inset-0 bg-grid opacity-15" aria-hidden="true"></div>
+      <div class="container-pro relative">
+        <p class="hero-overline text-xs sm:text-sm font-medium tracking-[0.25em] uppercase text-white/50">Offers</p>
+        <h2 class="services-title text-2xl md:text-3xl font-bold mt-3 mb-4 text-white">Featured</h2>
         <p class="text-gray-400 mb-10 max-w-xl">Popular packages and fixed-scope options.</p>
         <div id="shop-featured-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <!-- Injected by shop.js -->
@@ -62,9 +64,11 @@
     </section>
 
     <!-- All offers / services cards -->
-    <section id="shop-offers" class="py-16 md:py-20 bg-black border-t border-white/10" aria-label="All offers and services">
-      <div class="container-pro">
-        <h2 class="text-2xl md:text-3xl font-bold mb-2 text-white">Services & offers</h2>
+    <section id="shop-offers" class="py-16 md:py-20 bg-black relative overflow-hidden cv-auto border-t border-white/10" aria-label="All offers and services">
+      <div class="absolute inset-0 bg-grid opacity-15" aria-hidden="true"></div>
+      <div class="container-pro relative">
+        <p class="hero-overline text-xs sm:text-sm font-medium tracking-[0.25em] uppercase text-white/50">Services</p>
+        <h2 class="services-title text-2xl md:text-3xl font-bold mt-3 mb-4 text-white">Services & offers</h2>
         <p class="text-gray-400 mb-10 max-w-xl">Development services, audits, and packages. Checkout powered by Stripe.</p>
         <div id="shop-offers-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <!-- Injected by shop.js -->
@@ -73,7 +77,7 @@
     </section>
 
     <!-- Payment note -->
-    <section class="py-12 bg-gray-900 border-t border-white/10" aria-label="Payment info">
+    <section class="py-12 bg-black border-t border-white/10" aria-label="Payment info">
       <div class="container-pro text-center">
         <p class="text-gray-400 text-sm mb-2">Secure checkout with</p>
         <p class="text-white font-semibold">Stripe</p>

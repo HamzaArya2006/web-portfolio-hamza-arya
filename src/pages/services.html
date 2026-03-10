@@ -19,40 +19,45 @@
     <meta name="twitter:image" content="/favicon.svg" />
     <!-- Canonical URL -->
     <link rel="canonical" href="https://hamzaarya.dev/services" />
+    <!-- Performance hints -->
+    <link rel="preload" href="/src/styles/main.css" as="style" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+    <link rel="preload" href="/src/scripts/main.js" as="script" />
   </head>
-  <body class="bg-gray-900 text-gray-100">
+  <body class="bg-black text-gray-100">
     <!-- Simple header (brand + quick links) -->
     {{> header}}
 
     <!-- Breadcrumb / navigation path -->
-    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
-      <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
-        <li><a href="/index.html" class="hover:text-white">Home</a></li>
+    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/95 backdrop-blur-sm">
+      <ol class="container-pro flex items-center gap-2 py-3.5 text-sm text-gray-300">
+        <li><a href="/index.html" class="hover:text-white transition-colors duration-200">Home</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </li>
-        <li aria-current="page" class="text-white">Services</li>
+        <li aria-current="page" class="text-white font-medium">Services</li>
       </ol>
     </nav>
 
-    <section id="top" class="relative py-20 overflow-hidden bg-black text-white">
+    <section id="top" class="relative py-20 overflow-hidden bg-black text-white" aria-label="Services introduction">
       <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-bg>
-        <div class="absolute inset-0 bg-mesh-grid animate-grid-move opacity-25"></div>
-        <div class="absolute inset-0 bg-grid animate-grid-move opacity-60"></div>
-        <div class="absolute inset-0 bg-grid-dots opacity-15"></div>
-        <div data-parallax="0.06" class="absolute top-0 left-0 h-full w-screen -translate-x-1/2 bg-gradient-to-r from-blue-600/20 via-indigo-600/15 to-cyan-500/20 blur-3xl"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black via-[#080c14] to-black"></div>
+        <div class="hero-grid-pattern absolute inset-0 opacity-[0.04]"></div>
+        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[80vmax] h-[50vmax] bg-blue-500/6 rounded-full blur-[80px]"></div>
       </div>
-      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300 mix-blend-soft-light" style="will-change: background;"></div>
+      <div data-hero-spotlight class="absolute inset-0 z-10 pointer-events-none opacity-0 transition-opacity duration-300" style="will-change: background;"></div>
       <div class="container-pro relative z-20 text-center">
-        <div data-reveal class="opacity-0 translate-y-6">
-          <h1 class="text-5xl sm:text-6xl lg:text-7xl font-bold leading-[0.9] tracking-tight mb-6">Services</h1>
-          <p class="text-white/90 text-xl max-w-3xl mx-auto leading-relaxed">From idea to launch: I build, optimize, and scale products with modern tools and reliable processes.</p>
+        <div data-reveal class="opacity-0 translate-y-6 max-w-3xl mx-auto">
+          <p class="hero-overline text-xs sm:text-sm font-medium tracking-[0.25em] uppercase text-white/50">Services</p>
+          <h1 class="services-title text-3xl sm:text-4xl lg:text-5xl font-bold mt-3 mb-4">Services I provide</h1>
+          <p class="text-white/80 text-lg max-w-2xl mx-auto leading-relaxed">From idea to launch: I build, optimize, and scale products with modern tools and reliable processes.</p>
         </div>
       </div>
     </section>
 
-    <section class="py-24 bg-black relative overflow-hidden">
-      <div class="absolute inset-0 bg-grid opacity-20"></div>
+    <section class="py-24 bg-black relative overflow-hidden cv-auto">
+      <div class="absolute inset-0 bg-grid opacity-15" aria-hidden="true"></div>
       <div class="container-pro relative">
         <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <div data-reveal class="opacity-0 translate-y-6 service-card group">
@@ -95,76 +100,82 @@
       </div>
     </section>
 
-    <section class="py-24 bg-gray-900">
-      <div class="container-pro">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">Packages</h2>
-          <p class="text-gray-300 text-lg max-w-2xl mx-auto">Fixed‑scope options to fit common needs.</p>
+    <section class="py-24 bg-black relative overflow-hidden cv-auto">
+      <div class="absolute inset-0 bg-grid opacity-15" aria-hidden="true"></div>
+      <div class="container-pro relative">
+        <div class="max-w-3xl mb-16">
+          <p class="hero-overline text-xs sm:text-sm font-medium tracking-[0.25em] uppercase text-white/50">Packages</p>
+          <h2 class="services-title text-3xl sm:text-4xl font-bold mt-3 mb-4">Fixed‑scope options</h2>
+          <p class="text-gray-300 text-base sm:text-lg max-w-2xl">Fixed‑scope options to fit common needs.</p>
         </div>
         <div class="grid gap-8 md:grid-cols-3">
-          <div class="glass rounded-2xl p-8">
-            <h3 class="text-xl font-semibold mb-2">Audit & Roadmap</h3>
+          <div class="glass rounded-2xl p-8 border border-white/10">
+            <h3 class="text-xl font-semibold mb-2 text-white">Audit & Roadmap</h3>
             <p class="text-gray-400 mb-4">Codebase, performance, and DX assessment</p>
-            <div class="text-2xl font-bold mb-4">$1,500</div>
+            <div class="text-2xl font-bold mb-4 text-white">$1,500</div>
             <ul class="space-y-2 text-sm text-gray-300"><li>Actionable report</li><li>Prioritized backlog</li><li>Review call</li></ul>
           </div>
           <div class="glass rounded-2xl p-8 border border-blue-500/30">
-            <h3 class="text-xl font-semibold mb-2">MVP Sprint</h3>
+            <h3 class="text-xl font-semibold mb-2 text-white">MVP Sprint</h3>
             <p class="text-gray-400 mb-4">Ship core features fast</p>
-            <div class="text-2xl font-bold mb-4">$6,000</div>
+            <div class="text-2xl font-bold mb-4 text-white">$6,000</div>
             <ul class="space-y-2 text-sm text-gray-300"><li>2‑3 weeks</li><li>Demo each week</li><li>Launch support</li></ul>
           </div>
-          <div class="glass rounded-2xl p-8">
-            <h3 class="text-xl font-semibold mb-2">Growth Retainer</h3>
+          <div class="glass rounded-2xl p-8 border border-white/10">
+            <h3 class="text-xl font-semibold mb-2 text-white">Growth Retainer</h3>
             <p class="text-gray-400 mb-4">Iteration and maintenance</p>
-            <div class="text-2xl font-bold mb-4">$2,500/mo</div>
+            <div class="text-2xl font-bold mb-4 text-white">$2,500/mo</div>
             <ul class="space-y-2 text-sm text-gray-300"><li>Monthly roadmap</li><li>Monitoring</li><li>Priority support</li></ul>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="py-24 bg-black">
-      <div class="container-pro max-w-4xl">
-        <div class="text-center mb-12">
-          <h2 class="text-4xl font-bold">Process</h2>
+    <section class="py-24 bg-black relative overflow-hidden cv-auto">
+      <div class="absolute inset-0 bg-grid opacity-15" aria-hidden="true"></div>
+      <div class="container-pro relative max-w-4xl">
+        <div class="max-w-3xl mb-12">
+          <p class="hero-overline text-xs sm:text-sm font-medium tracking-[0.25em] uppercase text-white/50">Process</p>
+          <h2 class="services-title text-3xl sm:text-4xl font-bold mt-3 mb-4">How we work together</h2>
         </div>
         <ol class="grid gap-6 md:grid-cols-2">
-          <li class="glass rounded-2xl p-6">Kickoff & scope alignment</li>
-          <li class="glass rounded-2xl p-6">Design & technical planning</li>
-          <li class="glass rounded-2xl p-6">Implementation & testing</li>
-          <li class="glass rounded-2xl p-6">Deployment & handover</li>
+          <li class="glass rounded-2xl p-6 border border-white/10">Kickoff & scope alignment</li>
+          <li class="glass rounded-2xl p-6 border border-white/10">Design & technical planning</li>
+          <li class="glass rounded-2xl p-6 border border-white/10">Implementation & testing</li>
+          <li class="glass rounded-2xl p-6 border border-white/10">Deployment & handover</li>
         </ol>
       </div>
     </section>
 
     <!-- FAQ Section -->
-    <section class="py-24 bg-gray-900">
-      <div class="container-pro max-w-3xl">
-        <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4">
-            Frequently Asked <span class="text-gradient">Questions</span>
+    <section class="py-24 bg-black relative overflow-hidden cv-auto">
+      <div class="absolute inset-0 bg-grid opacity-15" aria-hidden="true"></div>
+      <div class="container-pro relative max-w-3xl">
+        <div class="max-w-3xl mb-16">
+          <p class="hero-overline text-xs sm:text-sm font-medium tracking-[0.25em] uppercase text-white/50">FAQ</p>
+          <h2 class="services-title text-3xl sm:text-4xl font-bold mt-3 mb-4">
+            Frequently asked <span class="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">questions</span>
           </h2>
-          <p class="text-gray-300 text-lg">Everything you need to know about working together.</p>
+          <p class="text-gray-300 text-base sm:text-lg">Everything you need to know about working together.</p>
         </div>
         <div class="space-y-4">
-          <div class="glass rounded-2xl p-6">
+          <div class="glass rounded-2xl p-6 border border-white/10">
             <h3 class="font-semibold text-white mb-2">What's included in your packages?</h3>
             <p class="text-gray-300 text-sm">All packages include source code, documentation, deployment support, and 30 days of post-launch bug fixes. Premium packages include design consultation and ongoing maintenance.</p>
           </div>
-          <div class="glass rounded-2xl p-6">
+          <div class="glass rounded-2xl p-6 border border-white/10">
             <h3 class="font-semibold text-white mb-2">What are typical delivery timelines?</h3>
             <p class="text-gray-300 text-sm">Audit & Roadmap: 1 week | MVP Sprint: 2-3 weeks | Custom projects: 4-12 weeks depending on scope. All timelines include milestones for review and feedback.</p>
           </div>
-          <div class="glass rounded-2xl p-6">
+          <div class="glass rounded-2xl p-6 border border-white/10">
             <h3 class="font-semibold text-white mb-2">Do you provide ongoing support?</h3>
             <p class="text-gray-300 text-sm">Yes! I offer monthly retainer packages for ongoing development, maintenance, and feature additions. Priority support is available for retainer clients.</p>
           </div>
-          <div class="glass rounded-2xl p-6">
+          <div class="glass rounded-2xl p-6 border border-white/10">
             <h3 class="font-semibold text-white mb-2">Can we work within our existing systems?</h3>
             <p class="text-gray-300 text-sm">Absolutely. I integrate seamlessly with your current tech stack, workflows, and team processes. I can also provide recommendations for optimizing existing systems.</p>
           </div>
-          <div class="glass rounded-2xl p-6">
+          <div class="glass rounded-2xl p-6 border border-white/10">
             <h3 class="font-semibold text-white mb-2">What about intellectual property?</h3>
             <p class="text-gray-300 text-sm">You own all IP rights to custom code created for your project. Open source libraries maintain their respective licenses. All details are outlined in our standard contract.</p>
           </div>
@@ -172,10 +183,12 @@
       </div>
     </section>
 
-    <section class="py-20 bg-gradient-to-br from-gray-900 via-purple-900 to-black text-white text-center">
-      <div class="container-pro">
-        <h2 class="text-4xl font-bold mb-4">Ready to get started?</h2>
-        <p class="text-white/80 mb-8">Tell me about your goals and timeline. I'll reply within 24 hours.</p>
+    <section class="py-24 bg-black relative overflow-hidden cv-auto">
+      <div class="absolute inset-0 bg-grid opacity-15" aria-hidden="true"></div>
+      <div class="container-pro relative text-center">
+        <p class="hero-overline text-xs sm:text-sm font-medium tracking-[0.25em] uppercase text-white/50">Get started</p>
+        <h2 class="services-title text-3xl sm:text-4xl font-bold mt-3 mb-4">Ready to get started?</h2>
+        <p class="text-white/80 mb-8 max-w-xl mx-auto">Tell me about your goals and timeline. I'll reply within 24 hours.</p>
         <a href="/pages/contact.html" class="btn-primary">Start a Project</a>
       </div>
     </section>
