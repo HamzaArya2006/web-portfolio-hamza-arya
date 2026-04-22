@@ -1,3 +1,5 @@
+import { debug } from './logger.js';
+
 export function bindMobileNav() {
   const btn = document.querySelector('[data-mobile-nav-toggle]');
   const menu = document.querySelector('[data-mobile-nav]');

@@ -128,12 +128,12 @@ export function bindContactForm() {
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nBudget: ${budget}\n\nBrief:\n${brief}`);
     try {
       setLoading(true);
-      window.location.href = `mailto:contact@hamzaarya.dev?subject=${subject}&body=${body}`;
-      showStatus('Opening your email app… If it does not open, email contact@hamzaarya.dev', 'success');
-      notify.info('Opening email app', 'If it does not open, email contact@hamzaarya.dev');
+      window.location.href = `mailto:hamzaarya123@gmail.com?subject=${subject}&body=${body}`;
+      showStatus('Opening your email app… If it does not open, email hamzaarya123@gmail.com', 'success');
+      notify.info('Opening email app', 'If it does not open, email hamzaarya123@gmail.com');
       form.reset();
     } catch (_) {
-      showStatus('Could not open email app. Please email contact@hamzaarya.dev', 'error');
+      showStatus('Could not open email app. Please email hamzaarya123@gmail.com', 'error');
     } finally {
       setLoading(false);
       submitting = false;

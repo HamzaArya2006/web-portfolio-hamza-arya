@@ -6,6 +6,7 @@ const SRC_DIR = path.resolve('src/assets');
 const OUT_DIR = path.resolve('public/images');
 const RESPONSIVE_WIDTHS = [480, 768, 1024, 1440, 1920];
 const RASTER_EXT = new Set(['.jpg', '.jpeg', '.png']);
+const PASS_THROUGH_EXT = new Set(['.webp', '.avif', '.svg', '.gif']);
 
 async function ensureDir(dir) {
   await fs.promises.mkdir(dir, { recursive: true });
@@ -26,7 +27,15 @@ async function* walk(dir) {
 async function processImage(file) {
   const rel = path.relative(SRC_DIR, file);
   const ext = path.extname(file).toLowerCase();
-  if (!RASTER_EXT.has(ext)) return; // skip svg/webp/avif and others
+  if (!RASTER_EXT.has(ext)) {
+    // Keep already-optimized/static formats available under /public/images.
+    if (PASS_THROUGH_EXT.has(ext)) {
+      const outFile = path.join(OUT_DIR, rel);
+      await ensureDir(path.dirname(outFile));
+      await fs.promises.copyFile(file, outFile);
+    }
+    return;
+  } // skip other unsupported formats
 
   const baseName = path.basename(file, ext);
   const outBaseDir = path.join(OUT_DIR, path.dirname(rel));

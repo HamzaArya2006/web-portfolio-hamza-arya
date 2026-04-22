@@ -18,9 +18,9 @@ export const projects = [
       "E-commerce"
     ],
     "tech": "HTML • CSS • JavaScript • Multilingual • E-commerce-style catalog",
-    "image": "/src/assets/img/projects/farah-gostar-home.png",
+    "image": "/images/img/projects/farah-gostar-home-w1024.webp",
     "images": [
-      "/src/assets/img/projects/farah-gostar-home.png"
+      "/images/img/projects/farah-gostar-home-w1024.webp"
     ],
     "links": {
       "live": "https://farahgostar.com",
@@ -62,9 +62,9 @@ export const projects = [
       "E-commerce"
     ],
     "tech": "WordPress • PHP • Elementor / Theme Builder • E-commerce-style catalog",
-    "image": "/src/assets/img/projects/ptn-energy-solutions-website.webp",
+    "image": "/images/img/projects/ptn-energy-solutions-website.webp",
     "images": [
-      "/src/assets/img/projects/ptn-energy-solutions-website.webp"
+      "/images/img/projects/ptn-energy-solutions-website.webp"
     ],
     "links": {
       "live": "https://ptn.com.af",
@@ -102,9 +102,9 @@ export const projects = [
       "UI Design"
     ],
     "tech": "HTML • CSS • JavaScript",
-    "image": "/src/assets/img/projects/nexus-coffee-shop-landing.webp",
+    "image": "/images/img/projects/nexus-coffee-shop-landing.webp",
     "images": [
-      "/src/assets/img/projects/nexus-coffee-shop-landing.webp"
+      "/images/img/projects/nexus-coffee-shop-landing.webp"
     ],
     "links": {
       "live": "https://sample-coffeeshop.netlify.app/",
@@ -145,9 +145,9 @@ export const projects = [
       "App Store UI"
     ],
     "tech": "HTML • CSS • JavaScript",
-    "image": "/src/assets/img/projects/appstore-discovery-platform.webp",
+    "image": "/images/img/projects/appstore-discovery-platform.webp",
     "images": [
-      "/src/assets/img/projects/appstore-discovery-platform.webp"
+      "/images/img/projects/appstore-discovery-platform.webp"
     ],
     "links": {
       "live": "https://sample-online-appstore.netlify.app/",
@@ -187,9 +187,9 @@ export const projects = [
       "API Integration"
     ],
     "tech": "HTML • CSS • JavaScript • Weather API",
-    "image": "/src/assets/img/projects/simple-weather-app.webp",
+    "image": "/images/img/projects/simple-weather-app.webp",
     "images": [
-      "/src/assets/img/projects/simple-weather-app.webp"
+      "/images/img/projects/simple-weather-app.webp"
     ],
     "links": {
       "live": "https://sample-weather-app1.netlify.app/",

@@ -1170,7 +1170,7 @@ class AIAssistant {
       const returnNote = isReturning ? `Welcome back! (Visit #${this.context.visitCount}) ` : "";
       const timeGreet = getTimeBasedGreeting();
       
-      const welcomeMessage = `Hi, I'm Nova 👋\n\nHamza's AI assistant.\n\nYou can ask me about his **projects**, **skills**, or even **paste code** for review.`;
+      const welcomeMessage = `Hi, I'm Nova.\n\nI can help with Hamza's projects, skills, services, and hiring info.\n\nYou can also paste code if you want a quick review.`;
       
       this.addMessage(welcomeMessage, 'assistant', true);
     }, 100);
@@ -1346,10 +1346,10 @@ class AIAssistant {
       utterance.voice = preferredVoice;
     }
     
-    // Optimize for natural female voice - faster and more natural sound
-    utterance.rate = 1.75; // Faster speech rate for quicker responses
-    utterance.pitch = 1.05; // Slightly higher pitch for pleasant female voice
-    utterance.volume = 0.88; // Comfortable volume level
+    // Keep voice natural and easy to follow.
+    utterance.rate = 1.02;
+    utterance.pitch = 1.0;
+    utterance.volume = 0.9;
     
     utterance.onend = () => {
       this.isSpeaking = false;
@@ -2164,7 +2164,7 @@ class AIAssistant {
         ? bestMatch.data.responses(context) 
         : bestMatch.data.responses;
       
-      let response = responses[Math.floor(Math.random() * responses.length)];
+      let response = this.pickNaturalResponse(responses);
       
       // Add contextual follow-ups based on sentiment and conversation flow
       response = this.addContextualFollowUp(response, bestMatch.category, message);
@@ -2237,6 +2237,16 @@ class AIAssistant {
     }
     
     return response;
+  }
+
+  pickNaturalResponse(responses) {
+    if (!Array.isArray(responses) || responses.length === 0) return '';
+    if (responses.length === 1) return responses[0];
+
+    const sortedByLength = [...responses].sort((a, b) => a.length - b.length);
+    const shorterHalfCount = Math.max(1, Math.ceil(sortedByLength.length / 2));
+    const candidates = sortedByLength.slice(0, shorterHalfCount);
+    return candidates[Math.floor(Math.random() * candidates.length)];
   }
   
   // Add sentiment-aware responses

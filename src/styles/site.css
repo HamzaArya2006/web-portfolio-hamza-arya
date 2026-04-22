@@ -3007,8 +3007,8 @@
     --nova-text-muted: #9ca3af;
 
     position: fixed !important;
-    bottom: 2rem !important;
-    right: 2rem !important;
+    bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+    right: max(1rem, env(safe-area-inset-right)) !important;
     min-width: 56px !important;
     height: 56px !important;
     padding: 0 1rem 0 0.75rem !important;
@@ -3120,12 +3120,12 @@
     --nova-text-muted: #9ca3af;
 
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 400px;
-    max-width: calc(100vw - 4rem);
-    height: 560px;
-    max-height: calc(100vh - 4rem);
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    right: max(1rem, env(safe-area-inset-right));
+    width: min(400px, calc(100vw - 2rem));
+    max-width: min(400px, calc(100vw - 2rem));
+    height: min(560px, calc(100dvh - 2rem));
+    max-height: min(560px, calc(100dvh - 2rem));
     background: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.35), transparent 55%),
       radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.25), transparent 60%),
       var(--nova-panel, #111827);
@@ -3943,19 +3943,24 @@ html[data-theme="light"] .ai-assistant-input:focus {
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .ai-assistant-popup {
-    width: 100%;
-    height: 100%;
+    left: max(0.75rem, env(safe-area-inset-left));
+    right: max(0.75rem, env(safe-area-inset-right));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    width: auto;
+    max-width: none;
+    height: min(78dvh, 640px);
+    max-height: min(78dvh, 640px);
   }
   
   .ai-assistant-messages {
-    height: 100%;
+    height: auto;
   }
 }
 
 @media (max-width: 640px) {
   .ai-assistant-btn {
-    bottom: 1.5rem;
-    right: 1.5rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    right: max(1rem, env(safe-area-inset-right));
     width: 60px;
     height: 60px;
   }
@@ -3966,13 +3971,14 @@ html[data-theme="light"] .ai-assistant-input:focus {
   }
 
   .ai-assistant-popup {
+    top: env(safe-area-inset-top);
     bottom: 0;
     right: 0;
     left: 0;
     width: 100%;
     max-width: 100%;
-    height: 100vh;
-    max-height: 100vh;
+    height: calc(100dvh - env(safe-area-inset-top));
+    max-height: calc(100dvh - env(safe-area-inset-top));
     border-radius: 0;
     border: none;
     border-top-left-radius: 24px;
@@ -3989,7 +3995,9 @@ html[data-theme="light"] .ai-assistant-input:focus {
   }
 
   .ai-assistant-footer {
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem 1.5rem calc(1.25rem + env(safe-area-inset-bottom));
+    min-height: auto;
+    max-height: none;
   }
   
   .ai-assistant-form {
@@ -4023,7 +4031,7 @@ html[data-theme="light"] .ai-assistant-input:focus {
   }
   
   .ai-assistant-footer {
-    padding: 1rem 1.25rem;
+    padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom));
   }
   
   .ai-assistant-message-text {
