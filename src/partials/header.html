@@ -70,4 +70,85 @@
   </div>
 </header>
 
+<!-- Mobile menu -->
+<div
+  data-mobile-nav
+  id="mobile-menu"
+  data-open="false"
+  class="hidden lg:hidden fixed top-0 right-0 h-screen w-full max-w-[250px] bg-gray-900/95 backdrop-blur border-l border-white/10 shadow-2xl z-40"
+  role="navigation"
+  aria-label="Mobile navigation"
+>
+  <div class="h-full py-6 px-4 pb-28 flex flex-col gap-4 overflow-y-auto">
+    <!-- Sidebar header with close -->
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-blue-600 to-indigo-600 text-white text-sm font-semibold">H</span>
+        <span class="font-semibold text-sm text-white/90">Navigation</span>
+      </div>
+      <button
+        type="button"
+        data-mobile-nav-close
+        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/90 hover:bg-white/10 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+        aria-label="Close menu"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Primary links -->
+    <div class="flex flex-col gap-1 pt-2 border-t border-white/10">
+      <a href="/about" class="nav-link">About</a>
+      <a href="/resume" class="nav-link">Resume</a>
+      <a href="/uses" class="nav-link">Uses</a>
+      <div data-submenu-container>
+        <button
+          class="w-full flex items-center justify-between py-2 text-sm text-gray-100"
+          data-submenu-toggle
+          aria-expanded="false"
+          aria-controls="nav-mobile-work-submenu"
+          aria-haspopup="true"
+        >
+          <span>Work</span>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M6 9l6 6 6-6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <div class="ml-3 mt-1 hidden flex-col" data-submenu id="nav-mobile-work-submenu">
+          <a href="/projects" class="nav-link">Projects</a>
+          <a href="/#testimonials" class="nav-link">Testimonials</a>
+          <a href="/speaking" class="nav-link">Speaking</a>
+        </div>
+      </div>
+      <a href="/blog" class="nav-link">Blog</a>
+      <a href="/services" class="nav-link">Services</a>
+      <a href="/shop" class="nav-link">Shop</a>
+      <a href="/contact" class="nav-link">Contact</a>
+    </div>
+
+    <!-- Actions pinned to bottom -->
+    <div class="mt-auto pt-4 border-t border-white/10">
+      <a href="/contact" class="btn-minimal w-full justify-center">
+        Hire Me
+      </a>
+    </div>
+  </div>
+</div>
+
 

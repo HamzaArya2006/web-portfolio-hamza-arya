@@ -9,6 +9,46 @@
 
   html {
     @apply scroll-smooth antialiased;
+    font-size: 16px; /* Base root size */
+  }
+
+  /* Support for ultra-high resolution monitors (4K, 8K, 16K) */
+  @media (min-width: 2000px) {
+    html {
+      font-size: 18px;
+    }
+  }
+  @media (min-width: 3500px) {
+    html {
+      font-size: 24px;
+    }
+  }
+  @media (min-width: 7000px) {
+    html {
+      font-size: 32px;
+    }
+  }
+  @media (min-width: 14000px) {
+    html {
+      font-size: 48px;
+    }
+  }
+
+  /* Support for extremely small mobile devices / smartwatches */
+  @media (max-width: 340px) {
+    html {
+      font-size: 14px;
+    }
+  }
+  @media (max-width: 260px) {
+    html {
+      font-size: 12px;
+    }
+  }
+  @media (max-width: 200px) {
+    html {
+      font-size: 10px;
+    }
   }
 
   /* Dark theme (default) */

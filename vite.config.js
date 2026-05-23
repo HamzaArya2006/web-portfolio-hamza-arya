@@ -160,80 +160,55 @@ export default defineConfig({
     {
       name: 'pages-rewrite',
       configureServer(server) {
-        return () => {
-          server.middlewares.use(async (req, res, next) => {
-            const url = req.url?.split('?')[0] || '/';
+        server.middlewares.use((req, res, next) => {
+          const url = req.url?.split('?')[0] || '/';
 
-            // Skip asset and internal Vite requests
-            if (
-              url.startsWith('/@') ||
-              url.startsWith('/assets/') ||
-              url.includes('.')
-            ) {
+          // Skip asset and internal Vite requests
+          if (
+            url.startsWith('/@') ||
+            url.startsWith('/assets/') ||
+            url.includes('.')
+          ) {
+            return next();
+          }
+
+          // Root pretty URLs like /about, /contact, etc.
+          if (url !== '/') {
+            const pageName = url.replace(/^\/+|\/+$/g, '');
+            const htmlPath = resolve(__dirname, 'src', 'pages', `${pageName}.html`);
+            const indexPath = resolve(__dirname, 'src', 'pages', pageName, 'index.html');
+
+            if (existsSync(htmlPath)) {
+              req.url = `/src/pages/${pageName}.html`;
+              return next();
+            } else if (existsSync(indexPath)) {
+              req.url = `/src/pages/${pageName}/index.html`;
               return next();
             }
+          }
 
-            // Root pretty URLs like /about, /contact, etc.
-            if (url !== '/') {
-              const pageName = url.replace(/^\/+|\/+$/g, '');
-              const htmlPath = resolve(__dirname, 'src', 'pages', `${pageName}.html`);
-              const indexPath = resolve(__dirname, 'src', 'pages', pageName, 'index.html');
-
-              try {
-                const rawHtml = readFileSync(htmlPath, 'utf-8');
-                const transformed = await server.transformIndexHtml(url, rawHtml);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'text/html; charset=utf-8');
-                res.end(transformed);
-                return;
-              } catch {
-                try {
-                  const rawHtml = readFileSync(indexPath, 'utf-8');
-                  const transformed = await server.transformIndexHtml(url, rawHtml);
-                  res.statusCode = 200;
-                  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-                  res.end(transformed);
-                  return;
-                } catch {
-                  // fall through to /pages/ handling below
-                }
+          // Existing /pages/ behavior (keeps support for /pages/about, etc.)
+          if (url.startsWith('/pages/')) {
+            let rewritten = url;
+            if (!rewritten.endsWith('.html')) {
+              rewritten = rewritten.endsWith('/') ? rewritten.slice(0, -1) : rewritten;
+              rewritten = `${rewritten}.html`;
+            }
+            const filePath = resolve(__dirname, 'src', rewritten.slice(1));
+            if (existsSync(filePath)) {
+              req.url = `/src/${rewritten.slice(1)}`;
+              return next();
+            } else {
+              const dirIndex = resolve(__dirname, 'src', rewritten.slice(1).replace(/\.html$/, '/index.html'));
+              if (existsSync(dirIndex)) {
+                req.url = `/src/${rewritten.slice(1).replace(/\.html$/, '/index.html')}`;
+                return next();
               }
             }
+          }
 
-            // Existing /pages/ behavior (keeps support for /pages/about, etc.)
-            if (url.startsWith('/pages/')) {
-              let rewritten = url;
-              if (!rewritten.endsWith('.html')) {
-                rewritten = rewritten.endsWith('/') ? rewritten.slice(0, -1) : rewritten;
-                rewritten = `${rewritten}.html`;
-              }
-              const filePath = resolve(__dirname, 'src', rewritten.slice(1));
-              try {
-                const rawHtml = readFileSync(filePath, 'utf-8');
-                const transformed = await server.transformIndexHtml(rewritten, rawHtml);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'text/html; charset=utf-8');
-                res.end(transformed);
-                return;
-              } catch {
-                // fallback: try directory index.html (e.g. /pages/admin -> /pages/admin/index.html)
-                const dirIndex = resolve(__dirname, 'src', rewritten.slice(1).replace(/\.html$/, '/index.html'));
-                try {
-                  const rawHtml = readFileSync(dirIndex, 'utf-8');
-                  const transformed = await server.transformIndexHtml(rewritten, rawHtml);
-                  res.statusCode = 200;
-                  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-                  res.end(transformed);
-                  return;
-                } catch {
-                  // fall through to next middleware (likely 404 handler)
-                }
-              }
-            }
-
-            next();
-          });
-        };
+          next();
+        });
       },
       // Apply similar rewrites for `vite preview` so localhost:4173/about works
       configurePreviewServer(server) {

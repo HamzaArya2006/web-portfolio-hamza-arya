@@ -121,7 +121,7 @@ export function bindDesktopDropdown() {
   if (!groups.length) return;
 
   groups.forEach((group) => {
-    const btn = group.querySelector('button[aria-haspopup="true"]');
+    const btn = group.querySelector('button[aria-haspopup]');
     const menu = group.querySelector('[role="menu"]');
     if (!btn || !menu) return;
 
