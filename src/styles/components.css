@@ -71,7 +71,6 @@
 
   .input:focus {
     @apply border-blue-500/50 bg-white/10;
-    transform: scale(1.01);
   }
 
   .input:invalid:not(:placeholder-shown):not(:focus) {
@@ -84,5 +83,400 @@
   .card {
     @apply rounded-xl border border-white/10 bg-white/5 shadow-sm;
   }
+
+  /* Stacking card states when GSAP/JS is active */
+  .gsap-about-right {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  @media (min-width: 640px) {
+    .gsap-about-right {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .gsap-projects-track {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* Services grid fallback */
+  .gsap-services-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  @media (min-width: 768px) {
+    .gsap-services-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Disable transitions on all GSAP-controlled elements to prevent jitter */
+  .js-active .gsap-about-card,
+  .js-active .gsap-project-card,
+  .js-active .service-card,
+  .js-active .gsap-services-container,
+  .js-active .gsap-card,
+  .js-active .gsap-hero,
+  .js-active .gsap-hero-title,
+  .js-active .gsap-hero-item {
+    transition: none !important;
+  }
+
+  @media (min-width: 1024px) {
+    /* Set pinned sections to height 100vh when JS is active and layout is pinned */
+    .js-active .gsap-story-section,
+    .js-active .gsap-about-section,
+    .js-active .gsap-projects-section,
+    .js-active .gsap-services-section {
+      height: 100vh;
+      min-height: 100vh;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    /* Transparent backgrounds to allow particles to shine through */
+    .js-active .gsap-story-section,
+    .js-active .gsap-about-section,
+    .js-active .gsap-projects-section,
+    .js-active .gsap-services-section,
+    .js-active .gsap-testimonials-section,
+    .js-active .gsap-contact-section,
+    .js-active #skills {
+      background: transparent !important;
+    }
+
+    /* Canvas and content stacking context */
+    .js-active #hero-particles-canvas {
+      z-index: 0 !important;
+    }
+    .js-active main,
+    .js-active footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .js-active .gsap-story-section .max-w-3xl,
+    .js-active .gsap-about-section .max-w-3xl {
+      margin-bottom: 2.25rem !important; /* Save vertical space to avoid screen clipping */
+    }
+
+    .js-active .gsap-about-right {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      height: auto;
+      position: relative;
+      align-content: start;
+    }
+    .js-active .gsap-about-card {
+      position: relative !important;
+      top: auto;
+      left: auto;
+      width: auto;
+      margin: 0;
+    }
+
+    .js-active .gsap-projects-track {
+      display: block;
+      height: 500px;
+      position: relative;
+    }
+    .js-active .gsap-project-card {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      width: 100%;
+      margin: 0;
+    }
+
+    /* Services section - stacked cards for pinned animation */
+    .js-active .gsap-services-container {
+      display: block;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .js-active .gsap-services-container .service-card {
+      position: absolute !important;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      backface-visibility: hidden;
+      will-change: transform, opacity;
+    }
+  }
+
+  /* --- Minimal Clean Services Overrides --- */
+  .service-card {
+    background: rgba(10, 10, 16, 0.88) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 1.25rem !important;
+    padding: 2.25rem 2rem !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(20px) !important;
+    transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .service-icon {
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+    border-radius: 0.75rem !important;
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    margin-bottom: 1.25rem !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .service-title {
+    font-size: 1.15rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
+    margin-bottom: 0.75rem !important;
+    color: #ffffff !important;
+  }
+
+  .service-description {
+    font-size: 0.875rem !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .service-features {
+    list-style: none !important;
+    padding: 0 !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .service-features li {
+    font-size: 0.825rem !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.65rem !important;
+    margin-bottom: 0.6rem !important;
+  }
+
+  .service-features li::before {
+    content: '' !important;
+    width: 4px !important;
+    height: 4px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+  }
+
+  .tech-tag {
+    background: rgba(255, 255, 255, 0.02) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    color: rgba(255, 255, 255, 0.45) !important;
+    font-size: 0.7rem !important;
+    padding: 0.2rem 0.6rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .service-card:hover {
+    background: rgba(255, 255, 255, 0.025) !important;
+  }
+
+  .service-card:hover .tech-tag {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  /* Elegant Default Themed Color Accents on Services cards */
+  .gsap-services-container .service-card:nth-child(1) {
+    border-color: rgba(59, 130, 246, 0.12) !important;
+  }
+  .gsap-services-container .service-card:nth-child(1) .service-icon {
+    background: rgba(59, 130, 246, 0.04) !important;
+    border-color: rgba(59, 130, 246, 0.15) !important;
+  }
+  .gsap-services-container .service-card:nth-child(1) .service-icon svg {
+    color: #60a5fa !important;
+  }
+
+  .gsap-services-container .service-card:nth-child(2) {
+    border-color: rgba(99, 102, 241, 0.12) !important;
+  }
+  .gsap-services-container .service-card:nth-child(2) .service-icon {
+    background: rgba(99, 102, 241, 0.04) !important;
+    border-color: rgba(99, 102, 241, 0.15) !important;
+  }
+  .gsap-services-container .service-card:nth-child(2) .service-icon svg {
+    color: #818cf8 !important;
+  }
+
+  .gsap-services-container .service-card:nth-child(3) {
+    border-color: rgba(16, 185, 129, 0.12) !important;
+  }
+  .gsap-services-container .service-card:nth-child(3) .service-icon {
+    background: rgba(16, 185, 129, 0.04) !important;
+    border-color: rgba(16, 185, 129, 0.15) !important;
+  }
+  .gsap-services-container .service-card:nth-child(3) .service-icon svg {
+    color: #34d399 !important;
+  }
+
+  .gsap-services-container .service-card:nth-child(4) {
+    border-color: rgba(245, 158, 11, 0.12) !important;
+  }
+  .gsap-services-container .service-card:nth-child(4) .service-icon {
+    background: rgba(245, 158, 11, 0.04) !important;
+    border-color: rgba(245, 158, 11, 0.15) !important;
+  }
+  .gsap-services-container .service-card:nth-child(4) .service-icon svg {
+    color: #fbbf24 !important;
+  }
+
+  .gsap-services-container .service-card:nth-child(5) {
+    border-color: rgba(6, 182, 212, 0.12) !important;
+  }
+  .gsap-services-container .service-card:nth-child(5) .service-icon {
+    background: rgba(6, 182, 212, 0.04) !important;
+    border-color: rgba(6, 182, 212, 0.15) !important;
+  }
+  .gsap-services-container .service-card:nth-child(5) .service-icon svg {
+    color: #22d3ee !important;
+  }
+
+  .gsap-services-container .service-card:nth-child(6) {
+    border-color: rgba(244, 63, 94, 0.12) !important;
+  }
+  .gsap-services-container .service-card:nth-child(6) .service-icon {
+    background: rgba(244, 63, 94, 0.04) !important;
+    border-color: rgba(244, 63, 94, 0.15) !important;
+  }
+  .gsap-services-container .service-card:nth-child(6) .service-icon svg {
+    color: #fb7185 !important;
+  }
+
+  /* Soft and safe hover highlights */
+  .gsap-services-container .service-card:hover {
+    transform: none !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+  }
+  .gsap-services-container .service-card:nth-child(1):hover {
+    border-color: rgba(59, 130, 246, 0.25) !important;
+  }
+  .gsap-services-container .service-card:nth-child(2):hover {
+    border-color: rgba(99, 102, 241, 0.25) !important;
+  }
+  .gsap-services-container .service-card:nth-child(3):hover {
+    border-color: rgba(16, 185, 129, 0.25) !important;
+  }
+  .gsap-services-container .service-card:nth-child(4):hover {
+    border-color: rgba(245, 158, 11, 0.25) !important;
+  }
+  .gsap-services-container .service-card:nth-child(5):hover {
+    border-color: rgba(6, 182, 212, 0.25) !important;
+  }
+  .gsap-services-container .service-card:nth-child(6):hover {
+    border-color: rgba(244, 63, 94, 0.25) !important;
+  }
 }
 
+/* ----- Bento Grid Styles ----- */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+}
+.bento-tile {
+  background: rgba(10, 10, 16, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #fff;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px) !important;
+}
+.bento-tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+.tile-large { grid-column: span 2; }
+.tile-wide { grid-column: 1 / -1; }
+.bento-title { font-weight: 600; margin-bottom: 0.65rem; font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.4); }
+
+/* Custom styles for specific Bento cards */
+.console-card {
+  background: rgba(5, 5, 8, 0.45) !important;
+  border-color: rgba(255, 255, 255, 0.04) !important;
+}
+.console-card:hover {
+  border-color: rgba(59, 130, 246, 0.2) !important;
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.03) !important;
+}
+.philosophy-card:hover {
+  border-color: rgba(99, 102, 241, 0.2) !important;
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.03) !important;
+}
+
+@media (max-width: 767px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tile-large,
+  .tile-wide {
+    grid-column: auto;
+  }
+}
+
+/* ----- Contact Details Bar ----- */
+.contact-detail-bar {
+  background: rgba(10, 10, 16, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 14px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.contact-detail-bar:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Stacking Card Readability Overrides */
+.gsap-card {
+  background: rgba(10, 10, 16, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
+}
+
+.gsap-project-card {
+  background: rgba(8, 12, 20, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(20px) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
+}

@@ -449,6 +449,116 @@ function buildProjectsHTML(list) {
     .join('');
 }
 
+function buildChapterMetricsHTML(metrics) {
+  return normalizeMetrics(metrics)
+    .slice(0, 3)
+    .map(
+      metric => `
+        <div class="project-chapter-metric">
+          <span class="project-chapter-metric-value">${metric.value}</span>
+          <span class="project-chapter-metric-label">${metric.label}</span>
+        </div>`
+    )
+    .join('');
+}
+
+function buildChapterFeaturesHTML(features) {
+  return (Array.isArray(features) ? features : [])
+    .slice(0, 3)
+    .map(
+      feature => `
+        <li class="project-chapter-feature">${feature}</li>`
+    )
+    .join('');
+}
+
+function buildFeaturedChaptersHTML(list) {
+  return list
+    .map((p, index) => {
+      const detailUrl = p.slug ? project(p.slug) : '';
+      const techArray = String(p.tech || '')
+        .split(' â€¢ ')
+        .map(item => item.trim())
+        .filter(Boolean)
+        .slice(0, 4);
+      const chapterImage = p.image || '';
+      const chapterMetrics = buildChapterMetricsHTML(p.metrics);
+      const chapterFeatures = buildChapterFeaturesHTML(p.features);
+      const layoutClass = index % 2 === 0 ? 'chapter-forward' : 'chapter-reverse';
+
+      return `
+        <article class="project-chapter ${layoutClass}" data-project-chapter data-reveal>
+          <div class="project-chapter-shell">
+            <div class="project-chapter-grid" aria-hidden="true"></div>
+            <div class="project-chapter-aura" aria-hidden="true"></div>
+            <div class="project-chapter-copy">
+              <div class="project-chapter-kicker">
+                <span class="project-chapter-index">0${index + 1}</span>
+                <span>${p.client || p.title}</span>
+              </div>
+              <h3 class="project-chapter-title">${p.title}</h3>
+              <p class="project-chapter-description">${p.description}</p>
+              <div class="project-chapter-meta">
+                ${p.role ? `<span>${p.role}</span>` : ''}
+                ${p.duration ? `<span>${p.duration}</span>` : ''}
+              </div>
+              ${
+                chapterMetrics
+                  ? `<div class="project-chapter-metrics">${chapterMetrics}</div>`
+                  : ''
+              }
+              ${
+                chapterFeatures
+                  ? `<ul class="project-chapter-features">${chapterFeatures}</ul>`
+                  : ''
+              }
+              <div class="project-chapter-tech">
+                ${techArray
+                  .map(item => `<span class="project-chapter-tech-pill">${item}</span>`)
+                  .join('')}
+              </div>
+              <div class="project-chapter-actions">
+                ${detailUrl ? `<a href="${detailUrl}" class="btn-primary">View case study</a>` : ''}
+                ${
+                  p.links?.live
+                    ? `<a href="${p.links.live}" target="_blank" rel="noopener" class="btn-ghost">Launch site</a>`
+                    : ''
+                }
+              </div>
+            </div>
+            <div class="project-chapter-media">
+              <div class="project-chapter-frame">
+                <div class="project-chapter-frame-hud" aria-hidden="true">
+                  <span>Live system</span>
+                  <span>${p.duration || 'Production build'}</span>
+                </div>
+                ${
+                  chapterImage
+                    ? `<img
+                        src="${chapterImage}"
+                        alt="${p.title}"
+                        class="project-chapter-image"
+                        loading="lazy"
+                        decoding="async"
+                      />`
+                    : ''
+                }
+                <div class="project-chapter-shine" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+        </article>`;
+    })
+    .join('');
+}
+
+function renderFeaturedProjectChapters() {
+  const root = document.getElementById('featured-project-chapters');
+  if (!root) return;
+  const featured = (projects.length ? projects : localProjects).filter(p => p.featured).slice(0, 3);
+  root.innerHTML = buildFeaturedChaptersHTML(featured);
+}
+
 function revealCardsAndBindImages(grid) {
   if (!grid) return;
   try {
@@ -491,6 +601,7 @@ export function renderProjectsSync() {
     ? dataSource.filter(p => p.featured)
     : dataSource;
   const filtered = featuredOnly ? baseList : baseList.filter(projectMatchesFilter);
+  renderFeaturedProjectChapters();
   if (count) count.textContent = String(filtered.length);
   if (totalCount) totalCount.textContent = String(baseList.length);
   grid.innerHTML = buildProjectsHTML(filtered);
@@ -516,6 +627,7 @@ export async function renderProjects() {
   const filteredInitial = featuredOnly
     ? baseInitial
     : baseInitial.filter(projectMatchesFilter);
+  renderFeaturedProjectChapters();
   if (count) count.textContent = String(filteredInitial.length);
   if (totalCount) totalCount.textContent = String(baseInitial.length);
   grid.innerHTML = buildProjectsHTML(filteredInitial);
@@ -526,6 +638,7 @@ export async function renderProjects() {
   const data = await loadProjects();
   const baseList = featuredOnly ? data.filter(p => p.featured) : data;
   const filtered = featuredOnly ? baseList : baseList.filter(projectMatchesFilter);
+  renderFeaturedProjectChapters();
   if (count) count.textContent = String(filtered.length);
   if (totalCount) totalCount.textContent = String(baseList.length);
   grid.innerHTML = buildProjectsHTML(filtered);

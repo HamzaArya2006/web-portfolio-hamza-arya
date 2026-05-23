@@ -11,6 +11,8 @@ import {
   bindHeroSpotlight,
   deferHeroAnimations,
 } from './modules/hero.js';
+import { initAliveMotion, refreshAliveMotion } from './modules/alive.js';
+import { initHeroParticles } from './modules/hero-particles.js';
 import { bindLazyImages } from './modules/media.js';
 import {
   bindMobileNav,
@@ -40,6 +42,9 @@ import {
   applySiteCustomizations,
   mountHeroCustomSlot,
 } from './modules/siteCustomizations.js';
+import Lenis from 'lenis';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const isDev = import.meta.env?.DEV;
 if (isDev) {
@@ -72,22 +77,37 @@ window.addEventListener('DOMContentLoaded', () => {
     console.error('[projects] Sync render failed:', e);
   }
 
-  // Perf-lite: smooth experience on low/medium devices, slow connections, or reduced motion
+  // Initialize global stable smooth scrolling (speed limit)
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const lenis = new Lenis({
+      duration: 1.5,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  // Perf-lite: smooth experience on low-spec devices, slow connections, or reduced motion
   try {
     const prefersReduced =
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const cores = navigator.hardwareConcurrency || 4;
     const mem = navigator.deviceMemory || 4;
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     const slowConnection = conn && (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.saveData === true);
     if (
       prefersReduced ||
       slowConnection ||
-      isMobile ||
-      cores <= 6 ||
-      mem <= 6
+      cores < 4 ||
+      mem < 4
     ) {
       document.documentElement.classList.add('perf-lite');
       window.__PERF_LITE__ = true;
@@ -131,6 +151,16 @@ window.addEventListener('DOMContentLoaded', () => {
   deferHeroAnimations();
   // Activate subtle spotlight and parallax effects on capable devices only
   const perfLite = Boolean(window.__PERF_LITE__);
+  try {
+    initAliveMotion({ perfLite });
+  } catch (e) {
+    if (isDev) console.error('initAliveMotion failed', e);
+  }
+  try {
+    initHeroParticles({ perfLite });
+  } catch (e) {
+    if (isDev) console.error('initHeroParticles failed', e);
+  }
   if (!perfLite) {
     try {
       bindHeroSpotlight();
@@ -168,6 +198,7 @@ window.addEventListener('DOMContentLoaded', () => {
           .then(() => {
             applySiteCustomizations();
             bindProjectFilters();
+            refreshAliveMotion();
           })
           .catch(() => {})
           .finally(() => {
@@ -257,6 +288,29 @@ window.addEventListener('DOMContentLoaded', () => {
       renderProjectDetail().catch(() => {});
     }
   } catch (_) {}
+
+  // Kabul Local Time Live Clock
+  function updateKabulClock() {
+    const clockEl = document.getElementById('kabul-clock');
+    if (!clockEl) return;
+    try {
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Kabul',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+      const tick = () => {
+        clockEl.textContent = formatter.format(new Date());
+      };
+      tick();
+      setInterval(tick, 1000);
+    } catch (err) {
+      clockEl.textContent = new Date().toLocaleTimeString();
+    }
+  }
+  updateKabulClock();
 });
 
 // Nova AI: lazy-load on first click; preload chunk after 60% scroll
@@ -322,6 +376,7 @@ function loadHeavySections() {
         renderProjects().catch(() => {});
         applySiteCustomizations();
         bindProjectFilters();
+        refreshAliveMotion();
         // Ensure newly injected lazy images are observed and loaded
         const { bindLazyImages } = await import('./modules/media.js');
         bindLazyImages();
