@@ -62,7 +62,7 @@ function generateBlogPages(blogPosts) {
     {{> header}}
 
     <!-- Breadcrumb -->
-    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+    <nav aria-label="Breadcrumb" class="pt-20 border-b border-white/10 bg-black/60">
       <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
         <li><a href="/index.html" class="hover:text-white">Home</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
@@ -193,7 +193,7 @@ function generateProjectPages(projects) {
     {{> header}}
 
     <!-- Breadcrumb -->
-    <nav aria-label="Breadcrumb" class="border-b border-white/10 bg-black/60">
+    <nav aria-label="Breadcrumb" class="pt-20 border-b border-white/10 bg-black/60">
       <ol class="container-pro flex items-center gap-2 py-3 text-sm text-gray-300">
         <li><a href="/index.html" class="hover:text-white">Home</a></li>
         <li aria-hidden="true" class="opacity-60 inline-flex items-center">
