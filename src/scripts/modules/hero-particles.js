@@ -132,29 +132,70 @@ const SHAPES = {
 // Particle shapes & colors
 const TYPES = ['circle', 'plus', 'square'];
 const COLORS = [
-  'rgba(59, 130, 246, 0.75)',
-  'rgba(99, 102, 241, 0.75)',
-  'rgba(168, 85, 247, 0.65)',
-  'rgba(255, 255, 255, 0.65)'
+  'rgba(0, 243, 255, 0.85)',   // Neon Cyan
+  'rgba(11, 72, 221, 0.85)',   // Deep Blue
+  'rgba(255, 0, 255, 0.8)',    // Magenta (Glitch)
+  'rgba(0, 180, 255, 0.7)'     // Lighter Blue
 ];
+
+const FACE_NODES = [
+  // Outer silhouette
+  {x: 0, y: -140, z: -20}, {x: 40, y: -130, z: -10}, {x: 80, y: -100, z: 0}, {x: 110, y: -50, z: 20}, {x: 120, y: 10, z: 30}, 
+  {x: 110, y: 50, z: 20}, {x: 130, y: 70, z: 40}, {x: 100, y: 80, z: 30}, {x: 105, y: 100, z: 35}, {x: 80, y: 120, z: 10}, 
+  {x: 50, y: 140, z: 0}, {x: 0, y: 150, z: -10}, {x: -50, y: 130, z: -20}, {x: -90, y: 90, z: -40}, {x: -110, y: 40, z: -50}, 
+  {x: -120, y: -20, z: -50}, {x: -100, y: -80, z: -40}, {x: -60, y: -120, z: -30}, {x: -30, y: -135, z: -25},
+  // Inner structures
+  {x: 20, y: -100, z: -10}, {x: 60, y: -70, z: 10}, {x: 80, y: -20, z: 20}, {x: 80, y: 30, z: 20}, {x: 50, y: 60, z: 10},
+  {x: 10, y: 80, z: 0}, {x: -30, y: 60, z: -20}, {x: -60, y: 20, z: -30}, {x: -60, y: -30, z: -30}, {x: -30, y: -70, z: -20},
+  {x: 30, y: -40, z: 0}, {x: 50, y: -10, z: 10}, {x: 40, y: 30, z: 0}, {x: 10, y: 40, z: -10}, {x: -20, y: 10, z: -20}, {x: -20, y: -30, z: -20},
+  {x: 20, y: -60, z: -10}, {x: 35, y: 80, z: -5}, {x: 65, y: 100, z: 5}, {x: 90, y: 20, z: 25}, {x: 100, y: -30, z: 25}, {x: 80, y: -90, z: 5},
+  {x: 40, y: -110, z: -10}, {x: -20, y: -110, z: -20}, {x: -50, y: -90, z: -30}, {x: -80, y: -40, z: -40}, {x: -80, y: 10, z: -40}, {x: -70, y: 60, z: -30},
+  {x: -40, y: 100, z: -20}, {x: 10, y: 110, z: -5}, {x: 45, y: -55, z: 0}, {x: 60, y: 15, z: 10}, {x: 85, y: 50, z: 15}, {x: 75, y: -10, z: 15},
+  // Extra detail points
+  {x: 60, y: -10, z: 15}, {x: 90, y: 40, z: 20}, {x: 70, y: 70, z: 10}, {x: 30, y: 100, z: -5}, {x: -10, y: 70, z: -15}, {x: -40, y: 40, z: -25},
+  {x: -10, y: -50, z: -15}, {x: 10, y: -20, z: -5}, {x: 40, y: 10, z: 5}, {x: 20, y: 60, z: -5}, {x: -50, y: -10, z: -25}, {x: -30, y: 30, z: -20}
+];
+
+// Pre-bake the face connections ONCE so we don't calculate them every frame (O(1) instead of O(N^2))
+const PRE_BAKED_CONNECTIONS = [];
+for (let i = 0; i < FACE_NODES.length; i++) {
+  for (let j = i + 1; j < FACE_NODES.length; j++) {
+    const dx = FACE_NODES[i].x - FACE_NODES[j].x;
+    const dy = FACE_NODES[i].y - FACE_NODES[j].y;
+    if (Math.hypot(dx, dy) < 48) {
+      PRE_BAKED_CONNECTIONS.push([i, j]);
+    }
+  }
+}
 
 export function initHeroParticles(options = {}) {
   const canvas = document.getElementById('hero-particles-canvas');
   if (!canvas) return;
 
+  const perfLite = options.perfLite || false;
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer =
+    !window.matchMedia || window.matchMedia('(pointer: fine)').matches;
+  const compactViewport =
+    window.innerWidth < 1024 || window.innerHeight < 720;
 
-  // Respect user preference for reduced motion
-  if (prefersReducedMotion) {
+  // Respect reduced-motion and skip the heavy canvas on fragile viewport profiles.
+  if (prefersReducedMotion || perfLite || !finePointer || compactViewport) {
     canvas.style.display = 'none';
     return;
   }
+  canvas.style.display = '';
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
+  // HMR Failsafe: Kill any existing ghost loops spawned by Vite hot-reloads
+  if (canvas.dataset.animationFrameId) {
+    cancelAnimationFrame(parseInt(canvas.dataset.animationFrameId));
+  }
+
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const particleCount = 300;
+  const particleCount = 220; // Reduced from 300 for maximum performance
   const particles = [];
 
   let width = 0;
@@ -165,6 +206,7 @@ export function initHeroParticles(options = {}) {
   let activeHoveredElement = null;
   let currentSectionMode = 'robot';
   let time = 0;
+  let scaleFactor = 1.0;
 
   let currentSpeedLimit = 1.1;
   let currentSizeMultiplier = 1.0;
@@ -177,23 +219,8 @@ export function initHeroParticles(options = {}) {
     targetY: null
   };
 
-  // State variables for robot mode
-  let blinkTimer = 0;
-  let nextBlinkTime = 150;
-  let winkTimer = 0;
-  let winkingEye = 'right';
-  
-  // Persistent anger states
-  let isAnnoyed = false;
-  let thanksTimer = 0;
-  let activeQuote = '';
-  let activeDevilQuote = '';
-  let activeAngelQuote = '';
-  let typedKeys = '';
-
-  const ANNOYED_QUOTES = ["f&%k!", "OUCH!", "STOP IT!", "HEY!", "WTF?", "DO NOT TOUCH!"];
-  const DEVIL_QUOTES = ["KEEP HITTING!", "SMASH IT!", "DO IT AGAIN!", "HIT HIM!", "HE DESERVES IT!"];
-  const ANGEL_QUOTES = ["TYPE 'SORRY'!", "APOLOGIZE!", "BE KIND!", "PLEASE STOP!", "SAY SORRY!"];
+  // Glitch effect state
+  let glitchTimer = 0;
 
   // State variables for bento mode
   let hoveredBentoTile = null;
@@ -219,6 +246,8 @@ export function initHeroParticles(options = {}) {
     canvas.style.height = `${height}px`;
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const baseScale = width / 960;
+    scaleFactor = Math.max(0.35, Math.min(1.8, baseScale));
     ctx.clearRect(0, 0, width, height);
   }
 
@@ -277,11 +306,15 @@ export function initHeroParticles(options = {}) {
   function initParticles() {
     for (let i = 0; i < particleCount; i++) {
       particles.push({
+        id: i,
         x: Math.random() * width,
         y: Math.random() * height,
+        z: (Math.random() - 0.5) * 200,
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
+        vz: (Math.random() - 0.5) * 0.5,
         size: Math.random() * 2.5 + 1.2,
+        scaleZ: 1.0,
         type: TYPES[Math.floor(Math.random() * TYPES.length)],
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
         phase: Math.random() * TAU,
@@ -355,221 +388,147 @@ export function initHeroParticles(options = {}) {
 
   // --- SECTION-SPECIFIC LOGIC ---
 
-  // 1. Robot Face Mode (Hero)
+  // 1. Holographic Wireframe AI Mode (Hero)
   function updateRobotMode() {
-    blinkTimer++;
-    if (blinkTimer >= nextBlinkTime) {
-      blinkTimer = 0;
-      nextBlinkTime = randomInt(180, 320);
-    }
-    if (winkTimer > 0) {
-      winkTimer--;
-    }
-
     let lookX = 0;
     let lookY = 0;
 
     if (mouse.x !== null && mouse.y !== null) {
       const dx = mouse.x - width / 2;
       const dy = mouse.y - height / 2;
-      const dist = Math.hypot(dx, dy) || 1;
-      
-      const maxLook = 18;
-      lookX = (dx / dist) * Math.min(maxLook, dist * 0.05);
-      lookY = (dy / dist) * Math.min(maxLook, dist * 0.05);
+      // 3D rotation angles mapping
+      lookX = dx * 0.0006;
+      lookY = dy * 0.0006;
     }
 
-    const isBlinking = blinkTimer < 12;
-    const isHappy = thanksTimer > 0;
+    if (glitchTimer > 0) glitchTimer--;
+    const isGlitching = glitchTimer > 0 || Math.random() < 0.015;
 
-    // Proportional scale factor based on screen width for smartwatch, mobile, tablet, desktop, 4K/8K/16K screens
-    const baseScale = width / 960;
-    const scaleFactor = Math.max(0.35, Math.min(1.8, baseScale));
-
-    // Peeking centers placed directly at left & right window borders
-    const dcx = 20 * scaleFactor; // Left peeking Devil
-    const dcy = height / 2;
-    const acx = width - 20 * scaleFactor; // Right peeking Angel
-    const acy = height / 2;
+    const perspective = 300;
 
     particles.forEach((p, idx) => {
-      let tx, ty;
+      let tx, ty, tz;
 
-      if (isAnnoyed) {
-        // --- ANNOYED SPLIT STATE ---
-        if (idx < 100) {
-          // Centered Face (Head Squircle outline, G2 curvature G=3.2)
-          const angle = (idx / 100) * Math.PI * 2;
-          const w = 155 * scaleFactor;
-          const h = 125 * scaleFactor;
-          const n = 3.2;
-          const cos = Math.cos(angle);
-          const sin = Math.sin(angle);
-          const sx = Math.sign(cos) * Math.pow(Math.abs(cos), 2 / n);
-          const sy = Math.sign(sin) * Math.pow(Math.abs(sin), 2 / n);
+      if (idx < 120) {
+        // SOUNDWAVE (Left side) - Multiple overlapping frequencies for realism
+        const bars = 15;
+        const barIndex = idx % bars;
+        const particleInBar = Math.floor(idx / bars);
+        const totalInBar = 120 / bars;
+        
+        // Complex perlin-like noise simulation
+        const freq1 = Math.sin(time * 0.1 + barIndex * 0.5);
+        const freq2 = Math.cos(time * 0.07 + barIndex * 0.3) * 0.5;
+        const freq3 = Math.sin(time * 0.15 - barIndex * 0.1) * 0.25;
+        const compoundFreq = freq1 + freq2 + freq3;
+        
+        const barHeight = 40 + Math.abs(compoundFreq) * 140 * scaleFactor;
+        
+        // Soundwave stays slightly further back
+        tz = 80; 
+        
+        const waveStartX = width * 0.18;
+        const barSpacing = 16 * scaleFactor;
+        tx = waveStartX + barIndex * barSpacing;
+        
+        const yOffset = (particleInBar / (totalInBar - 1) - 0.5) * barHeight;
+        ty = height / 2 + yOffset;
 
-          tx = width / 2 + sx * w + lookX * 0.15;
-          ty = height / 2 + sy * h + lookY * 0.15;
-        } else if (idx < 120) {
-          // Centered Left Eye (angry slanted line \)
-          const t = (idx - 100) / 19;
-          const eyeCX = width / 2 - 50 * scaleFactor + lookX * 0.15;
-          const eyeCY = height / 2 - 20 * scaleFactor + lookY * 0.15;
-          tx = eyeCX + (-12 + t * 24) * scaleFactor;
-          ty = eyeCY + (-8 + t * 16) * scaleFactor;
-        } else if (idx < 140) {
-          // Centered Right Eye (angry slanted line /)
-          const t = (idx - 120) / 19;
-          const eyeCX = width / 2 + 50 * scaleFactor + lookX * 0.15;
-          const eyeCY = height / 2 - 20 * scaleFactor + lookY * 0.15;
-          tx = eyeCX + (-12 + t * 24) * scaleFactor;
-          ty = eyeCY + (8 - t * 16) * scaleFactor;
-        } else if (idx < 180) {
-          // Centered Mouth (frowning curve)
-          const t = (idx - 140) / 39;
-          const mouthW = 70 * scaleFactor;
-          const xOffset = -mouthW / 2 + t * mouthW;
-          tx = width / 2 + xOffset + lookX * 0.15;
-          ty = height / 2 + 35 * scaleFactor - (xOffset * xOffset) * (0.008 / scaleFactor) + lookY * 0.15;
-        } else if (idx < 240) {
-          // --- DEVIL (Left Peeking) ---
-          const dIdx = idx - 180;
-          if (dIdx < 25) {
-            // Outline
-            const angle = (dIdx / 25) * Math.PI * 2;
-            tx = dcx + Math.cos(angle) * 55 * scaleFactor;
-            ty = dcy + Math.sin(angle) * 55 * scaleFactor;
-          } else if (dIdx < 32) {
-            // Left Horn
-            const progress = (dIdx - 25) / 6;
-            tx = dcx - (18 + progress * 14) * scaleFactor;
-            ty = dcy - (48 + progress * 18) * scaleFactor;
-          } else if (dIdx < 39) {
-            // Right Horn
-            const progress = (dIdx - 32) / 6;
-            tx = dcx + (18 + progress * 14) * scaleFactor;
-            ty = dcy - (48 + progress * 18) * scaleFactor;
-          } else if (dIdx < 44) {
-            // Left Eye (slanted /)
-            const progress = (dIdx - 39) / 4;
-            tx = dcx + (-22 + progress * 11) * scaleFactor;
-            ty = dcy - (5 + progress * 7) * scaleFactor;
-          } else if (dIdx < 49) {
-            // Right Eye (slanted \)
-            const progress = (dIdx - 44) / 4;
-            tx = dcx + (11 + progress * 11) * scaleFactor;
-            ty = dcy + (-12 + progress * 7) * scaleFactor;
-          } else {
-            // Smirk Mouth
-            const progress = (dIdx - 49) / 10;
-            const xOffset = (-18 + progress * 36) * scaleFactor;
-            tx = dcx + xOffset;
-            ty = dcy + 16 * scaleFactor + (xOffset * xOffset) * (0.008 / scaleFactor);
-          }
+        if (isGlitching && Math.random() > 0.6) {
+          tx += (Math.random() - 0.5) * 40;
+          p.color = Math.random() > 0.5 ? 'rgba(0, 243, 255, 0.9)' : 'rgba(255, 0, 255, 0.9)';
         } else {
-          // --- ANGEL (Right Peeking) ---
-          const aIdx = idx - 240;
-          if (aIdx < 25) {
-            // Outline
-            const angle = (aIdx / 25) * Math.PI * 2;
-            tx = acx + Math.cos(angle) * 55 * scaleFactor;
-            ty = acy + Math.sin(angle) * 55 * scaleFactor;
-          } else if (aIdx < 40) {
-            // Halo ring peeking
-            const angle = ((aIdx - 25) / 15) * Math.PI * 2;
-            tx = acx + Math.cos(angle) * 25 * scaleFactor;
-            ty = acy - 72 * scaleFactor + Math.sin(angle) * 5 * scaleFactor;
-          } else if (aIdx < 45) {
-            // Left Eye peeking (Happy Arch ^)
-            const progress = (aIdx - 40) / 4;
-            const angle = Math.PI + progress * Math.PI;
-            tx = acx - 18 * scaleFactor + Math.cos(angle) * 8 * scaleFactor;
-            ty = acy - 10 * scaleFactor + Math.sin(angle) * 5 * scaleFactor;
-          } else if (aIdx < 50) {
-            // Right Eye
-            const progress = (aIdx - 45) / 4;
-            const angle = Math.PI + progress * Math.PI;
-            tx = acx + 18 * scaleFactor + Math.cos(angle) * 8 * scaleFactor;
-            ty = acy - 10 * scaleFactor + Math.sin(angle) * 5 * scaleFactor;
-          } else {
-            // Smiling Mouth
-            const progress = (aIdx - 50) / 9;
-            const xOffset = (-18 + progress * 36) * scaleFactor;
-            tx = acx + xOffset;
-            ty = acy + 15 * scaleFactor + (xOffset * xOffset) * (0.01 / scaleFactor);
+          p.color = 'rgba(0, 243, 255, 0.85)';
+        }
+
+      } else if (idx < 120 + FACE_NODES.length) {
+        // AI WIREFRAME FACE (Right side) - True 3D projection
+        const faceIdx = idx - 120;
+        const node = FACE_NODES[faceIdx];
+        
+        const cosX = Math.cos(lookY * -1);
+        const sinX = Math.sin(lookY * -1);
+        const cosY = Math.cos(lookX);
+        const sinY = Math.sin(lookX);
+        
+        let nx = node.x * scaleFactor;
+        let ny = node.y * scaleFactor;
+        let nz = node.z * scaleFactor;
+
+        // Apply Y-axis rotation
+        let rx = nx * cosY + nz * sinY;
+        let rz = -nx * sinY + nz * cosY;
+        
+        // Apply X-axis rotation
+        let ry = ny * cosX - rz * sinX;
+        rz = ny * sinX + rz * cosX;
+
+        // Elastic Mouse Distortion
+        const faceCX = width * 0.65;
+        const faceCY = height / 2;
+        let globalNx = faceCX + rx;
+        let globalNy = faceCY + ry;
+        
+        if (mouse.x !== null && mouse.y !== null) {
+          const mdx = globalNx - mouse.x;
+          const mdy = globalNy - mouse.y;
+          const dist = Math.hypot(mdx, mdy) || 0.001; // Prevent NaN freeze!
+          if (dist < 180) {
+            const force = Math.pow((180 - dist) / 180, 2);
+            // Elastic push outward and back in Z
+            rx += (mdx / dist) * force * 50;
+            ry += (mdy / dist) * force * 50;
+            rz -= force * 100; 
           }
         }
+
+        // Breathing effect
+        rx += Math.sin(time * 0.02 + faceIdx) * 3;
+        ry += Math.cos(time * 0.025 + faceIdx) * 3;
+
+        tx = faceCX + rx;
+        ty = faceCY + ry;
+        tz = rz;
+        
+        if (isGlitching && Math.random() > 0.8) {
+          tx += (Math.random() - 0.5) * 60;
+          tz += (Math.random() - 0.5) * 60;
+          p.color = Math.random() > 0.5 ? 'rgba(255, 0, 255, 0.9)' : 'rgba(11, 72, 221, 0.9)';
+        } else {
+          p.color = idx % 3 === 0 ? 'rgba(0, 243, 255, 0.85)' : 'rgba(11, 72, 221, 0.85)';
+        }
+
       } else {
-        // --- NORMAL / HAPPY COMPLEMENT ---
-        if (idx < 150) {
-          // Head outline (Pro Squircle n=3.2)
-          const angle = (idx / 150) * Math.PI * 2;
-          const w = 240 * scaleFactor;
-          const h = 180 * scaleFactor;
-          const n = 3.2;
-          const cos = Math.cos(angle);
-          const sin = Math.sin(angle);
-          const sx = Math.sign(cos) * Math.pow(Math.abs(cos), 2 / n);
-          const sy = Math.sign(sin) * Math.pow(Math.abs(sin), 2 / n);
-
-          tx = width / 2 + sx * w + lookX * 0.2;
-          ty = height / 2 + sy * h + lookY * 0.2;
-        } else if (idx < 200) {
-          // Left Eye
-          const eyeCX = width / 2 - 80 * scaleFactor + lookX;
-          const eyeCY = height / 2 - 25 * scaleFactor + lookY;
-
-          if (isHappy) {
-            const progress = (idx - 150) / 49;
-            const angle = Math.PI + progress * Math.PI;
-            tx = eyeCX + Math.cos(angle) * 20 * scaleFactor;
-            ty = eyeCY + 5 * scaleFactor + Math.sin(angle) * 12 * scaleFactor;
-          } else {
-            const angle = ((idx - 150) / 50) * Math.PI * 2;
-            const r = 24 * scaleFactor;
-            let yScale = 1.0;
-            if (isBlinking || (winkTimer > 0 && winkingEye === 'left')) {
-              yScale = 0.1;
-            }
-            tx = eyeCX + Math.cos(angle) * r;
-            ty = eyeCY + Math.sin(angle) * r * yScale;
-          }
-        } else if (idx < 250) {
-          // Right Eye
-          const eyeCX = width / 2 + 80 * scaleFactor + lookX;
-          const eyeCY = height / 2 - 25 * scaleFactor + lookY;
-
-          if (isHappy) {
-            const progress = (idx - 200) / 49;
-            const angle = Math.PI + progress * Math.PI;
-            tx = eyeCX + Math.cos(angle) * 20 * scaleFactor;
-            ty = eyeCY + 5 * scaleFactor + Math.sin(angle) * 12 * scaleFactor;
-          } else {
-            const angle = ((idx - 200) / 50) * Math.PI * 2;
-            const r = 24 * scaleFactor;
-            let yScale = 1.0;
-            if (isBlinking || (winkTimer > 0 && winkingEye === 'right')) {
-              yScale = 0.1;
-            }
-            tx = eyeCX + Math.cos(angle) * r;
-            ty = eyeCY + Math.sin(angle) * r * yScale;
-          }
-        } else {
-          // Neutral simple smile mouth line
-          const progress = (idx - 250) / 49;
-          const mouthW = 100 * scaleFactor;
-          const xOffset = -mouthW / 2 + progress * mouthW;
-          const yOffset = 42 * scaleFactor + (xOffset * xOffset) * (0.0028 / scaleFactor);
-          tx = width / 2 + xOffset + lookX * 0.4;
-          ty = height / 2 + yOffset + lookY * 0.4;
-        }
+        // FREE ROAMING DUST
+        tx = p.x + (Math.random() - 0.5) * 10;
+        ty = p.y + (Math.random() - 0.5) * 10;
+        tz = p.z + (Math.random() - 0.5) * 10;
+        
+        tx += (width * 0.65 - p.x) * 0.005;
+        ty += (height / 2 - p.y) * 0.005;
+        tz += (0 - p.z) * 0.005;
+        p.color = 'rgba(0, 243, 255, 0.3)';
       }
 
-      p.vx = (p.vx + (tx - p.x) * 0.075) * 0.82;
-      p.vy = (p.vy + (ty - p.y) * 0.075) * 0.82;
-      limitSpeed(p, 6.0);
+      // Spring physics
+      p.vx = (p.vx + (tx - p.x) * 0.09) * 0.78;
+      p.vy = (p.vy + (ty - p.y) * 0.09) * 0.78;
+      p.vz = (p.vz + (tz - p.z) * 0.09) * 0.78;
+      
+      const speed = Math.hypot(p.vx, p.vy, p.vz);
+      if (speed > 8.0) {
+        p.vx = (p.vx / speed) * 8.0;
+        p.vy = (p.vy / speed) * 8.0;
+        p.vz = (p.vz / speed) * 8.0;
+      }
+      
       p.x += p.vx;
       p.y += p.vy;
+      p.z += p.vz;
+      
+      // Calculate 3D scale based on depth
+      const pz = perspective + p.z;
+      p.scaleZ = pz > 1 ? perspective / pz : 0.01;
     });
   }
 
@@ -904,6 +863,12 @@ export function initHeroParticles(options = {}) {
 
   function drawParticle(p, idx) {
     let drawSize = p.size * currentSizeMultiplier;
+    
+    // Apply 3D scale if in robot mode
+    if (currentSectionMode === 'robot' && p.scaleZ) {
+      drawSize *= p.scaleZ;
+    }
+
     if (activeMorph) {
       drawSize = p.size * 2.2 * currentSizeMultiplier;
     } else if (currentSectionMode === 'racing' && p.raceBoost > 0) {
@@ -911,15 +876,7 @@ export function initHeroParticles(options = {}) {
     }
 
     let drawColor = p.color;
-    if (currentSectionMode === 'robot') {
-      if (isAnnoyed) {
-        if (idx >= 180 && idx < 240) {
-          drawColor = 'rgba(239, 68, 68, 0.95)'; // Devil Red
-        } else if (idx >= 240) {
-          drawColor = 'rgba(251, 191, 36, 0.95)'; // Angel Gold
-        }
-      }
-    } else if (currentSectionMode === 'fight') {
+    if (currentSectionMode === 'fight') {
       if (p.flash > 0) {
         drawColor = `rgba(255, 255, 255, ${0.5 + p.flash / 12})`;
       } else {
@@ -930,6 +887,13 @@ export function initHeroParticles(options = {}) {
     }
 
     ctx.save();
+    
+    // Soft glow for realism in robot mode
+    if (currentSectionMode === 'robot') {
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = drawColor;
+    }
+    
     ctx.translate(p.x, p.y);
     ctx.rotate(p.angle);
     ctx.strokeStyle = drawColor;
@@ -958,6 +922,16 @@ export function initHeroParticles(options = {}) {
   function animate() {
     time++;
 
+    if (currentSectionMode === 'robot') {
+      ctx.clearRect(0, 0, width, height);
+      animationFrameId = requestAnimationFrame(animate);
+      canvas.dataset.animationFrameId = animationFrameId;
+      return;
+    }
+
+    // Crucial: reset blending mode before clearing canvas!
+    ctx.globalCompositeOperation = 'source-over';
+
     const fade = currentSectionMode === 'racing' ? 0.12 : 0.18;
     ctx.fillStyle = `rgba(0, 0, 0, ${fade})`;
     ctx.fillRect(0, 0, width, height);
@@ -972,12 +946,7 @@ export function initHeroParticles(options = {}) {
       }
     }
 
-    if (thanksTimer > 0) {
-      thanksTimer--;
-    }
-
-    const dcy = height / 2;
-    const acy = height / 2;
+    // Removed old robot timers
 
     if (activeMorph) {
       particles.forEach((p, idx) => {
@@ -1002,6 +971,13 @@ export function initHeroParticles(options = {}) {
         updateHeartMode();
       }
 
+      // Z-sorting is unnecessary with additive blending, removing it saves massive CPU!
+      if (currentSectionMode === 'robot') {
+        ctx.globalCompositeOperation = 'screen';
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
       particles.forEach((p, idx) => {
         p.angle += p.rotationSpeed;
 
@@ -1012,153 +988,50 @@ export function initHeroParticles(options = {}) {
         if (!isStructured) {
           applyCursorRepulsion(p);
         }
-        drawParticle(p, idx);
+        drawParticle(p);
       });
 
-      // Draw constellation grid lines
-      if (currentSectionMode === 'constellation') {
+      // Draw pre-baked geometry (O(1) Ultra-Fast Rendering)
+      if (currentSectionMode === 'robot') {
+        ctx.lineWidth = 1.0;
+        ctx.strokeStyle = (glitchTimer > 0 || Math.random() < 0.005) ? `rgba(255, 0, 255, 0.45)` : `rgba(0, 243, 255, 0.35)`;
+        
+        ctx.beginPath();
+        for (let i = 0; i < PRE_BAKED_CONNECTIONS.length; i++) {
+          const [a, b] = PRE_BAKED_CONNECTIONS[i];
+          const p1 = particles[120 + a];
+          const p2 = particles[120 + b];
+          if (!p1 || !p2) continue;
+          
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+        }
+        ctx.stroke();
+        
+      } else if (currentSectionMode === 'constellation') {
+        // Fast O(N) random connecting for constellation mode
         ctx.lineWidth = 0.6;
+        ctx.strokeStyle = `rgba(99, 102, 241, 0.2)`;
+        ctx.beginPath();
         for (let i = 0; i < particles.length; i++) {
           const p1 = particles[i];
-          for (let j = i + 1; j < particles.length; j++) {
-            const p2 = particles[j];
-            const dx = p1.x - p2.x;
-            const dy = p1.y - p2.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < 85) {
-              const alpha = ((85 - dist) / 85) * 0.26;
-              ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
-              ctx.beginPath();
+          for (let j = 1; j < 5; j++) {
+            if (i + j >= particles.length) break;
+            const p2 = particles[i + j];
+            if (Math.abs(p1.x - p2.x) < 80 && Math.abs(p1.y - p2.y) < 80) {
               ctx.moveTo(p1.x, p1.y);
               ctx.lineTo(p2.x, p2.y);
-              ctx.stroke();
             }
           }
         }
+        ctx.stroke();
       }
     }
 
-    // Render cyber-styled speech bubble when hit/annoyed in robot mode
-    const showBubble = isAnnoyed || (thanksTimer > 0);
-    if (currentSectionMode === 'robot' && showBubble && activeQuote) {
-      ctx.save();
-      const fontSize = Math.max(10, Math.round(16 * scaleFactor));
-      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
-      const textWidth = ctx.measureText(activeQuote).width;
-      const padX = 16 * scaleFactor;
-      const padY = 8 * scaleFactor;
-      const bw = textWidth + padX * 2;
-      const bh = 32 * scaleFactor;
-      const bx = width / 2 - bw / 2;
-      const currentH = (isAnnoyed ? 125 : 180) * scaleFactor;
-      const by = height / 2 - currentH - bh - 16 * scaleFactor; // Stays perfectly above the head!
-
-      // Semi-transparent dark glass backing
-      ctx.fillStyle = 'rgba(15, 15, 25, 0.9)';
-      ctx.strokeStyle = isAnnoyed ? 'rgba(244, 63, 94, 0.6)' : 'rgba(16, 185, 129, 0.6)';
-      ctx.lineWidth = 1.5;
-      
-      drawRoundedRect(ctx, bx, by, bw, bh, 6);
-      ctx.fill();
-      ctx.stroke();
-
-      // Pointy arrow pointing down
-      ctx.beginPath();
-      ctx.moveTo(width / 2 - 8 * scaleFactor, by + bh);
-      ctx.lineTo(width / 2, by + bh + 8 * scaleFactor);
-      ctx.lineTo(width / 2 + 8 * scaleFactor, by + bh);
-      ctx.closePath();
-      ctx.fillStyle = 'rgba(15, 15, 25, 0.9)';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(width / 2 - 8 * scaleFactor, by + bh);
-      ctx.lineTo(width / 2, by + bh + 8 * scaleFactor);
-      ctx.lineTo(width / 2 + 8 * scaleFactor, by + bh);
-      ctx.stroke();
-
-      // Sleek text rendering
-      ctx.fillStyle = '#ffffff';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(activeQuote, width / 2, by + bh / 2);
-      ctx.restore();
-    }
-
-    // Render side bubbles for Devil & Angel peeking at window borders
-    if (currentSectionMode === 'robot' && isAnnoyed) {
-      // 1. Devil speech bubble (Left side peeking border, 20px offset)
-      if (activeDevilQuote) {
-        ctx.save();
-        const fontSize = Math.max(9, Math.round(13 * scaleFactor));
-        ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
-        const textWidth = ctx.measureText(activeDevilQuote).width;
-        const bw = textWidth + 20 * scaleFactor;
-        const bh = 26 * scaleFactor;
-        const bx = dcx; // Dynamically placed at Devil's center x (20 * scaleFactor)
-        const by = dcy - 110 * scaleFactor;
-
-        ctx.fillStyle = 'rgba(20, 10, 10, 0.9)';
-        ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)';
-        ctx.lineWidth = 1.5;
-        drawRoundedRect(ctx, bx, by, bw, bh, 5);
-        ctx.fill();
-        ctx.stroke();
-
-        // Pointy arrow towards left border peeker
-        ctx.beginPath();
-        ctx.moveTo(bx + 15 * scaleFactor, by + bh);
-        ctx.lineTo(bx + 5 * scaleFactor, by + bh + 8 * scaleFactor);
-        ctx.lineTo(bx + 25 * scaleFactor, by + bh);
-        ctx.closePath();
-        ctx.fillStyle = 'rgba(20, 10, 10, 0.9)';
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(activeDevilQuote, bx + bw / 2, by + bh / 2);
-        ctx.restore();
-      }
-
-      // 2. Angel speech bubble (Right side peeking border, 20px offset)
-      if (activeAngelQuote) {
-        ctx.save();
-        const fontSize = Math.max(9, Math.round(13 * scaleFactor));
-        ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
-        const textWidth = ctx.measureText(activeAngelQuote).width;
-        const bw = textWidth + 20 * scaleFactor;
-        const bh = 26 * scaleFactor;
-        const bx = acx - bw; // Dynamically placed relative to Angel's center x
-        const by = acy - 110 * scaleFactor;
-
-        ctx.fillStyle = 'rgba(10, 15, 20, 0.9)';
-        ctx.strokeStyle = 'rgba(251, 191, 36, 0.6)';
-        ctx.lineWidth = 1.5;
-        drawRoundedRect(ctx, bx, by, bw, bh, 5);
-        ctx.fill();
-        ctx.stroke();
-
-        // Pointy arrow towards right border peeker
-        ctx.beginPath();
-        ctx.moveTo(bx + bw - 25 * scaleFactor, by + bh);
-        ctx.lineTo(bx + bw - 5 * scaleFactor, by + bh + 8 * scaleFactor);
-        ctx.lineTo(bx + bw - 15 * scaleFactor, by + bh);
-        ctx.closePath();
-        ctx.fillStyle = 'rgba(10, 15, 20, 0.9)';
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(activeAngelQuote, bx + bw / 2, by + bh / 2);
-        ctx.restore();
-      }
-    }
+    // Holographic effects complete
 
     animationFrameId = requestAnimationFrame(animate);
+    canvas.dataset.animationFrameId = animationFrameId;
   }
 
   // --- LISTENERS & BINDINGS ---
@@ -1177,33 +1050,20 @@ export function initHeroParticles(options = {}) {
 
   function handleClickBurst(e) {
     if (currentSectionMode === 'robot') {
-      const dx = e.clientX - width / 2;
-      const dy = e.clientY - height / 2;
-      const dist = Math.hypot(dx, dy);
+      // Trigger glitch
+      glitchTimer = 20; 
       
-      // Hit checking
-      const hitRadius = isAnnoyed ? 155 : 220;
-      if (dist < hitRadius) {
-        isAnnoyed = true; // Stays annoyed until apology typed
-        activeQuote = ANNOYED_QUOTES[Math.floor(Math.random() * ANNOYED_QUOTES.length)];
-        activeDevilQuote = DEVIL_QUOTES[Math.floor(Math.random() * DEVIL_QUOTES.length)];
-        activeAngelQuote = ANGEL_QUOTES[Math.floor(Math.random() * ANGEL_QUOTES.length)];
-
-        // Shake particles
-        particles.forEach(p => {
-          const pdx = p.x - e.clientX;
-          const pdy = p.y - e.clientY;
-          const pdist = Math.hypot(pdx, pdy) || 1;
-          if (pdist < 220) {
-            p.vx += (pdx / pdist) * randomBetween(3, 6);
-            p.vy += (pdy / pdist) * randomBetween(3, 6);
-          }
-        });
-      } else {
-        // Normal wink on click outside head bounds
-        winkTimer = 25;
-        winkingEye = Math.random() > 0.5 ? 'left' : 'right';
-      }
+      // Localized burst
+      particles.forEach((p, idx) => {
+        const pdx = p.x - e.clientX;
+        const pdy = p.y - e.clientY;
+        const pdist = Math.hypot(pdx, pdy) || 1;
+        if (pdist < 180) {
+          p.vx += (pdx / pdist) * randomBetween(6, 12);
+          p.vy += (pdy / pdist) * randomBetween(6, 12);
+          if (idx % 2 === 0) p.color = 'rgba(255, 0, 255, 0.9)'; // Glitch magenta
+        }
+      });
       return;
     }
 
@@ -1216,23 +1076,7 @@ export function initHeroParticles(options = {}) {
     });
   }
 
-  // Keyboard easter egg: type 'sorry' to clear robot annoyance
-  function handleKeyDown(e) {
-    if (currentSectionMode !== 'robot' || !isAnnoyed) return;
-    
-    // Ignore input text areas or form fields
-    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
-
-    if (e.key && e.key.length === 1) {
-      typedKeys = (typedKeys + e.key.toLowerCase()).slice(-5);
-      if (typedKeys === 'sorry') {
-        isAnnoyed = false;
-        thanksTimer = 120; // 2 seconds of happy reaction
-        activeQuote = "Apology accepted! 😊";
-        typedKeys = '';
-      }
-    }
-  }
+  // Removed keyboard easter egg
 
   function setMorphTarget(shapeName) {
     if (shapeName === activeMorph) return;
@@ -1334,9 +1178,24 @@ export function initHeroParticles(options = {}) {
   });
 
   function setSectionState(mode, speed, sizeMultiplier) {
+    const previousMode = currentSectionMode;
     currentSectionMode = mode;
     currentSpeedLimit = speed;
     currentSizeMultiplier = sizeMultiplier;
+
+    // Lightweight adjustment: fade canvas on hero section to save composite/paint overhead
+    if (canvas) {
+      canvas.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+      if (mode === 'robot') {
+        canvas.style.opacity = '0';
+      } else {
+        canvas.style.opacity = '0.5';
+      }
+    }
+
+    if (previousMode === 'robot' && mode !== 'robot') {
+      glitchTimer = 0;
+    }
 
     if (activeMorph && !activeHoveredElement) {
       activeMorph = null;
@@ -1352,7 +1211,6 @@ export function initHeroParticles(options = {}) {
   document.addEventListener('mouseleave', handleMouseLeave);
   document.addEventListener('focusin', handleFocusIn);
   document.addEventListener('focusout', handleFocusOut);
-  window.addEventListener('keydown', handleKeyDown);
   window.addEventListener('resize', handleResize);
 
   // Initial trigger & run
@@ -1372,7 +1230,6 @@ export function initHeroParticles(options = {}) {
     document.removeEventListener('mouseleave', handleMouseLeave);
     document.removeEventListener('focusin', handleFocusIn);
     document.removeEventListener('focusout', handleFocusOut);
-    window.removeEventListener('keydown', handleKeyDown);
     scrollTriggers.forEach(t => t.kill());
   };
 }

@@ -102,7 +102,7 @@ function detectLanguage(text) {
   const lowerText = text.toLowerCase();
   let bestMatch = 'en';
   let bestScore = 0;
-  
+
   for (const [lang, keywords] of Object.entries(LANGUAGE_KEYWORDS)) {
     let score = 0;
     keywords.forEach(keyword => {
@@ -115,7 +115,7 @@ function detectLanguage(text) {
       bestMatch = lang;
     }
   }
-  
+
   return bestScore > 0 ? bestMatch : 'en';
 }
 
@@ -124,7 +124,7 @@ function getUserLanguage() {
   // Check stored preference first
   const stored = localStorage.getItem('nova-language');
   if (stored && LANGUAGES[stored]) return stored;
-  
+
   // Fall back to browser language
   const browserLang = navigator.language.split('-')[0];
   return LANGUAGES[browserLang] ? browserLang : 'en';
@@ -201,10 +201,10 @@ function levenshteinDistance(str1, str2) {
   const m = str1.length;
   const n = str2.length;
   const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
-  
+
   for (let i = 0; i <= m; i++) dp[i][0] = i;
   for (let j = 0; j <= n; j++) dp[0][j] = j;
-  
+
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
       if (str1[i - 1] === str2[j - 1]) {
@@ -274,27 +274,27 @@ function randomInRange(min, max) {
 
 // Sentiment analysis (simple but effective)
 function analyzeSentiment(text) {
-  const positive = ['thanks', 'thank', 'great', 'awesome', 'amazing', 'love', 'excellent', 'wonderful', 
-    'fantastic', 'brilliant', 'perfect', 'good', 'nice', 'cool', 'helpful', 'appreciate', 'happy', 
+  const positive = ['thanks', 'thank', 'great', 'awesome', 'amazing', 'love', 'excellent', 'wonderful',
+    'fantastic', 'brilliant', 'perfect', 'good', 'nice', 'cool', 'helpful', 'appreciate', 'happy',
     'glad', 'pleased', 'delighted', 'excited', 'yes', 'yeah', 'yep', 'sure', 'okay', 'ok', 'definitely'];
   const negative = ['bad', 'terrible', 'awful', 'hate', 'horrible', 'worst', 'sucks', 'disappointing',
-    'frustrated', 'angry', 'annoyed', 'upset', 'confused', 'lost', 'stuck', 'problem', 'issue', 
+    'frustrated', 'angry', 'annoyed', 'upset', 'confused', 'lost', 'stuck', 'problem', 'issue',
     'help', 'wrong', 'broken', 'error', 'fail', 'no', 'not', 'never', 'can\'t', 'won\'t', 'doesn\'t'];
-  const curious = ['how', 'what', 'why', 'when', 'where', 'who', 'which', 'explain', 'tell me', 
+  const curious = ['how', 'what', 'why', 'when', 'where', 'who', 'which', 'explain', 'tell me',
     'show me', 'describe', 'wondering', 'curious', 'interested'];
-  
+
   const lowerText = text.toLowerCase();
   let score = 0;
   let sentiment = 'neutral';
-  
+
   positive.forEach(word => { if (lowerText.includes(word)) score += 1; });
   negative.forEach(word => { if (lowerText.includes(word)) score -= 1; });
   const isCurious = curious.some(word => lowerText.includes(word));
-  
+
   if (score > 0) sentiment = 'positive';
   else if (score < 0) sentiment = 'negative';
   if (isCurious) sentiment = score < 0 ? 'frustrated_curious' : 'curious';
-  
+
   return { sentiment, score, isCurious };
 }
 
@@ -344,7 +344,7 @@ const KNOWLEDGE_BASE = {
       const isReturning = context.visitCount > 1;
       const visitMsg = isReturning ? `Welcome back! (Visit #${context.visitCount}) ` : "";
       const dayGreeting = Math.random() > 0.7 ? ` ${getDayBasedGreeting()}` : "";
-      
+
       return [
         `${timeGreeting}! ${visitMsg}${randomGreet} 👋 I'm Nova, your AI assistant 🤖. I'm here to help you explore Hamza's portfolio. What would you like to know?${dayGreeting}`,
         `${randomGreet}! ${timeGreeting}! ${visitMsg}I'm Nova, and I'm excited to help you discover what makes Hamza's work special. Ask me anything!`,
@@ -528,10 +528,10 @@ const KNOWLEDGE_BASE = {
   help: {
     patterns: ['help', 'what can you do', 'capabilities', 'features', 'assist', 'support', 'how can you help', 'what do you do'],
     responses: (context) => {
-      const suggestions = context.mentionedTopics.length > 0 
+      const suggestions = context.mentionedTopics.length > 0
         ? `\n\n💡 **Based on our conversation, you might also like:**\n${context.mentionedTopics.map(t => `• Learn more about ${t}`).join('\n')}`
         : '';
-      
+
       return [
         `I can help you with lots of things! 🎉\n\n💬 **Conversation:**\n• Answer questions about services, projects, skills\n• Have friendly, intelligent chats\n• Tell jokes and have fun\n• Remember our conversation context\n\n🗺️ **Navigation:**\n• Guide you around the website\n• Scroll to specific sections\n• Navigate to different pages\n• Smart suggestions based on your interests\n\n📚 **Information:**\n• Explain services and offerings in detail\n• Share project details and success stories\n• Provide contact information\n• Discuss tech stack and expertise\n• Context-aware responses\n\n🎤 **Voice Features:**\n• Natural text-to-speech with female voice\n• Voice input recognition\n• Hands-free interaction\n\n🎭 **Intelligence:**\n• Context-aware conversations\n• Smart follow-up suggestions\n• Learning from interactions\n• Personalized assistance${suggestions}\n\nWhat would you like to explore?`,
         `I'm Nova, and I'm here to help! 🤖\n\n**I can:**\n• Answer questions intelligently\n• Guide you around the site\n• Tell jokes and have fun\n• Navigate to any section\n• Use voice features\n• Remember our conversation\n• Provide smart suggestions\n\nJust ask me anything!`,
@@ -565,7 +565,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Math & Calculations
   math: {
     patterns: ['calculate', 'math', 'what is', 'compute', 'solve', 'equals', 'plus', 'minus', 'times', 'divided', 'multiply', 'add', 'subtract', 'sum of'],
@@ -583,7 +583,7 @@ const KNOWLEDGE_BASE = {
       return null; // Let default response handle it
     }
   },
-  
+
   // NEW: Time & Date
   time: {
     patterns: ['time', 'what time', 'current time', 'clock', 'date', 'what day', 'today', 'what is today', 'what\'s today'],
@@ -596,7 +596,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Fun Facts
   fun_fact: {
     patterns: ['fun fact', 'fact', 'tell me something', 'interesting', 'did you know', 'trivia', 'random fact'],
@@ -609,7 +609,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Quotes
   quote: {
     patterns: ['quote', 'inspire', 'inspiration', 'motivate', 'motivation', 'wisdom'],
@@ -622,7 +622,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Riddles
   riddle: {
     patterns: ['riddle', 'puzzle', 'brain teaser', 'challenge me', 'test me'],
@@ -635,7 +635,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Give Up (for riddles)
   give_up: {
     patterns: ['give up', 'i don\'t know', 'idk', 'answer', 'tell me the answer', 'what\'s the answer', 'reveal'],
@@ -652,7 +652,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Random Number
   random_number: {
     patterns: ['random number', 'pick a number', 'generate number', 'roll', 'dice', 'flip a coin', 'coin flip'],
@@ -661,20 +661,20 @@ const KNOWLEDGE_BASE = {
     ],
     handler: (message) => {
       const lowerMsg = message.toLowerCase();
-      
+
       // Coin flip
       if (lowerMsg.includes('coin') || lowerMsg.includes('flip')) {
         const result = Math.random() > 0.5 ? 'Heads' : 'Tails';
         return `🪙 *Flipping coin...*\n\n**${result}!**\n\nFlip again?`;
       }
-      
+
       // Dice roll
       if (lowerMsg.includes('dice') || lowerMsg.includes('roll')) {
         const dice = randomInRange(1, 6);
         const diceEmoji = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][dice - 1];
         return `🎲 *Rolling dice...*\n\n**${diceEmoji} ${dice}!**\n\nRoll again?`;
       }
-      
+
       // Custom range
       const numbers = extractNumbers(message);
       if (numbers.length >= 2) {
@@ -682,11 +682,11 @@ const KNOWLEDGE_BASE = {
         const max = Math.max(numbers[0], numbers[1]);
         return `🎲 Random number between ${min} and ${max}: **${randomInRange(min, max)}**`;
       }
-      
+
       return null;
     }
   },
-  
+
   // NEW: Compliments
   compliment: {
     patterns: ['compliment', 'say something nice', 'make me feel better', 'cheer me up', 'i\'m sad', 'feeling down'],
@@ -699,7 +699,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Capabilities showcase
   capabilities: {
     patterns: ['what can you do', 'all features', 'your abilities', 'list commands', 'commands', 'full features', 'features'],
@@ -717,7 +717,7 @@ const KNOWLEDGE_BASE = {
       `🎯 **Advanced Features:**\n• Code review & debugging help\n• Step-by-step problem solving\n• Performance optimization\n• Security analysis\n• API & database design\n• Testing strategies\n• Learning paths & tutorials\n• Project architecture suggestions\n\nTry any of these! What interests you? 🚀`
     ]
   },
-  
+
   // NEW: Weather small talk
   weather: {
     patterns: ['weather', 'how\'s the weather', 'is it sunny', 'is it raining'],
@@ -726,7 +726,7 @@ const KNOWLEDGE_BASE = {
       "I can't check the weather, but I'm always in a sunny mood when chatting with you! 🌞\n\nWhat else can I help with?"
     ]
   },
-  
+
   // NEW: Age question
   age: {
     patterns: ['how old are you', 'your age', 'when were you born', 'when were you created'],
@@ -735,7 +735,7 @@ const KNOWLEDGE_BASE = {
       "Age is just a number, and for an AI like me, that number refreshes every time we chat! 😄 What can I do for you?"
     ]
   },
-  
+
   // NEW: Feeling/Emotion
   feeling: {
     patterns: ['are you real', 'are you human', 'are you alive', 'do you have feelings', 'are you sentient'],
@@ -745,7 +745,7 @@ const KNOWLEDGE_BASE = {
       "Great philosophical question! I'm an AI - I process information and generate responses, but I don't have consciousness. I do my best to be helpful though! What would you like to know?"
     ]
   },
-  
+
   // NEW: Creator question
   creator: {
     patterns: ['who made you', 'who created you', 'who built you', 'your creator', 'your developer'],
@@ -754,14 +754,14 @@ const KNOWLEDGE_BASE = {
       "Hamza Arya created me! He's the developer behind this portfolio. I'm here to help you explore his work and answer your questions! 🚀"
     ]
   },
-  
+
   // NEW: Conversation summary
   summary: {
     patterns: ['summary', 'our conversation', 'what did we talk', 'conversation history', 'chat summary'],
     responses: () => ["I'll generate a summary for you!"],
     handler: 'summary'
   },
-  
+
   // NEW: Clear chat
   clear_chat: {
     patterns: ['clear chat', 'start over', 'reset', 'new conversation', 'clear history'],
@@ -771,7 +771,7 @@ const KNOWLEDGE_BASE = {
     ],
     handler: 'clear'
   },
-  
+
   // NEW: User introduces themselves
   introduction: {
     patterns: ['my name is', 'i am', 'i\'m', 'call me', 'you can call me'],
@@ -789,7 +789,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Remembering name
   remember_name: {
     patterns: ['do you remember my name', 'what\'s my name', 'who am i', 'you remember me'],
@@ -807,7 +807,7 @@ const KNOWLEDGE_BASE = {
       ];
     }
   },
-  
+
   // NEW: Jokes count
   joke_count: {
     patterns: ['how many jokes', 'jokes told', 'joke count'],
@@ -815,7 +815,7 @@ const KNOWLEDGE_BASE = {
       `I've told you ${context.jokesTold} joke${context.jokesTold !== 1 ? 's' : ''} so far! ${context.jokesTold > 5 ? 'You really like jokes, huh? 😄' : 'Want more?'}`,
     ]
   },
-  
+
   // NEW: Learning recommendations
   learning: {
     patterns: ['learn', 'learning', 'tutorial', 'study', 'resources', 'how to learn', 'where to learn', 'teach me', 'help me learn'],
@@ -823,7 +823,7 @@ const KNOWLEDGE_BASE = {
       "I can help you learn! Try asking:\n• \"Learn React\" - Get React learning resources\n• \"Learn JavaScript\" - JavaScript learning path\n• \"Learn Node.js\" - Backend development resources\n• \"Learn CSS\" - CSS mastery guide\n• \"Project ideas\" - Get project suggestions\n\nWhat would you like to learn? 📚"
     ]
   },
-  
+
   // NEW: Project suggestions
   projects_suggest: {
     patterns: ['project idea', 'project suggestions', 'what to build', 'beginner project', 'intermediate project', 'advanced project', 'project ideas'],
@@ -831,7 +831,7 @@ const KNOWLEDGE_BASE = {
       "I can suggest projects based on your skill level! Try:\n• \"Beginner projects\" - Start here!\n• \"Intermediate projects\" - Level up!\n• \"Advanced projects\" - Challenge yourself!\n\nWhat's your skill level? 🚀"
     ]
   },
-  
+
   // NEW: Code help
   code_help: {
     patterns: ['code help', 'programming help', 'coding assistance', 'debug', 'error', 'bug', 'problem with code'],
@@ -839,7 +839,7 @@ const KNOWLEDGE_BASE = {
       "I can help with code! Try:\n• \"Show me React code\" - Get React examples\n• \"Node.js example\" - Backend code samples\n• \"JavaScript code\" - JS examples\n• \"CSS example\" - Styling examples\n• \"TypeScript code\" - Type-safe examples\n\nOr describe your coding problem and I'll help! 💻"
     ]
   },
-  
+
   // NEW: Best practices
   best_practices: {
     patterns: ['best practices', 'coding standards', 'how to write good code', 'code quality', 'clean code'],
@@ -847,7 +847,7 @@ const KNOWLEDGE_BASE = {
       "**Best Practices for Web Development:**\n\n✅ **Code Quality:**\n• Write readable, self-documenting code\n• Use meaningful variable names\n• Keep functions small and focused\n• Comment complex logic\n• Follow DRY (Don't Repeat Yourself)\n\n✅ **Performance:**\n• Optimize images and assets\n• Use lazy loading\n• Minimize HTTP requests\n• Cache when appropriate\n• Monitor Core Web Vitals\n\n✅ **Security:**\n• Validate and sanitize inputs\n• Use HTTPS\n• Keep dependencies updated\n• Implement proper authentication\n• Protect against XSS and CSRF\n\n✅ **Maintainability:**\n• Use version control (Git)\n• Write tests\n• Document your code\n• Follow consistent style guides\n• Refactor regularly\n\nWant specific practices for a technology? Just ask! 💡"
     ]
   },
-  
+
   // NEW: Career advice
   career: {
     patterns: ['career', 'career advice', 'how to become a developer', 'developer career', 'web developer career'],
@@ -860,11 +860,11 @@ const KNOWLEDGE_BASE = {
       const smartSuggestions = context.mentionedTopics.length > 0
         ? `\n\n💡 **You've mentioned:** ${context.mentionedTopics.join(', ')}. Would you like to know more about any of these?`
         : '';
-      
+
       const contextualHelp = context.lastTopic
         ? `\n\n💬 **We were just discussing ${context.lastTopic}.** Want to continue that conversation?`
         : '';
-      
+
       return [
         `Hmm, I'm not entirely sure about that. But I can help you with:\n\n• Services & offerings\n• Projects & portfolio\n• Contact information\n• Skills & tech stack\n• Website navigation\n• Jokes and fun\n• General questions${smartSuggestions}${contextualHelp}\n\nCould you rephrase your question, or would you like to explore something specific?`,
         `I'm not certain about that, but I'd love to help! I can assist with:\n\n• Learning about services\n• Exploring projects\n• Getting contact info\n• Navigating the site\n• Having a conversation\n• Telling jokes${smartSuggestions}\n\nWhat would you like to know?`,
@@ -876,7 +876,7 @@ const KNOWLEDGE_BASE = {
 
 class AIAssistant {
   constructor() {
-    debug('AIAssistant constructor called', {bodyExists:!!document.body});
+    debug('AIAssistant constructor called', { bodyExists: !!document.body });
     this.isOpen = false;
     this.conversationHistory = [];
     this.speechSynthesis = window.speechSynthesis;
@@ -915,10 +915,10 @@ class AIAssistant {
       codeReviewHistory: [],
       performanceMetrics: {}
     };
-    
+
     // Use KNOWLEDGE_BASE defined below
     this.KNOWLEDGE_BASE = KNOWLEDGE_BASE;
-    
+
     this.init();
   }
 
@@ -928,7 +928,7 @@ class AIAssistant {
     this.createUI();
     this.bindEvents();
     this.loadContext();
-    debug('AIAssistant.init() completed', {btnExists:!!document.getElementById('ai-assistant-btn'),popupExists:!!document.getElementById('ai-assistant-popup')});
+    debug('AIAssistant.init() completed', { btnExists: !!document.getElementById('ai-assistant-btn'), popupExists: !!document.getElementById('ai-assistant-popup') });
     log('[assistant] Initialized with advanced features');
   }
 
@@ -939,19 +939,19 @@ class AIAssistant {
       this.recognition.continuous = false;
       this.recognition.interimResults = false;
       this.recognition.lang = 'en-US';
-      
+
       this.recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         this.handleUserMessage(transcript);
         this.updateMicButton(false);
       };
-      
+
       this.recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         this.updateMicButton(false);
         this.addMessage("Sorry, I had trouble understanding. Could you try typing instead?", 'assistant');
       };
-      
+
       this.recognition.onend = () => {
         this.updateMicButton(false);
       };
@@ -998,7 +998,7 @@ class AIAssistant {
   }
 
   createUI() {
-    debug('createUI started', {bodyExists:!!document.body,documentReady:document.readyState});
+    debug('createUI started', { bodyExists: !!document.body, documentReady: document.readyState });
     const existingButton = document.getElementById('ai-assistant-btn');
     let button;
 
@@ -1033,7 +1033,7 @@ class AIAssistant {
       <span class="ai-assistant-btn-label">Ask Nova</span>
       <span class="ai-assistant-pulse"></span>
     `;
-    button.id = 'ai-assistant-btn';
+      button.id = 'ai-assistant-btn';
     }
 
     // Create popup window
@@ -1147,7 +1147,7 @@ class AIAssistant {
     if (document.body) {
       if (!existingButton) document.body.appendChild(button);
       document.body.appendChild(popup);
-      debug('Elements appended to body', {buttonInDOM:!!document.getElementById('ai-assistant-btn'),popupInDOM:!!document.getElementById('ai-assistant-popup'),buttonParent:button.parentElement?.tagName});
+      debug('Elements appended to body', { buttonInDOM: !!document.getElementById('ai-assistant-btn'), popupInDOM: !!document.getElementById('ai-assistant-popup'), buttonParent: button.parentElement?.tagName });
     } else {
       // Fallback: wait for DOM to be ready
       warn('Body not found, using DOMContentLoaded fallback');
@@ -1156,7 +1156,7 @@ class AIAssistant {
         document.body.appendChild(popup);
       });
     }
-    
+
     // Ensure button is visible (only when we created it)
     if (!existingButton) {
       button.style.display = 'flex';
@@ -1169,9 +1169,9 @@ class AIAssistant {
       const isReturning = this.context.visitCount > 1;
       const returnNote = isReturning ? `Welcome back! (Visit #${this.context.visitCount}) ` : "";
       const timeGreet = getTimeBasedGreeting();
-      
+
       const welcomeMessage = `Hi, I'm Nova.\n\nI can help with Hamza's projects, skills, services, and hiring info.\n\nYou can also paste code if you want a quick review.`;
-      
+
       this.addMessage(welcomeMessage, 'assistant', true);
     }, 100);
   }
@@ -1214,13 +1214,13 @@ class AIAssistant {
       if (message) {
         submitLock = true;
         this.hideSuggestions();
-        
+
         if (input.getAttribute('data-search-mode') === 'true') {
           this.handleSearch(message);
         } else {
           this.handleUserMessage(message);
         }
-        
+
         input.value = '';
         setTimeout(() => { submitLock = false; }, 400);
       }
@@ -1317,49 +1317,49 @@ class AIAssistant {
 
   speak(text) {
     if (!this.voiceEnabled || !this.speechSynthesis) return;
-    
+
     // Cancel any ongoing speech
     this.speechSynthesis.cancel();
-    
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
-    
+
     // Use a natural-sounding female voice if available
     const voices = this.speechSynthesis.getVoices();
     // Prioritize female voices for a more natural, attractive sound
-    const preferredVoice = voices.find(v => 
-      v.name.includes('Samantha') || 
-      v.name.includes('Karen') || 
+    const preferredVoice = voices.find(v =>
+      v.name.includes('Samantha') ||
+      v.name.includes('Karen') ||
       v.name.includes('Victoria') ||
       v.name.includes('Zira') ||
       v.name.includes('Hazel') ||
       (v.name.includes('Female') && v.lang.startsWith('en')) ||
       (v.gender === 'female' && v.lang.startsWith('en'))
-    ) || voices.find(v => 
+    ) || voices.find(v =>
       v.name.includes('Google UK English Female') ||
       v.name.includes('Microsoft Zira') ||
       v.name.includes('Microsoft Hazel') ||
       (v.lang.startsWith('en') && !v.name.includes('Male') && !v.name.includes('David'))
     ) || voices.find(v => v.lang.startsWith('en'));
-    
+
     if (preferredVoice) {
       utterance.voice = preferredVoice;
     }
-    
+
     // Keep voice natural and easy to follow.
     utterance.rate = 1.02;
     utterance.pitch = 1.0;
     utterance.volume = 0.9;
-    
+
     utterance.onend = () => {
       this.isSpeaking = false;
     };
-    
+
     utterance.onerror = (e) => {
       console.error('Speech synthesis error:', e);
       this.isSpeaking = false;
     };
-    
+
     this.isSpeaking = true;
     this.speechSynthesis.speak(utterance);
   }
@@ -1375,19 +1375,19 @@ class AIAssistant {
   open() {
     const button = document.getElementById('ai-assistant-btn');
     const popup = document.getElementById('ai-assistant-popup');
-    
+
     this.isOpen = true;
     button.setAttribute('aria-expanded', 'true');
     popup.classList.add('ai-assistant-popup-open');
     document.body.style.overflow = 'hidden';
-    
+
     // Load voices for speech synthesis
     if (this.speechSynthesis && this.speechSynthesis.getVoices().length === 0) {
       this.speechSynthesis.addEventListener('voiceschanged', () => {
         // Voices loaded
       });
     }
-    
+
     // Trigger animation
     requestAnimationFrame(() => {
       popup.classList.add('ai-assistant-popup-visible');
@@ -1397,22 +1397,22 @@ class AIAssistant {
   close() {
     const button = document.getElementById('ai-assistant-btn');
     const popup = document.getElementById('ai-assistant-popup');
-    
+
     // Stop any ongoing speech
     if (this.speechSynthesis) {
       this.speechSynthesis.cancel();
     }
-    
+
     // Stop listening
     if (this.isListening && this.recognition) {
       this.recognition.stop();
       this.updateMicButton(false);
     }
-    
+
     this.isOpen = false;
     button.setAttribute('aria-expanded', 'false');
     popup.classList.remove('ai-assistant-popup-visible');
-    
+
     setTimeout(() => {
       popup.classList.remove('ai-assistant-popup-open');
       document.body.style.overflow = '';
@@ -1434,13 +1434,13 @@ class AIAssistant {
   }
 
   handleUserMessage(message) {
-    debug('User message received', {messageLength:message?.length,messageCount:this.messageCount});
+    debug('User message received', { messageLength: message?.length, messageCount: this.messageCount });
     this.hideSuggestions();
     this.addMessage(message, 'user');
     this.conversationHistory.push({ role: 'user', content: message, timestamp: Date.now() });
     this.messageCount++;
     this.lastInteractionTime = Date.now();
-    
+
     // Detect language from user input
     const detectedLang = detectLanguage(message);
     if (detectedLang !== this.context.detectedLanguage) {
@@ -1457,7 +1457,7 @@ class AIAssistant {
         }, 500);
       }
     }
-    
+
     // Check for language switch command
     const lowerMsg = message.toLowerCase();
     if (lowerMsg.match(/\b(speak|language|lang|idioma|idiome|sprache)\s+(english|spanish|french|german|italian|portuguese|russian|chinese|japanese|arabic|hindi|turkish|dutch|polish|persian|en|es|fr|de|it|pt|ru|zh|ja|ar|hi|tr|nl|pl|fa)\b/i)) {
@@ -1482,16 +1482,16 @@ class AIAssistant {
         }
       }
     }
-    
+
     // Analyze sentiment
     const sentiment = analyzeSentiment(message);
     this.context.userMood = sentiment.sentiment;
     this.context.sentimentHistory.push(sentiment);
     if (this.context.sentimentHistory.length > 10) this.context.sentimentHistory.shift();
-    
+
     // Update context
     this.updateContext(message);
-    
+
     // Check for quiz answer if quiz is active
     if (this.context.currentQuiz && /^\d+$/.test(message.trim())) {
       const response = this.checkQuizAnswer(message.trim());
@@ -1520,7 +1520,7 @@ class AIAssistant {
         else if (codeTopic.includes('react') || codeTopic.includes('vue')) lang = 'javascript';
         else if (codeTopic.includes('typescript') || codeTopic.includes('ts')) lang = 'typescript';
         else if (codeTopic.includes('docker')) lang = 'dockerfile';
-        
+
         const codeResponse = `💻 **${example.title}**\n\n\`\`\`${lang}\n${example.code}\n\`\`\`\n\n💡 ${example.description}\n\nWant more examples? Try: "vue code", "python example", "sql query", "docker config"`;
         this.addMessage(codeResponse, 'assistant', true);
         this.conversationHistory.push({ role: 'assistant', content: codeResponse });
@@ -1721,12 +1721,12 @@ class AIAssistant {
       }, 500 + Math.random() * 300);
       return;
     }
-    
+
     // Check for navigation commands
     if (this.handleNavigation(message)) {
       return;
     }
-    
+
     // Check for special handlers (math, random, etc.)
     const specialResponse = this.handleSpecialCommands(message);
     if (specialResponse) {
@@ -1742,34 +1742,34 @@ class AIAssistant {
       }, thinkingTime);
       return;
     }
-    
+
     // Show typing indicator
     this.showTypingIndicator();
-    
+
     // Simulate thinking delay with variable timing for more natural feel
     const thinkingTime = this.calculateThinkingTime(message);
-    
+
     setTimeout(() => {
       this.hideTypingIndicator();
       let response = this.generateResponse(message);
-      
+
       // Add engagement boosters occasionally
       response = this.addEngagementBooster(response);
-      
+
       this.addMessage(response, 'assistant', true);
       this.conversationHistory.push({ role: 'assistant', content: response });
-      
+
       // Track engagement
       this.context.engagementScore++;
       this.saveContext();
-      
+
       // Speak the response if voice is enabled
       if (this.voiceEnabled) {
         this.speak(this.cleanTextForSpeech(response));
       }
     }, thinkingTime);
   }
-  
+
   // Clean text for speech synthesis
   cleanTextForSpeech(text) {
     return text
@@ -1779,7 +1779,7 @@ class AIAssistant {
       .replace(/\s+/g, ' ')
       .trim();
   }
-  
+
   // Handle search mode
   handleSearch(query) {
     if (!query || query.length < 2) {
@@ -1788,7 +1788,7 @@ class AIAssistant {
     }
 
     const results = this.searchConversation(query);
-    
+
     if (results.length === 0) {
       this.addMessage(`🔍 No results found for "${query}". Try different keywords or check your spelling!`, 'assistant', true);
       return;
@@ -1797,8 +1797,8 @@ class AIAssistant {
     let response = `🔍 **Found ${results.length} result${results.length !== 1 ? 's' : ''} for "${query}":**\n\n`;
     results.forEach((msg, idx) => {
       const role = msg.role === 'user' ? 'You' : 'Nova';
-      const preview = msg.content.length > 100 
-        ? msg.content.substring(0, 100) + '...' 
+      const preview = msg.content.length > 100
+        ? msg.content.substring(0, 100) + '...'
         : msg.content;
       response += `${idx + 1}. **[${role}]** ${preview}\n\n`;
     });
@@ -1816,25 +1816,25 @@ class AIAssistant {
     }
     return null;
   }
-  
+
   // Handle special commands (math, random, summary, clear, etc.)
   handleSpecialCommands(message) {
     const lowerMsg = message.toLowerCase();
-    
+
     // Conversation summary
     if (lowerMsg.match(/\b(summary|our conversation|what did we talk|chat history)\b/i)) {
       return this.generateConversationSummary();
     }
-    
+
     // Clear chat
     if (lowerMsg.match(/\b(clear chat|start over|reset conversation|new conversation|clear history)\b/i)) {
       this.clearConversation();
       return "🔄 **Chat cleared!** Fresh start! What would you like to talk about?";
     }
-    
+
     // Math calculations
-    if (lowerMsg.match(/\b(calculate|compute|what is|what's)\b.*\d/i) || 
-        lowerMsg.match(/\d+\s*[\+\-\*\/\^]\s*\d+/)) {
+    if (lowerMsg.match(/\b(calculate|compute|what is|what's)\b.*\d/i) ||
+      lowerMsg.match(/\d+\s*[\+\-\*\/\^]\s*\d+/)) {
       const expression = extractMathExpression(message);
       if (expression) {
         const result = evaluateMath(expression);
@@ -1844,20 +1844,20 @@ class AIAssistant {
         }
       }
     }
-    
+
     // Coin flip
     if (lowerMsg.includes('coin') && (lowerMsg.includes('flip') || lowerMsg.includes('toss'))) {
       const result = Math.random() > 0.5 ? 'Heads' : 'Tails';
       return `🪙 *Flipping coin...*\n\n**${result}!**\n\nWant to flip again?`;
     }
-    
+
     // Dice roll
     if (lowerMsg.includes('dice') || (lowerMsg.includes('roll') && !lowerMsg.includes('rick'))) {
       const dice = randomInRange(1, 6);
       const diceEmoji = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][dice - 1];
       return `🎲 *Rolling dice...*\n\n**${diceEmoji} ${dice}!**\n\nRoll again?`;
     }
-    
+
     // Random number with range
     if (lowerMsg.match(/random.*number|pick.*number|number.*between/i)) {
       const numbers = extractNumbers(message);
@@ -1868,22 +1868,22 @@ class AIAssistant {
       }
       return `🎲 Here's your random number: **${randomInRange(1, 100)}** (1-100)\n\nWant a specific range? Try "pick a number between 1 and 50"!`;
     }
-    
+
     // Time check
     if (lowerMsg.match(/\b(what time|current time|time now|what's the time)\b/i)) {
       const dt = getDateTimeInfo();
       return `🕐 It's **${dt.time}**\n📅 **${dt.date}**`;
     }
-    
+
     // Date check
     if (lowerMsg.match(/\b(what day|today's date|current date|what date)\b/i)) {
       const dt = getDateTimeInfo();
       return `📅 Today is **${dt.date}**\n\n${getDayBasedGreeting()}`;
     }
-    
+
     return null;
   }
-  
+
   // Clear conversation history
   clearConversation() {
     const messagesContainer = document.getElementById('ai-assistant-messages');
@@ -1903,7 +1903,7 @@ class AIAssistant {
     this.context.lastTopic = null;
     this.sessionStartTime = Date.now();
   }
-  
+
   // Add engagement boosters to responses
   addEngagementBooster(response) {
     // Every 5 messages, add a friendly note
@@ -1926,57 +1926,57 @@ class AIAssistant {
     const length = message.length;
     const hasQuestion = message.includes('?');
     const wordCount = message.split(/\s+/).length;
-    
+
     // Base time
     let baseTime = 400;
-    
+
     // Add time for longer messages
     if (length > 50) baseTime += 200;
     if (length > 100) baseTime += 200;
-    
+
     // Add time for questions
     if (hasQuestion) baseTime += 250;
-    
+
     // Add time for multiple words (more complex queries)
     if (wordCount > 5) baseTime += wordCount * 30;
-    
+
     // Add time for technical topics
     const technicalTerms = ['api', 'database', 'server', 'backend', 'frontend', 'architecture', 'deploy'];
     if (technicalTerms.some(term => message.toLowerCase().includes(term))) {
       baseTime += 300;
     }
-    
+
     // Add randomness for natural feel (humans don't respond at exact intervals)
     const randomness = Math.random() * 400;
-    
+
     // Cap at 2 seconds for good UX
     return Math.min(baseTime + randomness, 2000);
   }
 
   updateContext(message) {
     const lowerMsg = message.toLowerCase();
-    
+
     // Track mentioned topics with expanded list
-    const topics = ['service', 'project', 'skill', 'contact', 'about', 'blog', 'price', 'experience', 
+    const topics = ['service', 'project', 'skill', 'contact', 'about', 'blog', 'price', 'experience',
       'joke', 'fact', 'riddle', 'quote', 'math', 'calculate', 'time', 'help', 'tour'];
     topics.forEach(topic => {
       if (lowerMsg.includes(topic) && !this.context.mentionedTopics.includes(topic)) {
         this.context.mentionedTopics.push(topic);
       }
     });
-    
+
     // Keep mentionedTopics manageable
     if (this.context.mentionedTopics.length > 15) {
       this.context.mentionedTopics = this.context.mentionedTopics.slice(-10);
     }
-    
+
     // Track consecutive questions
     if (message.includes('?')) {
       this.context.consecutiveQuestions++;
     } else {
       this.context.consecutiveQuestions = 0;
     }
-    
+
     // Extract and remember user's name if mentioned
     const nameMatch = lowerMsg.match(/(?:my name is|i'm|i am|call me)\s+([a-zA-Z]+)/i);
     if (nameMatch && nameMatch[1].length > 1 && nameMatch[1].length < 20) {
@@ -1985,7 +1985,7 @@ class AIAssistant {
         this.context.userName = name;
       }
     }
-    
+
     // Track conversation flow with more details
     const topic = this.detectTopic(message);
     this.context.conversationFlow.push({
@@ -1995,12 +1995,12 @@ class AIAssistant {
       sentiment: this.context.userMood,
       hasQuestion: message.includes('?')
     });
-    
+
     // Keep only last 20 interactions
     if (this.context.conversationFlow.length > 20) {
       this.context.conversationFlow.shift();
     }
-    
+
     this.saveContext();
   }
 
@@ -2017,7 +2017,7 @@ class AIAssistant {
   showTypingIndicator() {
     const messagesContainer = document.getElementById('ai-assistant-messages');
     if (!messagesContainer) return;
-    
+
     this.isTyping = true;
     const typingEl = document.createElement('div');
     typingEl.className = 'ai-assistant-message ai-assistant-message-assistant ai-assistant-typing-indicator';
@@ -2052,7 +2052,7 @@ class AIAssistant {
 
   handleNavigation(message) {
     const lowerMsg = message.toLowerCase();
-    
+
     // Section navigation
     for (const [key, section] of Object.entries(WEBSITE_SECTIONS)) {
       if (lowerMsg.includes(key) || lowerMsg.includes(section.name.toLowerCase())) {
@@ -2061,7 +2061,7 @@ class AIAssistant {
         return true;
       }
     }
-    
+
     // Page navigation
     for (const [key, page] of Object.entries(WEBSITE_PAGES)) {
       if (lowerMsg.includes(key.replace('-', ' ')) || lowerMsg.includes(page.name.toLowerCase())) {
@@ -2069,7 +2069,7 @@ class AIAssistant {
         return true;
       }
     }
-    
+
     // Direct navigation commands
     if (lowerMsg.includes('scroll to') || lowerMsg.includes('go to') || lowerMsg.includes('show me')) {
       const sections = ['hero', 'services', 'about', 'projects', 'testimonials', 'contact'];
@@ -2081,7 +2081,7 @@ class AIAssistant {
         }
       }
     }
-    
+
     return false;
   }
 
@@ -2098,26 +2098,26 @@ class AIAssistant {
     const lowerMessage = message.toLowerCase();
     const words = lowerMessage.split(/\s+/).filter(w => w.length > 1);
     const context = this.context;
-    
+
     // Enhanced pattern matching with fuzzy matching, context awareness, and sentiment
     let bestMatch = null;
     let bestScore = 0;
-    
+
     for (const [category, data] of Object.entries(this.KNOWLEDGE_BASE)) {
       if (category === 'default') continue;
-      
+
       let score = 0;
-      
+
       // Calculate match score with advanced matching
       data.patterns.forEach(pattern => {
         const patternLower = pattern.toLowerCase();
         const patternWords = patternLower.split(/\s+/);
-        
+
         // Exact phrase match (highest score)
         if (lowerMessage.includes(patternLower)) {
           score += 15;
         }
-        
+
         // Word matches with fuzzy matching
         patternWords.forEach(pWord => {
           words.forEach(word => {
@@ -2136,54 +2136,54 @@ class AIAssistant {
           });
         });
       });
-      
+
       // Boost score if topic was mentioned before (conversation continuity)
       if (this.context.mentionedTopics.includes(category)) {
         score += 3;
       }
-      
+
       // Boost score if last topic matches (follow-up questions)
       if (this.context.lastTopic === category) {
         score += 2;
       }
-      
+
       // Boost for topics in user's interest history
       if (this.context.topicsDiscussed.has(category)) {
         score += 1;
       }
-      
+
       if (score > bestScore) {
         bestScore = score;
         bestMatch = { category, data };
       }
     }
-    
+
     // Use best match if score is significant
     if (bestMatch && bestScore >= 5) {
-      const responses = typeof bestMatch.data.responses === 'function' 
-        ? bestMatch.data.responses(context) 
+      const responses = typeof bestMatch.data.responses === 'function'
+        ? bestMatch.data.responses(context)
         : bestMatch.data.responses;
-      
+
       let response = this.pickNaturalResponse(responses);
-      
+
       // Add contextual follow-ups based on sentiment and conversation flow
       response = this.addContextualFollowUp(response, bestMatch.category, message);
-      
+
       // Add sentiment-aware additions
       response = this.addSentimentResponse(response);
-      
+
       this.context.lastTopic = bestMatch.category;
       this.context.topicsDiscussed.add(bestMatch.category);
       this.context.lastQuestion = message;
       this.saveContext();
-      
+
       // Track specific types
       if (bestMatch.category === 'joke') this.context.jokesTold++;
       if (bestMatch.category === 'fun_fact') this.context.factsTold++;
-      
+
       return response;
     }
-    
+
     // Check for "more" or "another" requests
     if (lowerMessage.match(/\b(more|another|again|one more)\b/)) {
       if (this.context.lastTopic === 'joke') {
@@ -2206,7 +2206,7 @@ class AIAssistant {
         return `🧩 **Here's another riddle:**\n\n${riddle.riddle}\n\n*Think you know? Type your answer!*`;
       }
     }
-    
+
     // Check for riddle answer if there's an active riddle
     if (this.context.currentRiddle) {
       const answer = this.context.currentRiddle.answer.toLowerCase().replace(/[!?.]/g, '');
@@ -2218,11 +2218,11 @@ class AIAssistant {
         return `🤔 Hmm, not quite! Keep trying, or say "give up" for the answer.\n\n*Hint: Think about it differently!*`;
       }
     }
-    
+
     // Default response with context-aware suggestions
     const defaultResponses = this.KNOWLEDGE_BASE.default.responses(context);
     let response = defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
-    
+
     // Add smart suggestions based on conversation history
     if (this.context.mentionedTopics.length > 0) {
       const suggestions = this.generateSmartSuggestions();
@@ -2230,12 +2230,12 @@ class AIAssistant {
         response += `\n\n${suggestions}`;
       }
     }
-    
+
     // Add helpful redirect for confused users
     if (context.userMood === 'frustrated_curious' || context.userMood === 'negative') {
       response += "\n\n💡 *I want to help! Try asking about services, projects, skills, or just say 'help' to see what I can do!*";
     }
-    
+
     return response;
   }
 
@@ -2248,12 +2248,12 @@ class AIAssistant {
     const candidates = sortedByLength.slice(0, shorterHalfCount);
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
-  
+
   // Add sentiment-aware responses
   addSentimentResponse(response) {
     const recentSentiments = this.context.sentimentHistory.slice(-3);
     const avgScore = recentSentiments.reduce((sum, s) => sum + s.score, 0) / recentSentiments.length;
-    
+
     // If user has been consistently positive, acknowledge it occasionally
     if (avgScore > 1 && Math.random() > 0.7 && response.length < 300) {
       const additions = [
@@ -2263,13 +2263,13 @@ class AIAssistant {
       ];
       return response + additions[Math.floor(Math.random() * additions.length)];
     }
-    
+
     return response;
   }
 
   addContextualFollowUp(response, category, originalMessage) {
     const lowerMsg = originalMessage.toLowerCase();
-    
+
     // Add relevant follow-ups based on category
     const followUps = {
       services: "\n\nWould you like to know more about any specific service, or see examples of previous work?",
@@ -2278,70 +2278,70 @@ class AIAssistant {
       skills: "\n\nWould you like to see how these skills are applied in real projects?",
       pricing: "\n\nI can help you understand what factors influence pricing, or connect you directly with Hamza for a personalized quote."
     };
-    
+
     if (followUps[category] && !lowerMsg.includes('more') && !lowerMsg.includes('detail')) {
       return response + followUps[category];
     }
-    
+
     return response;
   }
 
   generateSmartSuggestions() {
     const mentioned = this.context.mentionedTopics;
     const suggestions = [];
-    
+
     if (!mentioned.includes('projects') && (mentioned.includes('services') || mentioned.includes('skills'))) {
       suggestions.push("💡 Want to see these in action? Ask about **projects**!");
     }
-    
+
     if (!mentioned.includes('contact') && (mentioned.includes('services') || mentioned.includes('pricing'))) {
       suggestions.push("📧 Ready to get started? Ask about **contact** information!");
     }
-    
+
     if (!mentioned.includes('experience') && mentioned.includes('skills')) {
       suggestions.push("📊 Curious about **experience**? I can share details!");
     }
-    
+
     // Fun suggestions based on engagement
     if (this.messageCount > 3 && !mentioned.includes('joke') && Math.random() > 0.6) {
       suggestions.push("😄 Want a break? Ask for a **joke**!");
     }
-    
+
     if (this.messageCount > 5 && !mentioned.includes('riddle') && Math.random() > 0.7) {
       suggestions.push("🧩 Up for a challenge? Try a **riddle**!");
     }
-    
+
     if (!mentioned.includes('fact') && mentioned.length > 3 && Math.random() > 0.6) {
       suggestions.push("🤓 Want a **fun fact**? Just ask!");
     }
-    
+
     // Personalized greeting if we know the name
     if (this.context.userName && Math.random() > 0.8) {
       suggestions.push(`By the way, great talking with you, ${this.context.userName}! 😊`);
     }
-    
+
     // Limit suggestions
     return suggestions.length > 0 ? suggestions.slice(0, 2).join(' ') : null;
   }
-  
+
   // Generate conversation summary
   generateConversationSummary() {
     const duration = Math.round((Date.now() - this.sessionStartTime) / 60000);
     const topics = Array.from(this.context.topicsDiscussed).slice(0, 5);
-    const sentiment = this.context.sentimentHistory.length > 0 
-      ? this.context.sentimentHistory.reduce((sum, s) => sum + s.score, 0) / this.context.sentimentHistory.length 
+    const sentiment = this.context.sentimentHistory.length > 0
+      ? this.context.sentimentHistory.reduce((sum, s) => sum + s.score, 0) / this.context.sentimentHistory.length
       : 0;
     const moodEmoji = sentiment > 0.5 ? '😊' : sentiment < -0.5 ? '😐' : '🙂';
-    
+
     let summary = `📊 **Conversation Summary:**\n\n`;
     summary += `⏱️ Duration: ${duration} minute${duration !== 1 ? 's' : ''}\n`;
     summary += `💬 Messages exchanged: ${this.messageCount}\n`;
     summary += `${moodEmoji} Overall mood: ${sentiment > 0 ? 'Positive' : sentiment < 0 ? 'Needs attention' : 'Neutral'}\n`;
-    
+
     if (topics.length > 0) {
       summary += `📝 Topics discussed: ${topics.join(', ')}\n`;
     }
-    
+
     if (this.context.jokesTold > 0) {
       summary += `😄 Jokes told: ${this.context.jokesTold}\n`;
     }
@@ -2351,13 +2351,13 @@ class AIAssistant {
     if (this.context.mathCalculations > 0) {
       summary += `🧮 Calculations done: ${this.context.mathCalculations}\n`;
     }
-    
+
     summary += `\n🎯 Visit count: ${this.context.visitCount}`;
-    
+
     if (this.context.userName) {
       summary += `\n👤 Chatting with: ${this.context.userName}`;
     }
-    
+
     return summary;
   }
 
@@ -2367,17 +2367,17 @@ class AIAssistant {
       console.error('[assistant] Messages container not found');
       return;
     }
-    
+
     const messageEl = document.createElement('div');
     messageEl.className = `ai-assistant-message ai-assistant-message-${role}`;
     if (skipAnimation) {
       messageEl.classList.add('ai-assistant-message-visible');
     }
-    
+
     // Format timestamp
     const now = new Date();
     const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    
+
     if (role === 'assistant') {
       messageEl.innerHTML = `
         <div class="ai-assistant-message-avatar">
@@ -2399,9 +2399,9 @@ class AIAssistant {
         </div>
       `;
     }
-    
+
     messagesContainer.appendChild(messageEl);
-    
+
     if (!skipAnimation) {
       // Trigger animation after next paint without forcing reflow
       requestAnimationFrame(() => {
@@ -2410,30 +2410,30 @@ class AIAssistant {
         });
       });
     }
-    
+
     // Scroll to bottom after message is added
     setTimeout(() => {
       this.scrollToBottom();
     }, 50);
   }
-  
+
   // Check for repetitive questions
   isRepetitiveQuestion(message) {
     const recentMessages = this.conversationHistory
       .filter(m => m.role === 'user')
       .slice(-3)
       .map(m => m.content.toLowerCase());
-    
+
     const lowerMsg = message.toLowerCase();
-    const similar = recentMessages.filter(m => 
-      m === lowerMsg || 
+    const similar = recentMessages.filter(m =>
+      m === lowerMsg ||
       levenshteinDistance(m, lowerMsg) <= 3 ||
       (m.length > 10 && lowerMsg.includes(m.substring(0, 10)))
     );
-    
+
     return similar.length >= 2;
   }
-  
+
   // Get varied response for repetitive questions
   getRepetitiveResponse(message) {
     const responses = [
@@ -2448,16 +2448,16 @@ class AIAssistant {
   formatMessage(text) {
     // Convert markdown-like formatting to HTML with code block support
     let formatted = this.escapeHtml(text);
-    
+
     // Handle code blocks with syntax highlighting
     formatted = formatted.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
       const language = lang || 'javascript';
       return `<pre class="ai-assistant-code-block"><code class="language-${language}">${this.escapeHtml(code.trim())}</code></pre>`;
     });
-    
+
     // Handle inline code
     formatted = formatted.replace(/`([^`]+)`/g, '<code class="ai-assistant-inline-code">$1</code>');
-    
+
     // Other formatting
     formatted = formatted
       .replace(/\n/g, '<br>')
@@ -2465,7 +2465,7 @@ class AIAssistant {
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/•/g, '<span class="ai-assistant-bullet">•</span>')
       .replace(/#(\w+)/g, '<span class="ai-assistant-hashtag">#$1</span>');
-    
+
     return formatted;
   }
 
@@ -2513,7 +2513,7 @@ class AIAssistant {
 
     const date = new Date().toISOString().split('T')[0];
     const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    
+
     let content = `Nova AI Assistant - Conversation Export\n`;
     content += `Date: ${date} ${time}\n`;
     content += `Total Messages: ${this.conversationHistory.length}\n`;
@@ -2566,7 +2566,7 @@ class AIAssistant {
     }
 
     const lowerQuery = query.toLowerCase();
-    const results = this.conversationHistory.filter(msg => 
+    const results = this.conversationHistory.filter(msg =>
       msg.content.toLowerCase().includes(lowerQuery)
     );
 
@@ -2999,7 +2999,7 @@ services:
     const question = quizQuestions[Math.floor(Math.random() * quizQuestions.length)];
     this.context.currentQuiz = question;
     this.context.quizScore = this.context.quizScore || { correct: 0, total: 0 };
-    
+
     let response = `🎯 **Quiz Time!**\n\n`;
     response += `**Question:** ${question.question}\n\n`;
     question.options.forEach((opt, idx) => {
@@ -3024,19 +3024,19 @@ services:
 
     const isCorrect = userAnswer === quiz.correct;
     const correctOption = quiz.options[quiz.correct];
-    
+
     // Update score
     this.context.quizScore.total++;
     if (isCorrect) {
       this.context.quizScore.correct++;
     }
-    
+
     const accuracy = Math.round((this.context.quizScore.correct / this.context.quizScore.total) * 100);
-    
-    let response = isCorrect 
+
+    let response = isCorrect
       ? `🎉 **Correct!** Well done!\n\n`
       : `❌ **Not quite!** The correct answer is: **${correctOption}**\n\n`;
-    
+
     response += `💡 **Explanation:** ${quiz.explanation}\n\n`;
     response += `📊 **Your Score:** ${this.context.quizScore.correct}/${this.context.quizScore.total} (${accuracy}% accuracy)\n\n`;
     response += `Want another question? Say "quiz" again!`;
@@ -3228,41 +3228,41 @@ services:
   analyzeCode(message) {
     const codeMatch = message.match(/```[\s\S]*?```/);
     const hasCode = codeMatch || message.match(/\b(function|const|let|var|class|import|export)\b/);
-    
+
     if (!hasCode) {
       return `🔍 **Code Review Request**\n\nI'd be happy to review your code! Please:\n1. Paste your code in a code block (use triple backticks)\n2. Or describe what you'd like me to review\n3. Mention any specific concerns or areas to focus on\n\nExample: "Review this React component" followed by your code.`;
     }
 
     let response = `🔍 **Code Analysis & Review:**\n\n`;
-    
+
     // Check for common issues
     const checks = [];
     const lowerMsg = message.toLowerCase();
-    
+
     if (lowerMsg.includes('function') && !lowerMsg.includes('arrow')) {
       checks.push("✅ Consider using arrow functions for consistency");
     }
-    
+
     if (lowerMsg.includes('var ')) {
       checks.push("⚠️ Consider using `let` or `const` instead of `var`");
     }
-    
+
     if (lowerMsg.includes('==')) {
       checks.push("⚠️ Use strict equality (`===`) instead of `==`");
     }
-    
+
     if (lowerMsg.includes('console.log')) {
       checks.push("💡 Remove console.log statements in production code");
     }
-    
+
     if (!lowerMsg.includes('error') && !lowerMsg.includes('try')) {
       checks.push("💡 Consider adding error handling (try-catch)");
     }
-    
+
     if (lowerMsg.includes('password') || lowerMsg.includes('secret')) {
       checks.push("🔒 Security: Never hardcode passwords or secrets");
     }
-    
+
     response += `**Code Quality Checks:**\n${checks.length > 0 ? checks.join('\n') : '✅ Code structure looks good!'}\n\n`;
     response += `**Recommendations:**\n`;
     response += `• Add JSDoc comments for better documentation\n`;
@@ -3421,7 +3421,7 @@ services:
     let response = `⚡ **Performance Analysis & Optimization:**\n\n`;
 
     response += `**Common Performance Issues & Solutions:**\n\n`;
-    
+
     response += `**1. Slow Page Load**\n`;
     response += `• **Problem:** Large bundle size, unoptimized assets\n`;
     response += `• **Solutions:**\n`;
@@ -3429,7 +3429,7 @@ services:
     response += `  - Image optimization (WebP, compression)\n`;
     response += `  - Minify & compress assets\n`;
     response += `  - Use CDN for static assets\n\n`;
-    
+
     response += `**2. Slow API Calls**\n`;
     response += `• **Problem:** N+1 queries, no caching\n`;
     response += `• **Solutions:**\n`;
@@ -3437,7 +3437,7 @@ services:
     response += `  - Optimize database queries\n`;
     response += `  - Use pagination\n`;
     response += `  - Batch requests when possible\n\n`;
-    
+
     response += `**3. Slow Rendering**\n`;
     response += `• **Problem:** Too many re-renders, heavy computations\n`;
     response += `• **Solutions:**\n`;
@@ -3445,21 +3445,21 @@ services:
     response += `  - Memoize expensive calculations\n`;
     response += `  - Virtualize long lists\n`;
     response += `  - Debounce/throttle events\n\n`;
-    
+
     response += `**4. Memory Leaks**\n`;
     response += `• **Problem:** Event listeners, subscriptions not cleaned up\n`;
     response += `• **Solutions:**\n`;
     response += `  - Cleanup in useEffect\n`;
     response += `  - Remove event listeners\n`;
     response += `  - Cancel subscriptions\n\n`;
-    
+
     response += `**Performance Metrics to Monitor:**\n`;
     response += `• Core Web Vitals (LCP, FID, CLS)\n`;
     response += `• Time to First Byte (TTFB)\n`;
     response += `• Bundle size\n`;
     response += `• API response times\n`;
     response += `• Memory usage\n\n`;
-    
+
     response += `💡 Want specific optimization for your code? Share details!`;
 
     return response;
@@ -3471,46 +3471,46 @@ services:
     let response = `🔒 **Security Analysis & Best Practices:**\n\n`;
 
     response += `**Critical Security Practices:**\n\n`;
-    
+
     response += `**1. Authentication & Authorization**\n`;
     response += `• Use JWT tokens with expiration\n`;
     response += `• Hash passwords (bcrypt, Argon2)\n`;
     response += `• Implement role-based access control (RBAC)\n`;
     response += `• Use HTTPS everywhere\n`;
     response += `• Implement rate limiting\n\n`;
-    
+
     response += `**2. Input Validation**\n`;
     response += `• Validate all user inputs\n`;
     response += `• Sanitize data before storing\n`;
     response += `• Use parameterized queries (prevent SQL injection)\n`;
     response += `• Escape output to prevent XSS\n\n`;
-    
+
     response += `**3. API Security**\n`;
     response += `• Use API keys/tokens\n`;
     response += `• Implement CORS properly\n`;
     response += `• Validate request origins\n`;
     response += `• Use rate limiting\n`;
     response += `• Implement request signing\n\n`;
-    
+
     response += `**4. Data Protection**\n`;
     response += `• Encrypt sensitive data\n`;
     response += `• Never log passwords/secrets\n`;
     response += `• Use environment variables\n`;
     response += `• Implement data retention policies\n\n`;
-    
+
     response += `**5. Dependencies**\n`;
     response += `• Keep dependencies updated\n`;
     response += `• Scan for vulnerabilities (npm audit)\n`;
     response += `• Use only trusted packages\n`;
     response += `• Review dependency licenses\n\n`;
-    
+
     response += `**Common Vulnerabilities to Avoid:**\n`;
     response += `• SQL Injection - Use parameterized queries\n`;
     response += `• XSS - Escape user input\n`;
     response += `• CSRF - Use tokens\n`;
     response += `• Broken Authentication - Strong passwords, sessions\n`;
     response += `• Sensitive Data Exposure - Encrypt data\n\n`;
-    
+
     response += `💡 Need security review for specific code? Share it!`;
 
     return response;
@@ -3668,14 +3668,14 @@ Controller: Handles input, updates model/view`,
     response += `• PUT - Update entire resource\n`;
     response += `• PATCH - Partial updates\n`;
     response += `• DELETE - Remove resources\n\n`;
-    
+
     response += `**2. RESTful URLs**\n`;
     response += `✅ Good: \`GET /api/users/123\`\n`;
     response += `❌ Bad: \`GET /api/getUser?id=123\`\n`;
     response += `• Use nouns, not verbs\n`;
     response += `• Use plural for collections\n`;
     response += `• Use hierarchical structure\n\n`;
-    
+
     response += `**3. Response Format**\n`;
     response += `\`\`\`json\n{\n  "data": {},\n  "status": "success",\n  "message": "optional"\n}\n\`\`\`\n\n`;
     response += `**4. Status Codes**\n`;
@@ -3685,11 +3685,11 @@ Controller: Handles input, updates model/view`,
     response += `• 401 - Unauthorized\n`;
     response += `• 404 - Not Found\n`;
     response += `• 500 - Server Error\n\n`;
-    
+
     response += `**5. Versioning**\n`;
     response += `• Use URL versioning: \`/api/v1/users\`\n`;
     response += `• Or header versioning\n\n`;
-    
+
     response += `**6. Pagination**\n`;
     response += `\`\`\`\nGET /api/users?page=1&limit=20\n\`\`\`\n\n`;
     response += `**7. Filtering & Sorting**\n`;
@@ -3710,36 +3710,36 @@ Controller: Handles input, updates model/view`,
     response += `• 2NF: Remove partial dependencies\n`;
     response += `• 3NF: Remove transitive dependencies\n`;
     response += `• Balance normalization with performance\n\n`;
-    
+
     response += `**2. Indexing Strategy**\n`;
     response += `• Index frequently queried columns\n`;
     response += `• Index foreign keys\n`;
     response += `• Don't over-index (slows writes)\n`;
     response += `• Use composite indexes for multi-column queries\n\n`;
-    
+
     response += `**3. Data Types**\n`;
     response += `• Use appropriate types (INT, VARCHAR, TEXT)\n`;
     response += `• Use ENUM for fixed values\n`;
     response += `• Use TIMESTAMP for dates\n`;
     response += `• Consider JSONB for flexible schemas\n\n`;
-    
+
     response += `**4. Relationships**\n`;
     response += `• One-to-Many: Foreign key\n`;
     response += `• Many-to-Many: Junction table\n`;
     response += `• One-to-One: Shared primary key or foreign key\n\n`;
-    
+
     response += `**5. Query Optimization**\n`;
     response += `• Use EXPLAIN to analyze queries\n`;
     response += `• Avoid SELECT *\n`;
     response += `• Use LIMIT for large datasets\n`;
     response += `• Join efficiently\n\n`;
-    
+
     response += `**6. Security**\n`;
     response += `• Use parameterized queries\n`;
     response += `• Implement row-level security\n`;
     response += `• Encrypt sensitive data\n`;
     response += `• Regular backups\n\n`;
-    
+
     response += `💡 Need help with a specific schema? Describe your data!`;
 
     return response;
@@ -3754,17 +3754,17 @@ Controller: Handles input, updates model/view`,
     response += `• Test individual functions/components\n`;
     response += `• Fast, isolated, many tests\n`;
     response += `• Tools: Jest, Vitest, Mocha\n\n`;
-    
+
     response += `**2. Integration Tests (20%)**\n`;
     response += `• Test component interactions\n`;
     response += `• Test API endpoints\n`;
     response += `• Tools: Supertest, React Testing Library\n\n`;
-    
+
     response += `**3. E2E Tests (10%)**\n`;
     response += `• Test full user flows\n`;
     response += `• Slower, fewer tests\n`;
     response += `• Tools: Cypress, Playwright, Selenium\n\n`;
-    
+
     response += `**What to Test:**\n`;
     response += `✅ Business logic\n`;
     response += `✅ Edge cases\n`;
@@ -3772,15 +3772,15 @@ Controller: Handles input, updates model/view`,
     response += `✅ User interactions\n`;
     response += `❌ Don't test implementation details\n`;
     response += `❌ Don't test third-party libraries\n\n`;
-    
+
     response += `**Example Unit Test (Jest):**\n`;
     response += `\`\`\`javascript\ndescribe('calculateTotal', () => {\n  it('should sum array of numbers', () => {\n    expect(calculateTotal([1, 2, 3])).toBe(6);\n  });\n});\n\`\`\`\n\n`;
-    
+
     response += `**Test Coverage Goals:**\n`;
     response += `• Aim for 80%+ coverage\n`;
     response += `• Focus on critical paths\n`;
     response += `• Don't obsess over 100%\n\n`;
-    
+
     response += `💡 Need help writing tests for specific code? Share it!`;
 
     return response;
@@ -3792,62 +3792,62 @@ Controller: Handles input, updates model/view`,
     let response = `🐛 **Debugging Guide:**\n\n`;
 
     response += `**Step-by-Step Debugging Process:**\n\n`;
-    
+
     response += `**1. Reproduce the Issue**\n`;
     response += `• Can you consistently reproduce it?\n`;
     response += `• What steps trigger it?\n\n`;
-    
+
     response += `**2. Check Error Messages**\n`;
     response += `• Read the full error message\n`;
     response += `• Check stack trace\n`;
     response += `• Look at line numbers\n\n`;
-    
+
     response += `**3. Use Debugging Tools**\n`;
     response += `• Browser DevTools (console, debugger)\n`;
     response += `• React DevTools\n`;
     response += `• Network tab for API issues\n`;
     response += `• Breakpoints in code\n\n`;
-    
+
     response += `**4. Add Logging**\n`;
     response += `• console.log() at key points\n`;
     response += `• Log inputs and outputs\n`;
     response += `• Check variable values\n\n`;
-    
+
     response += `**5. Isolate the Problem**\n`;
     response += `• Comment out code sections\n`;
     response += `• Test in isolation\n`;
     response += `• Simplify the code\n\n`;
-    
+
     response += `**Common Issues & Fixes:**\n\n`;
-    
+
     if (lowerMsg.includes('undefined') || lowerMsg.includes('null')) {
       response += `**Undefined/Null Errors:**\n`;
       response += `• Check if variable is initialized\n`;
       response += `• Use optional chaining: \`obj?.prop\`\n`;
       response += `• Use nullish coalescing: \`value ?? defaultValue\`\n\n`;
     }
-    
+
     if (lowerMsg.includes('async') || lowerMsg.includes('promise')) {
       response += `**Async/Promise Issues:**\n`;
       response += `• Make sure to await promises\n`;
       response += `• Check for unhandled rejections\n`;
       response += `• Use try-catch for error handling\n\n`;
     }
-    
+
     if (lowerMsg.includes('react') || lowerMsg.includes('render')) {
       response += `**React Rendering Issues:**\n`;
       response += `• Check if state is updating\n`;
       response += `• Verify dependencies in useEffect\n`;
       response += `• Check for infinite loops\n\n`;
     }
-    
+
     response += `**Debugging Tips:**\n`;
     response += `• Read error messages carefully\n`;
     response += `• Use browser DevTools\n`;
     response += `• Add breakpoints\n`;
     response += `• Test incrementally\n`;
     response += `• Ask for help when stuck!\n\n`;
-    
+
     response += `💡 Share your error message or code, and I'll help debug it!`;
 
     return response;

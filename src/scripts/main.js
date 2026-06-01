@@ -77,42 +77,58 @@ window.addEventListener('DOMContentLoaded', () => {
     console.error('[projects] Sync render failed:', e);
   }
 
-  // Initialize global stable smooth scrolling (speed limit)
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const lenis = new Lenis({
-      duration: 1.5,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2
-    });
-
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => {
-      lenis.raf(time * 1000);
-    });
-    gsap.ticker.lagSmoothing(0);
-  }
+  let prefersReduced = false;
+  let perfLite = false;
 
   // Perf-lite: smooth experience on low-spec devices, slow connections, or reduced motion
   try {
-    const prefersReduced =
+    prefersReduced =
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const cores = navigator.hardwareConcurrency || 4;
     const mem = navigator.deviceMemory || 4;
     const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     const slowConnection = conn && (conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.saveData === true);
-    if (
+    perfLite = Boolean(
       prefersReduced ||
       slowConnection ||
       cores < 4 ||
       mem < 4
-    ) {
+    );
+    if (perfLite) {
       document.documentElement.classList.add('perf-lite');
-      window.__PERF_LITE__ = true;
     }
   } catch (_) {}
+  window.__PERF_LITE__ = perfLite;
+
+  // Keep inertial scroll for large, stable desktop-like viewports only.
+  const finePointer =
+    !window.matchMedia || window.matchMedia('(pointer: fine)').matches;
+  const allowEnhancedScroll =
+    !prefersReduced &&
+    !perfLite &&
+    finePointer &&
+    window.innerWidth >= 1024 &&
+    window.innerHeight >= 720;
+
+  if (allowEnhancedScroll) {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.4
+    });
+
+    window.__LENIS__ = lenis;
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+    gsap.ticker.lagSmoothing(0);
+  } else {
+    window.__LENIS__ = null;
+  }
 
   // Initialize error handling first
   initErrorHandling();
@@ -150,7 +166,6 @@ window.addEventListener('DOMContentLoaded', () => {
   bindMobileSubmenu();
   deferHeroAnimations();
   // Activate subtle spotlight and parallax effects on capable devices only
-  const perfLite = Boolean(window.__PERF_LITE__);
   try {
     initAliveMotion({ perfLite });
   } catch (e) {

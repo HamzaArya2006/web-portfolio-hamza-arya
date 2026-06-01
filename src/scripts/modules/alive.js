@@ -6,23 +6,43 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ALIVE_BOUND = Symbol('aliveMotionBound');
 
+function canUsePinnedMotion(perfLite = false) {
+  if (perfLite) return false;
+
+  const prefersReduced =
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer =
+    !window.matchMedia || window.matchMedia('(pointer: fine)').matches;
+
+  return (
+    !prefersReduced &&
+    finePointer &&
+    window.innerWidth >= 1280 &&
+    window.innerHeight >= 820
+  );
+}
+
 export function initAliveMotion(options = {}) {
   const perfLite = options.perfLite || false;
+  const enablePinnedMotion = canUsePinnedMotion(perfLite);
   if (document.body[ALIVE_BOUND]) return;
   document.body[ALIVE_BOUND] = true;
 
-  // Add active JS class for layouts
-  document.documentElement.classList.add('js-active');
+  // Only opt into full-screen pinned layouts when the viewport can safely support them.
+  document.documentElement.classList.toggle('js-active', enablePinnedMotion);
 
   // Defer slightly to ensure DOM is ready
   setTimeout(() => {
     initHeroAnimations({ perfLite });
-    initStorySequence({ perfLite });
-    initServicesAnimation({ perfLite });
-    initAboutAnimation({ perfLite });
-    initProjectsAnimation({ perfLite });
+    initStorySequence({ perfLite, enablePinnedMotion });
+    initServicesAnimation({ perfLite, enablePinnedMotion });
+    initAboutAnimation({ perfLite, enablePinnedMotion });
+    initProjectsAnimation({ perfLite, enablePinnedMotion });
     initMagneticButtons({ perfLite });
-    initCustomCursor();
+    if (enablePinnedMotion) {
+      initCustomCursor();
+    }
     // createScrollMeter({ perfLite }); // Removed per user request
     bindSceneSections();
     bindProjectChapters();
@@ -114,14 +134,14 @@ function initHeroAnimations({ perfLite = false } = {}) {
   }
 }
 
-function initStorySequence({ perfLite = false } = {}) {
+function initStorySequence({ perfLite = false, enablePinnedMotion = false } = {}) {
   const storyContainer = document.querySelector('.gsap-story-section');
   const cards = document.querySelectorAll('.gsap-card');
   const textGroup = document.querySelector('.gsap-story-text');
 
   if (!storyContainer || cards.length === 0) return;
 
-  if (perfLite) {
+  if (perfLite || !enablePinnedMotion) {
     gsap.fromTo(cards,
       { y: 50, opacity: 0 },
       {
@@ -175,7 +195,7 @@ function initStorySequence({ perfLite = false } = {}) {
   tl.to({}, { duration: 0.8 });
 }
 
-function initServicesAnimation({ perfLite = false } = {}) {
+function initServicesAnimation({ perfLite = false, enablePinnedMotion = false } = {}) {
   const section = document.querySelector('.gsap-services-section');
   const container = document.querySelector('.gsap-services-container');
   const cards = gsap.utils.toArray('.gsap-services-container .service-card');
@@ -183,7 +203,7 @@ function initServicesAnimation({ perfLite = false } = {}) {
 
   if (!section || !container || !cards.length) return;
 
-  if (perfLite || window.innerWidth < 1024) {
+  if (perfLite || !enablePinnedMotion) {
     gsap.fromTo(cards,
       { y: 40, opacity: 0 },
       {
@@ -261,7 +281,7 @@ function initServicesAnimation({ perfLite = false } = {}) {
   tl.to({}, { duration: 0.8 });
 }
 
-function initAboutAnimation({ perfLite = false } = {}) {
+function initAboutAnimation({ perfLite = false, enablePinnedMotion = false } = {}) {
   const section = document.querySelector('.gsap-about-section');
   const left = document.querySelector('.gsap-about-left');
   const bento = document.querySelector('.bento-grid');
@@ -284,9 +304,7 @@ function initAboutAnimation({ perfLite = false } = {}) {
     spans = textElem.querySelectorAll('span');
   }
 
-  const isDesktop = window.innerWidth >= 1024;
-
-  if (perfLite || !isDesktop) {
+  if (perfLite || !enablePinnedMotion) {
     // Fallback: simple fade in
     if (spans.length) {
       gsap.fromTo(spans,
@@ -366,7 +384,7 @@ function initAboutAnimation({ perfLite = false } = {}) {
 
 
 
-function initProjectsAnimation({ perfLite = false } = {}) {
+function initProjectsAnimation({ perfLite = false, enablePinnedMotion = false } = {}) {
   const section = document.querySelector('.gsap-projects-section');
   const wrapper = document.querySelector('.gsap-projects-wrapper');
   const left = document.querySelector('.gsap-projects-left');
@@ -374,9 +392,7 @@ function initProjectsAnimation({ perfLite = false } = {}) {
 
   if (!section || !wrapper || !cards.length) return;
 
-  const isDesktop = window.innerWidth >= 1024;
-
-  if (perfLite || !isDesktop) {
+  if (perfLite || !enablePinnedMotion) {
     // Lite mode fallback: sequential fade-in
     gsap.fromTo(cards,
       { y: 50, opacity: 0 },

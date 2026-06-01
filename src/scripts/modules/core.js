@@ -16,6 +16,13 @@ export function initTheme() {
 export function bindSmoothScroll() {
   const links = document.querySelectorAll('a[href^="#"]');
   const useSmooth = !document.documentElement.classList.contains('perf-lite');
+  const getHeaderOffset = () => {
+    const header = document.querySelector('header[data-sticky]');
+    const nav = header ? header.querySelector('nav') : null;
+    const rect = (nav || header)?.getBoundingClientRect();
+    return rect ? Math.ceil(rect.height + 24) : 0;
+  };
+
   links.forEach((link) => {
     link.addEventListener('click', (e) => {
       const targetId = link.getAttribute('href');
@@ -23,7 +30,21 @@ export function bindSmoothScroll() {
       const target = document.querySelector(targetId);
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: useSmooth ? 'smooth' : 'auto', block: 'start' });
+        const top = Math.max(
+          0,
+          window.scrollY + target.getBoundingClientRect().top - getHeaderOffset()
+        );
+        const lenis = window.__LENIS__;
+
+        if (lenis && typeof lenis.scrollTo === 'function') {
+          lenis.scrollTo(top, {
+            duration: useSmooth ? 1 : 0,
+            immediate: !useSmooth
+          });
+          return;
+        }
+
+        window.scrollTo({ top, behavior: useSmooth ? 'smooth' : 'auto' });
       }
     });
   });
@@ -88,5 +109,4 @@ export function bindRevealOnScroll() {
   requestAnimationFrame(revealVisible);
   setTimeout(revealVisible, 150);
 }
-
 
