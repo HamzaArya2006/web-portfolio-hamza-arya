@@ -722,7 +722,7 @@
 
   /* Hero section: paint containment so pseudo-elements don't contribute to CLS */
   section#top.hero-pro {
-    contain: paint;
+    /* contain: paint; - disabled to prevent scroll and effect layout bugs */
   }
 
   /* Hero pro: subtle mesh + vignette to match other sections */

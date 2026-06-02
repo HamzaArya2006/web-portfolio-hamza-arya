@@ -401,6 +401,12 @@ export function initHeroParticles(options = {}) {
       lookY = dy * 0.0006;
     }
 
+    // Pre-calculate sines and cosines once per frame to save CPU
+    const cosX = Math.cos(lookY * -1);
+    const sinX = Math.sin(lookY * -1);
+    const cosY = Math.cos(lookX);
+    const sinY = Math.sin(lookX);
+
     if (glitchTimer > 0) glitchTimer--;
     const isGlitching = glitchTimer > 0 || Math.random() < 0.015;
 
@@ -446,11 +452,6 @@ export function initHeroParticles(options = {}) {
         const faceIdx = idx - 120;
         const node = FACE_NODES[faceIdx];
         
-        const cosX = Math.cos(lookY * -1);
-        const sinX = Math.sin(lookY * -1);
-        const cosY = Math.cos(lookX);
-        const sinY = Math.sin(lookX);
-        
         let nx = node.x * scaleFactor;
         let ny = node.y * scaleFactor;
         let nz = node.z * scaleFactor;
@@ -463,7 +464,7 @@ export function initHeroParticles(options = {}) {
         let ry = ny * cosX - rz * sinX;
         rz = ny * sinX + rz * cosX;
 
-        // Elastic Mouse Distortion
+        // Elastic Mouse Distortion (Optimized distance squared check)
         const faceCX = width * 0.65;
         const faceCY = height / 2;
         let globalNx = faceCX + rx;
@@ -472,8 +473,9 @@ export function initHeroParticles(options = {}) {
         if (mouse.x !== null && mouse.y !== null) {
           const mdx = globalNx - mouse.x;
           const mdy = globalNy - mouse.y;
-          const dist = Math.hypot(mdx, mdy) || 0.001; // Prevent NaN freeze!
-          if (dist < 180) {
+          const distSq = mdx * mdx + mdy * mdy;
+          if (distSq < 32400) { // 180 * 180 = 32400
+            const dist = Math.sqrt(distSq) || 0.001;
             const force = Math.pow((180 - dist) / 180, 2);
             // Elastic push outward and back in Z
             rx += (mdx / dist) * force * 50;
@@ -922,13 +924,6 @@ export function initHeroParticles(options = {}) {
   function animate() {
     time++;
 
-    if (currentSectionMode === 'robot') {
-      ctx.clearRect(0, 0, width, height);
-      animationFrameId = requestAnimationFrame(animate);
-      canvas.dataset.animationFrameId = animationFrameId;
-      return;
-    }
-
     // Crucial: reset blending mode before clearing canvas!
     ctx.globalCompositeOperation = 'source-over';
 
@@ -991,13 +986,13 @@ export function initHeroParticles(options = {}) {
         drawParticle(p);
       });
 
-      // Draw pre-baked geometry (O(1) Ultra-Fast Rendering)
+      // Draw pre-baked geometry (O(1) Ultra-Fast Rendering - optimized sparse wireframe)
       if (currentSectionMode === 'robot') {
         ctx.lineWidth = 1.0;
         ctx.strokeStyle = (glitchTimer > 0 || Math.random() < 0.005) ? `rgba(255, 0, 255, 0.45)` : `rgba(0, 243, 255, 0.35)`;
         
         ctx.beginPath();
-        for (let i = 0; i < PRE_BAKED_CONNECTIONS.length; i++) {
+        for (let i = 0; i < PRE_BAKED_CONNECTIONS.length; i += 2) {
           const [a, b] = PRE_BAKED_CONNECTIONS[i];
           const p1 = particles[120 + a];
           const p2 = particles[120 + b];
@@ -1183,11 +1178,11 @@ export function initHeroParticles(options = {}) {
     currentSpeedLimit = speed;
     currentSizeMultiplier = sizeMultiplier;
 
-    // Lightweight adjustment: fade canvas on hero section to save composite/paint overhead
+    // Lightweight adjustment: show subtle particles on hero section, fully load on other sections
     if (canvas) {
       canvas.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
       if (mode === 'robot') {
-        canvas.style.opacity = '0';
+        canvas.style.opacity = '0.4';
       } else {
         canvas.style.opacity = '0.5';
       }
