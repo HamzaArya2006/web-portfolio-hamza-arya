@@ -132,41 +132,11 @@ const SHAPES = {
 // Particle shapes & colors
 const TYPES = ['circle', 'plus', 'square'];
 const COLORS = [
-  'rgba(0, 243, 255, 0.85)',   // Neon Cyan
-  'rgba(11, 72, 221, 0.85)',   // Deep Blue
-  'rgba(255, 0, 255, 0.8)',    // Magenta (Glitch)
-  'rgba(0, 180, 255, 0.7)'     // Lighter Blue
+  'rgba(59, 130, 246, 0.75)',
+  'rgba(99, 102, 241, 0.75)',
+  'rgba(168, 85, 247, 0.65)',
+  'rgba(255, 255, 255, 0.65)'
 ];
-
-const FACE_NODES = [
-  // Outer silhouette
-  {x: 0, y: -140, z: -20}, {x: 40, y: -130, z: -10}, {x: 80, y: -100, z: 0}, {x: 110, y: -50, z: 20}, {x: 120, y: 10, z: 30}, 
-  {x: 110, y: 50, z: 20}, {x: 130, y: 70, z: 40}, {x: 100, y: 80, z: 30}, {x: 105, y: 100, z: 35}, {x: 80, y: 120, z: 10}, 
-  {x: 50, y: 140, z: 0}, {x: 0, y: 150, z: -10}, {x: -50, y: 130, z: -20}, {x: -90, y: 90, z: -40}, {x: -110, y: 40, z: -50}, 
-  {x: -120, y: -20, z: -50}, {x: -100, y: -80, z: -40}, {x: -60, y: -120, z: -30}, {x: -30, y: -135, z: -25},
-  // Inner structures
-  {x: 20, y: -100, z: -10}, {x: 60, y: -70, z: 10}, {x: 80, y: -20, z: 20}, {x: 80, y: 30, z: 20}, {x: 50, y: 60, z: 10},
-  {x: 10, y: 80, z: 0}, {x: -30, y: 60, z: -20}, {x: -60, y: 20, z: -30}, {x: -60, y: -30, z: -30}, {x: -30, y: -70, z: -20},
-  {x: 30, y: -40, z: 0}, {x: 50, y: -10, z: 10}, {x: 40, y: 30, z: 0}, {x: 10, y: 40, z: -10}, {x: -20, y: 10, z: -20}, {x: -20, y: -30, z: -20},
-  {x: 20, y: -60, z: -10}, {x: 35, y: 80, z: -5}, {x: 65, y: 100, z: 5}, {x: 90, y: 20, z: 25}, {x: 100, y: -30, z: 25}, {x: 80, y: -90, z: 5},
-  {x: 40, y: -110, z: -10}, {x: -20, y: -110, z: -20}, {x: -50, y: -90, z: -30}, {x: -80, y: -40, z: -40}, {x: -80, y: 10, z: -40}, {x: -70, y: 60, z: -30},
-  {x: -40, y: 100, z: -20}, {x: 10, y: 110, z: -5}, {x: 45, y: -55, z: 0}, {x: 60, y: 15, z: 10}, {x: 85, y: 50, z: 15}, {x: 75, y: -10, z: 15},
-  // Extra detail points
-  {x: 60, y: -10, z: 15}, {x: 90, y: 40, z: 20}, {x: 70, y: 70, z: 10}, {x: 30, y: 100, z: -5}, {x: -10, y: 70, z: -15}, {x: -40, y: 40, z: -25},
-  {x: -10, y: -50, z: -15}, {x: 10, y: -20, z: -5}, {x: 40, y: 10, z: 5}, {x: 20, y: 60, z: -5}, {x: -50, y: -10, z: -25}, {x: -30, y: 30, z: -20}
-];
-
-// Pre-bake the face connections ONCE so we don't calculate them every frame (O(1) instead of O(N^2))
-const PRE_BAKED_CONNECTIONS = [];
-for (let i = 0; i < FACE_NODES.length; i++) {
-  for (let j = i + 1; j < FACE_NODES.length; j++) {
-    const dx = FACE_NODES[i].x - FACE_NODES[j].x;
-    const dy = FACE_NODES[i].y - FACE_NODES[j].y;
-    if (Math.hypot(dx, dy) < 48) {
-      PRE_BAKED_CONNECTIONS.push([i, j]);
-    }
-  }
-}
 
 export function initHeroParticles(options = {}) {
   const canvas = document.getElementById('hero-particles-canvas');
@@ -189,13 +159,8 @@ export function initHeroParticles(options = {}) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  // HMR Failsafe: Kill any existing ghost loops spawned by Vite hot-reloads
-  if (canvas.dataset.animationFrameId) {
-    cancelAnimationFrame(parseInt(canvas.dataset.animationFrameId));
-  }
-
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const particleCount = 220; // Reduced from 300 for maximum performance
+  const particleCount = 300;
   const particles = [];
 
   let width = 0;
@@ -219,8 +184,10 @@ export function initHeroParticles(options = {}) {
     targetY: null
   };
 
-  // Glitch effect state
+  // State variables for Holographic Glitch Grid
   let glitchTimer = 0;
+  let isGlitching = false;
+  let glitchIntensity = 0;
 
   // State variables for bento mode
   let hoveredBentoTile = null;
@@ -306,15 +273,11 @@ export function initHeroParticles(options = {}) {
   function initParticles() {
     for (let i = 0; i < particleCount; i++) {
       particles.push({
-        id: i,
         x: Math.random() * width,
         y: Math.random() * height,
-        z: (Math.random() - 0.5) * 200,
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
-        vz: (Math.random() - 0.5) * 0.5,
         size: Math.random() * 2.5 + 1.2,
-        scaleZ: 1.0,
         type: TYPES[Math.floor(Math.random() * TYPES.length)],
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
         phase: Math.random() * TAU,
@@ -388,149 +351,73 @@ export function initHeroParticles(options = {}) {
 
   // --- SECTION-SPECIFIC LOGIC ---
 
-  // 1. Holographic Wireframe AI Mode (Hero)
+  // 1. Holographic Glitch Grid (Hero)
   function updateRobotMode() {
     let lookX = 0;
     let lookY = 0;
 
+    const mx = mouse.x !== null ? mouse.x : width / 2;
+    const my = mouse.y !== null ? mouse.y : height / 2;
+
     if (mouse.x !== null && mouse.y !== null) {
       const dx = mouse.x - width / 2;
       const dy = mouse.y - height / 2;
-      // 3D rotation angles mapping
-      lookX = dx * 0.0006;
-      lookY = dy * 0.0006;
+      lookX = dx * 0.08;
+      lookY = dy * 0.08;
     }
 
-    // Pre-calculate sines and cosines once per frame to save CPU
-    const cosX = Math.cos(lookY * -1);
-    const sinX = Math.sin(lookY * -1);
-    const cosY = Math.cos(lookX);
-    const sinY = Math.sin(lookX);
+    if (isGlitching) {
+      glitchTimer--;
+      if (glitchTimer <= 0) isGlitching = false;
+    }
 
-    if (glitchTimer > 0) glitchTimer--;
-    const isGlitching = glitchTimer > 0 || Math.random() < 0.015;
-
-    const perspective = 300;
-
+    // A rotating 3D Fibonacci sphere mesh
     particles.forEach((p, idx) => {
-      let tx, ty, tz;
-
-      if (idx < 120) {
-        // SOUNDWAVE (Left side) - Multiple overlapping frequencies for realism
-        const bars = 15;
-        const barIndex = idx % bars;
-        const particleInBar = Math.floor(idx / bars);
-        const totalInBar = 120 / bars;
-        
-        // Complex perlin-like noise simulation
-        const freq1 = Math.sin(time * 0.1 + barIndex * 0.5);
-        const freq2 = Math.cos(time * 0.07 + barIndex * 0.3) * 0.5;
-        const freq3 = Math.sin(time * 0.15 - barIndex * 0.1) * 0.25;
-        const compoundFreq = freq1 + freq2 + freq3;
-        
-        const barHeight = 40 + Math.abs(compoundFreq) * 140 * scaleFactor;
-        
-        // Soundwave stays slightly further back
-        tz = 80; 
-        
-        const waveStartX = width * 0.18;
-        const barSpacing = 16 * scaleFactor;
-        tx = waveStartX + barIndex * barSpacing;
-        
-        const yOffset = (particleInBar / (totalInBar - 1) - 0.5) * barHeight;
-        ty = height / 2 + yOffset;
-
-        if (isGlitching && Math.random() > 0.6) {
-          tx += (Math.random() - 0.5) * 40;
-          p.color = Math.random() > 0.5 ? 'rgba(0, 243, 255, 0.9)' : 'rgba(255, 0, 255, 0.9)';
-        } else {
-          p.color = 'rgba(0, 243, 255, 0.85)';
-        }
-
-      } else if (idx < 120 + FACE_NODES.length) {
-        // AI WIREFRAME FACE (Right side) - True 3D projection
-        const faceIdx = idx - 120;
-        const node = FACE_NODES[faceIdx];
-        
-        let nx = node.x * scaleFactor;
-        let ny = node.y * scaleFactor;
-        let nz = node.z * scaleFactor;
-
-        // Apply Y-axis rotation
-        let rx = nx * cosY + nz * sinY;
-        let rz = -nx * sinY + nz * cosY;
-        
-        // Apply X-axis rotation
-        let ry = ny * cosX - rz * sinX;
-        rz = ny * sinX + rz * cosX;
-
-        // Elastic Mouse Distortion (Optimized distance squared check)
-        const faceCX = width * 0.65;
-        const faceCY = height / 2;
-        let globalNx = faceCX + rx;
-        let globalNy = faceCY + ry;
-        
-        if (mouse.x !== null && mouse.y !== null) {
-          const mdx = globalNx - mouse.x;
-          const mdy = globalNy - mouse.y;
-          const distSq = mdx * mdx + mdy * mdy;
-          if (distSq < 32400) { // 180 * 180 = 32400
-            const dist = Math.sqrt(distSq) || 0.001;
-            const force = Math.pow((180 - dist) / 180, 2);
-            // Elastic push outward and back in Z
-            rx += (mdx / dist) * force * 50;
-            ry += (mdy / dist) * force * 50;
-            rz -= force * 100; 
-          }
-        }
-
-        // Breathing effect
-        rx += Math.sin(time * 0.02 + faceIdx) * 3;
-        ry += Math.cos(time * 0.025 + faceIdx) * 3;
-
-        tx = faceCX + rx;
-        ty = faceCY + ry;
-        tz = rz;
-        
-        if (isGlitching && Math.random() > 0.8) {
-          tx += (Math.random() - 0.5) * 60;
-          tz += (Math.random() - 0.5) * 60;
-          p.color = Math.random() > 0.5 ? 'rgba(255, 0, 255, 0.9)' : 'rgba(11, 72, 221, 0.9)';
-        } else {
-          p.color = idx % 3 === 0 ? 'rgba(0, 243, 255, 0.85)' : 'rgba(11, 72, 221, 0.85)';
-        }
-
-      } else {
-        // FREE ROAMING DUST
-        tx = p.x + (Math.random() - 0.5) * 10;
-        ty = p.y + (Math.random() - 0.5) * 10;
-        tz = p.z + (Math.random() - 0.5) * 10;
-        
-        tx += (width * 0.65 - p.x) * 0.005;
-        ty += (height / 2 - p.y) * 0.005;
-        tz += (0 - p.z) * 0.005;
-        p.color = 'rgba(0, 243, 255, 0.3)';
+      let tx, ty;
+      
+      const phi = Math.acos(1 - 2 * (idx + 0.5) / particleCount);
+      const theta = Math.PI * (1 + Math.sqrt(5)) * idx;
+      
+      // Rotate the sphere
+      const rotationY = time * 0.005 + mx * 0.0015;
+      const rotationX = my * 0.0015;
+      
+      // Calculate 3D position
+      let x = Math.sin(phi) * Math.cos(theta);
+      let y = Math.cos(phi);
+      let z = Math.sin(phi) * Math.sin(theta);
+      
+      // Apply Y rotation
+      const cosY = Math.cos(rotationY);
+      const sinY = Math.sin(rotationY);
+      let x1 = x * cosY - z * sinY;
+      let z1 = x * sinY + z * cosY;
+      
+      // Apply X rotation
+      const cosX = Math.cos(rotationX);
+      const sinX = Math.sin(rotationX);
+      let y1 = y * cosX - z1 * sinX;
+      let z2 = y * sinX + z1 * cosX;
+      
+      // Perspective projection scale (optional, adds depth)
+      const perspective = 400 / (400 - z2 * 100);
+      
+      const radius = 220 * scaleFactor;
+      
+      tx = width / 2 + x1 * radius * perspective + lookX;
+      ty = height / 2 + y1 * radius * perspective + lookY;
+      
+      // Glitch distortion
+      if (isGlitching && Math.random() > 0.6) {
+        tx += (Math.random() - 0.5) * 150 * glitchIntensity;
+        ty += (Math.random() - 0.5) * 50 * glitchIntensity; // Mostly horizontal glitch
       }
 
-      // Spring physics
-      p.vx = (p.vx + (tx - p.x) * 0.09) * 0.78;
-      p.vy = (p.vy + (ty - p.y) * 0.09) * 0.78;
-      p.vz = (p.vz + (tz - p.z) * 0.09) * 0.78;
-      
-      const speed = Math.hypot(p.vx, p.vy, p.vz);
-      if (speed > 8.0) {
-        p.vx = (p.vx / speed) * 8.0;
-        p.vy = (p.vy / speed) * 8.0;
-        p.vz = (p.vz / speed) * 8.0;
-      }
-      
+      p.vx = (p.vx + (tx - p.x) * 0.08) * 0.82;
+      p.vy = (p.vy + (ty - p.y) * 0.08) * 0.82;
+      limitSpeed(p, isGlitching ? 20.0 : 6.0);
       p.x += p.vx;
       p.y += p.vy;
-      p.z += p.vz;
-      
-      // Calculate 3D scale based on depth
-      const pz = perspective + p.z;
-      p.scaleZ = pz > 1 ? perspective / pz : 0.01;
     });
   }
 
@@ -865,12 +752,6 @@ export function initHeroParticles(options = {}) {
 
   function drawParticle(p, idx) {
     let drawSize = p.size * currentSizeMultiplier;
-    
-    // Apply 3D scale if in robot mode
-    if (currentSectionMode === 'robot' && p.scaleZ) {
-      drawSize *= p.scaleZ;
-    }
-
     if (activeMorph) {
       drawSize = p.size * 2.2 * currentSizeMultiplier;
     } else if (currentSectionMode === 'racing' && p.raceBoost > 0) {
@@ -878,7 +759,14 @@ export function initHeroParticles(options = {}) {
     }
 
     let drawColor = p.color;
-    if (currentSectionMode === 'fight') {
+    if (currentSectionMode === 'robot') {
+      if (isGlitching) {
+        drawColor = Math.random() > 0.5 ? 'rgba(6, 182, 212, 0.9)' : 'rgba(236, 72, 153, 0.9)'; // Cyan and Magenta glitch
+      } else {
+        // Core network colors: Electric Blue & deep Cyan
+        drawColor = idx % 3 === 0 ? 'rgba(56, 189, 248, 0.85)' : 'rgba(14, 165, 233, 0.6)';
+      }
+    } else if (currentSectionMode === 'fight') {
       if (p.flash > 0) {
         drawColor = `rgba(255, 255, 255, ${0.5 + p.flash / 12})`;
       } else {
@@ -889,13 +777,6 @@ export function initHeroParticles(options = {}) {
     }
 
     ctx.save();
-    
-    // Soft glow for realism in robot mode
-    if (currentSectionMode === 'robot') {
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = drawColor;
-    }
-    
     ctx.translate(p.x, p.y);
     ctx.rotate(p.angle);
     ctx.strokeStyle = drawColor;
@@ -924,9 +805,6 @@ export function initHeroParticles(options = {}) {
   function animate() {
     time++;
 
-    // Crucial: reset blending mode before clearing canvas!
-    ctx.globalCompositeOperation = 'source-over';
-
     const fade = currentSectionMode === 'racing' ? 0.12 : 0.18;
     ctx.fillStyle = `rgba(0, 0, 0, ${fade})`;
     ctx.fillRect(0, 0, width, height);
@@ -941,7 +819,10 @@ export function initHeroParticles(options = {}) {
       }
     }
 
-    // Removed old robot timers
+    // Interactive pulse from mouse
+    if (currentSectionMode === 'robot' && !isGlitching && mouse.x !== null) {
+        // subtle pulse ring
+    }
 
     if (activeMorph) {
       particles.forEach((p, idx) => {
@@ -966,13 +847,6 @@ export function initHeroParticles(options = {}) {
         updateHeartMode();
       }
 
-      // Z-sorting is unnecessary with additive blending, removing it saves massive CPU!
-      if (currentSectionMode === 'robot') {
-        ctx.globalCompositeOperation = 'screen';
-      } else {
-        ctx.globalCompositeOperation = 'source-over';
-      }
-
       particles.forEach((p, idx) => {
         p.angle += p.rotationSpeed;
 
@@ -983,50 +857,37 @@ export function initHeroParticles(options = {}) {
         if (!isStructured) {
           applyCursorRepulsion(p);
         }
-        drawParticle(p);
+        drawParticle(p, idx);
       });
 
-      // Draw pre-baked geometry (O(1) Ultra-Fast Rendering - optimized sparse wireframe)
-      if (currentSectionMode === 'robot') {
-        ctx.lineWidth = 1.0;
-        ctx.strokeStyle = (glitchTimer > 0 || Math.random() < 0.005) ? `rgba(255, 0, 255, 0.45)` : `rgba(0, 243, 255, 0.35)`;
-        
-        ctx.beginPath();
-        for (let i = 0; i < PRE_BAKED_CONNECTIONS.length; i += 2) {
-          const [a, b] = PRE_BAKED_CONNECTIONS[i];
-          const p1 = particles[120 + a];
-          const p2 = particles[120 + b];
-          if (!p1 || !p2) continue;
-          
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        }
-        ctx.stroke();
-        
-      } else if (currentSectionMode === 'constellation') {
-        // Fast O(N) random connecting for constellation mode
-        ctx.lineWidth = 0.6;
-        ctx.strokeStyle = `rgba(99, 102, 241, 0.2)`;
-        ctx.beginPath();
+      // Draw grid lines
+      if (currentSectionMode === 'constellation' || (currentSectionMode === 'robot' && !isGlitching)) {
+        ctx.lineWidth = currentSectionMode === 'robot' ? 0.35 : 0.6;
+        const connectDist = currentSectionMode === 'robot' ? 65 : 85;
         for (let i = 0; i < particles.length; i++) {
           const p1 = particles[i];
-          for (let j = 1; j < 5; j++) {
-            if (i + j >= particles.length) break;
-            const p2 = particles[i + j];
-            if (Math.abs(p1.x - p2.x) < 80 && Math.abs(p1.y - p2.y) < 80) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < connectDist) {
+              const alpha = ((connectDist - dist) / connectDist) * (currentSectionMode === 'robot' ? 0.4 : 0.26);
+              const color = currentSectionMode === 'robot' ? `rgba(56, 189, 248, ${alpha})` : `rgba(99, 102, 241, ${alpha})`;
+              ctx.strokeStyle = color;
+              ctx.beginPath();
               ctx.moveTo(p1.x, p1.y);
               ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
             }
           }
         }
-        ctx.stroke();
       }
     }
 
-    // Holographic effects complete
+    // Removed speech bubbles
 
     animationFrameId = requestAnimationFrame(animate);
-    canvas.dataset.animationFrameId = animationFrameId;
   }
 
   // --- LISTENERS & BINDINGS ---
@@ -1045,18 +906,32 @@ export function initHeroParticles(options = {}) {
 
   function handleClickBurst(e) {
     if (currentSectionMode === 'robot') {
-      // Trigger glitch
-      glitchTimer = 20; 
-      
-      // Localized burst
-      particles.forEach((p, idx) => {
-        const pdx = p.x - e.clientX;
-        const pdy = p.y - e.clientY;
-        const pdist = Math.hypot(pdx, pdy) || 1;
-        if (pdist < 180) {
-          p.vx += (pdx / pdist) * randomBetween(6, 12);
-          p.vy += (pdy / pdist) * randomBetween(6, 12);
-          if (idx % 2 === 0) p.color = 'rgba(255, 0, 255, 0.9)'; // Glitch magenta
+      // 1. Guard against non-numeric coordinates (e.g. keyboard triggers)
+      if (typeof e.clientX !== 'number' || typeof e.clientY !== 'number') {
+        return;
+      }
+
+      // 2. Filter out clicks on interactive UI elements (links, buttons, form controls, etc.)
+      if (e.target && e.target.closest('a, button, input, textarea, [role="button"], [data-theme-toggle]')) {
+        return;
+      }
+
+
+
+      // Glitch interaction on click
+      isGlitching = true;
+      glitchIntensity = 1.0 + Math.random();
+      glitchTimer = 45; // ~0.75s
+
+      // Default scatter burst with some glitch chaos
+      particles.forEach(p => {
+        const dx = p.x - e.clientX;
+        const dy = p.y - e.clientY;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 200 * scaleFactor) {
+           const force = (200 * scaleFactor - dist) / 50;
+           p.vx += (dx / dist) * force;
+           p.vy += (dy / dist) * force;
         }
       });
       return;
@@ -1071,7 +946,19 @@ export function initHeroParticles(options = {}) {
     });
   }
 
-  // Removed keyboard easter egg
+  // Keyboard easter egg: press 'g' to force a glitch
+  function handleKeyDown(e) {
+    if (currentSectionMode !== 'robot') return;
+    
+    // Ignore input text areas or form fields
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+
+    if (e.key && e.key.toLowerCase() === 'g') {
+      isGlitching = true;
+      glitchIntensity = 1.0;
+      glitchTimer = 30; // Lasts ~0.5 seconds at 60fps
+    }
+  }
 
   function setMorphTarget(shapeName) {
     if (shapeName === activeMorph) return;
@@ -1178,18 +1065,10 @@ export function initHeroParticles(options = {}) {
     currentSpeedLimit = speed;
     currentSizeMultiplier = sizeMultiplier;
 
-    // Lightweight adjustment: show subtle particles on hero section, fully load on other sections
-    if (canvas) {
-      canvas.style.transition = 'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
-      if (mode === 'robot') {
-        canvas.style.opacity = '0.4';
-      } else {
-        canvas.style.opacity = '0.5';
-      }
-    }
-
     if (previousMode === 'robot' && mode !== 'robot') {
+      isGlitching = false;
       glitchTimer = 0;
+      glitchIntensity = 0;
     }
 
     if (activeMorph && !activeHoveredElement) {
@@ -1206,6 +1085,7 @@ export function initHeroParticles(options = {}) {
   document.addEventListener('mouseleave', handleMouseLeave);
   document.addEventListener('focusin', handleFocusIn);
   document.addEventListener('focusout', handleFocusOut);
+  window.addEventListener('keydown', handleKeyDown);
   window.addEventListener('resize', handleResize);
 
   // Initial trigger & run
@@ -1225,6 +1105,7 @@ export function initHeroParticles(options = {}) {
     document.removeEventListener('mouseleave', handleMouseLeave);
     document.removeEventListener('focusin', handleFocusIn);
     document.removeEventListener('focusout', handleFocusOut);
+    window.removeEventListener('keydown', handleKeyDown);
     scrollTriggers.forEach(t => t.kill());
   };
 }
