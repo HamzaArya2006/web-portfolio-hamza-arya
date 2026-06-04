@@ -147,7 +147,7 @@ export function initHeroParticles(options = {}) {
   const finePointer =
     !window.matchMedia || window.matchMedia('(pointer: fine)').matches;
   const compactViewport =
-    window.innerWidth < 1024 || window.innerHeight < 720;
+    window.innerWidth < 768 || window.innerHeight < 600;
 
   // Respect reduced-motion and skip the heavy canvas on fragile viewport profiles.
   if (prefersReducedMotion || perfLite || !finePointer || compactViewport) {
@@ -659,8 +659,8 @@ export function initHeroParticles(options = {}) {
     });
   }
 
-  // 7. Heart Mode (Contact)
-  function updateHeartMode() {
+  // 7. Nexus Mode (Contact)
+  function updateNexusMode() {
     let focusRect = null;
     if (focusedInput) {
       focusRect = focusedInput.getBoundingClientRect();
@@ -696,20 +696,35 @@ export function initHeroParticles(options = {}) {
         p.vy = (p.vy + (ty - p.y) * 0.08) * 0.82;
         limitSpeed(p, 6.0);
       } else {
-        const angle = (idx / particleCount) * Math.PI * 2;
-        const sin = Math.sin(angle);
-        const hx = 16 * Math.pow(sin, 3);
-        const hy = -(13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle));
+        // Interactive Nexus / Swirl
+        const angle = (idx / particleCount) * Math.PI * 2 + time * 0.003;
+        const radius = Math.min(width, height) * 0.28 + Math.sin(time * 0.02 + idx) * 60;
+        
+        let tx = width / 2 + Math.cos(angle) * radius;
+        let ty = height / 2 + Math.sin(angle) * radius;
 
-        const pulse = 1.0 + Math.sin(time * 0.08) * 0.07;
-        const scale = Math.min(width, height) * 0.014 * pulse;
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.hypot(dx, dy);
+          
+          if (dist < 350) {
+            const mouseAngle = Math.atan2(dy, dx);
+            const force = (350 - dist) / 350;
+            
+            // Swirl tangentially around the mouse
+            tx = mouse.x - Math.cos(mouseAngle + Math.PI/2) * 120 * force;
+            ty = mouse.y - Math.sin(mouseAngle + Math.PI/2) * 120 * force;
+            
+            // Pull slightly towards mouse
+            tx -= dx * 0.3 * force;
+            ty -= dy * 0.3 * force;
+          }
+        }
 
-        const tx = width / 2 + hx * scale;
-        const ty = height / 2 + hy * scale;
-
-        p.vx = (p.vx + (tx - p.x) * 0.065) * 0.84;
-        p.vy = (p.vy + (ty - p.y) * 0.065) * 0.84;
-        limitSpeed(p, 5.0);
+        p.vx = (p.vx + (tx - p.x) * 0.05) * 0.88;
+        p.vy = (p.vy + (ty - p.y) * 0.05) * 0.88;
+        limitSpeed(p, 6.5);
       }
 
       p.x += p.vx;
@@ -843,8 +858,8 @@ export function initHeroParticles(options = {}) {
         updateConstellationMode();
       } else if (currentSectionMode === 'racing') {
         updateRacingMode();
-      } else if (currentSectionMode === 'heart') {
-        updateHeartMode();
+      } else if (currentSectionMode === 'nexus') {
+        updateNexusMode();
       }
 
       particles.forEach((p, idx) => {
@@ -852,7 +867,7 @@ export function initHeroParticles(options = {}) {
 
         const isStructured = currentSectionMode === 'robot' ||
                             (currentSectionMode === 'bento' && hoveredBentoTile) ||
-                            (currentSectionMode === 'heart' && focusedInput);
+                            (currentSectionMode === 'nexus' && focusedInput);
 
         if (!isStructured) {
           applyCursorRepulsion(p);
@@ -1037,7 +1052,7 @@ export function initHeroParticles(options = {}) {
     { id: '#about', mode: 'bento', speed: 0.6, sizeMultiplier: 0.8 },
     { id: '#skills', mode: 'constellation', speed: 1.0, sizeMultiplier: 1.0 },
     { id: '#projects', mode: 'racing', speed: 2.2, sizeMultiplier: 1.2 },
-    { id: '#contact', mode: 'heart', speed: 0.9, sizeMultiplier: 1.0 }
+    { id: '#contact', mode: 'nexus', speed: 1.2, sizeMultiplier: 1.0 }
   ];
 
   const scrollTriggers = [];

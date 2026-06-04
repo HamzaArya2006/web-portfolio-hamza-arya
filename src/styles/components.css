@@ -128,7 +128,7 @@
     transition: none !important;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     /* Set pinned sections to height 100vh when JS is active and layout is pinned */
     .js-active .gsap-story-section,
     .js-active .gsap-about-section,

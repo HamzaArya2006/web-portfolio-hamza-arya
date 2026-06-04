@@ -18,8 +18,8 @@ function canUsePinnedMotion(perfLite = false) {
   return (
     !prefersReduced &&
     finePointer &&
-    window.innerWidth >= 1280 &&
-    window.innerHeight >= 820
+    window.innerWidth >= 768 &&
+    window.innerHeight >= 600
   );
 }
 

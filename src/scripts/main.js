@@ -108,8 +108,8 @@ window.addEventListener('DOMContentLoaded', () => {
     !prefersReduced &&
     !perfLite &&
     finePointer &&
-    window.innerWidth >= 1024 &&
-    window.innerHeight >= 720;
+    window.innerWidth >= 768 &&
+    window.innerHeight >= 600;
 
   if (allowEnhancedScroll) {
     const lenis = new Lenis({
