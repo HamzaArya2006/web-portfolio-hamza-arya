@@ -131,11 +131,17 @@ const SHAPES = {
 
 // Particle shapes & colors
 const TYPES = ['circle', 'plus', 'square'];
-const COLORS = [
+const COLORS_DARK = [
   'rgba(59, 130, 246, 0.75)',
   'rgba(99, 102, 241, 0.75)',
   'rgba(168, 85, 247, 0.65)',
   'rgba(255, 255, 255, 0.65)'
+];
+const COLORS_LIGHT = [
+  'rgba(37, 99, 235, 0.8)',
+  'rgba(67, 56, 202, 0.8)',
+  'rgba(126, 34, 206, 0.75)',
+  'rgba(15, 23, 42, 0.75)'
 ];
 
 export function initHeroParticles(options = {}) {
@@ -155,6 +161,8 @@ export function initHeroParticles(options = {}) {
     return;
   }
   canvas.style.display = '';
+
+  const isLightMode = () => document.documentElement.classList.contains('light') || document.documentElement.getAttribute('data-theme') === 'light';
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
@@ -194,6 +202,41 @@ export function initHeroParticles(options = {}) {
 
   // State variables for contact mode
   let focusedInput = null;
+
+  // --- AI CORE STATE ---
+  const CORE_SIZE = 60;
+  const RING1_SIZE = 60;
+  const RING2_SIZE = 60;
+  const RING3_SIZE = particleCount - CORE_SIZE - RING1_SIZE - RING2_SIZE;
+  // Note: we still use BODY_START for compatibility with connection logic
+  const BODY_START = 0;
+
+  let robotState = 'idle';   // 'sleeping'|'idle'|'alert'|'curious'|'excited'
+  let mouseVelocity = 0;
+  let mouseVelocityAvg = 0;  // smoothed over many frames (habit tracking)
+  let lastRobotMX = null;
+  let lastRobotMY = null;
+  let idleFrames = 0;
+  const IDLE_THRESHOLD = 90;    // ~1.5s  → alert→idle transition
+  const SLEEP_THRESHOLD = 600;  // ~10s   → idle→sleeping
+
+  // Click rapidity — decays over time, spikes on click
+  let clickRapidity = 0;
+
+  // Dwell: grows when mouse stays within a small radius
+  let dwellX = null;
+  let dwellY = null;
+  let dwellFrames = 0;
+
+  // Autonomous look for sleeping/idle states
+  let autoLookAngle = 0;
+
+  // Blink state
+  let blinkTimer = 0;         // counts down, 0 = no blink
+  let nextBlinkAt = 180 + Math.random() * 240;
+
+  // Per-particle depth cache (for robot coloring)
+  const particleDepth = new Float32Array(particleCount);
 
   function randomBetween(min, max) {
     return min + Math.random() * (max - min);
@@ -279,7 +322,7 @@ export function initHeroParticles(options = {}) {
         vy: (Math.random() - 0.5) * 0.5,
         size: Math.random() * 2.5 + 1.2,
         type: TYPES[Math.floor(Math.random() * TYPES.length)],
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        colorIndex: Math.floor(Math.random() * 4),
         phase: Math.random() * TAU,
         rotationSpeed: (Math.random() - 0.5) * 0.02,
         angle: Math.random() * TAU,
@@ -351,71 +394,188 @@ export function initHeroParticles(options = {}) {
 
   // --- SECTION-SPECIFIC LOGIC ---
 
-  // 1. Holographic Glitch Grid (Hero)
+  // 1. Interactive Robot AI (Hero)
   function updateRobotMode() {
-    let lookX = 0;
-    let lookY = 0;
+    const cx = width / 2;
+    const cy = height / 2;
 
-    const mx = mouse.x !== null ? mouse.x : width / 2;
-    const my = mouse.y !== null ? mouse.y : height / 2;
-
-    if (mouse.x !== null && mouse.y !== null) {
-      const dx = mouse.x - width / 2;
-      const dy = mouse.y - height / 2;
-      lookX = dx * 0.08;
-      lookY = dy * 0.08;
-    }
-
+    // --- Glitch tick ---
     if (isGlitching) {
       glitchTimer--;
-      if (glitchTimer <= 0) isGlitching = false;
+      if (glitchTimer <= 0) { isGlitching = false; glitchIntensity = 0; }
     }
 
-    // A rotating 3D Fibonacci sphere mesh
+    // --- Mouse velocity & habit tracking ---
+    const hasMouse = mouse.x !== null && mouse.y !== null;
+    if (hasMouse) {
+      if (lastRobotMX !== null) {
+        const spd = Math.hypot(mouse.x - lastRobotMX, mouse.y - lastRobotMY);
+        mouseVelocity = mouseVelocity * 0.75 + spd * 0.25;
+        mouseVelocityAvg = mouseVelocityAvg * 0.997 + spd * 0.003; // long-term habit
+      }
+      lastRobotMX = mouse.x;
+      lastRobotMY = mouse.y;
+      idleFrames = 0;
+
+      // Dwell detection: mouse staying within 18px
+      if (dwellX === null) { dwellX = mouse.x; dwellY = mouse.y; dwellFrames = 0; }
+      const dwellDist = Math.hypot(mouse.x - dwellX, mouse.y - dwellY);
+      if (dwellDist < 18) {
+        dwellFrames++;
+      } else {
+        dwellX = mouse.x; dwellY = mouse.y; dwellFrames = 0;
+      }
+    } else {
+      mouseVelocity *= 0.9;
+      idleFrames++;
+      dwellFrames = 0;
+      dwellX = null; dwellY = null;
+      lastRobotMX = null; lastRobotMY = null;
+    }
+
+    // Click rapidity decays
+    clickRapidity = Math.max(0, clickRapidity - 0.008);
+
+    // --- Robot state machine ---
+    if (isGlitching) {
+      robotState = 'excited';
+    } else if (idleFrames > SLEEP_THRESHOLD) {
+      robotState = 'sleeping';
+    } else if (idleFrames > IDLE_THRESHOLD) {
+      robotState = 'idle';
+    } else if (mouseVelocity > 12) {
+      robotState = 'excited';
+    } else if (mouseVelocity > 4 || clickRapidity > 0.3) {
+      robotState = 'curious';
+    } else {
+      robotState = 'alert';
+    }
+
+    // Excited users trigger micro-glitches
+    if (robotState === 'excited' && !isGlitching && Math.random() < 0.018 + clickRapidity * 0.04) {
+      isGlitching = true;
+      glitchIntensity = 0.4 + mouseVelocity / 40;
+      glitchTimer = 12 + Math.floor(mouseVelocity);
+    }
+
+    // Autonomous look target for sleeping/idle
+    autoLookAngle += robotState === 'sleeping' ? 0.003 : 0.007;
+    const autoLookR = robotState === 'sleeping' ? 0.15 : 0.25;
+    const autoLX = cx + Math.cos(autoLookAngle) * cx * autoLookR;
+    const autoLY = cy + Math.sin(autoLookAngle * 0.7) * cy * autoLookR;
+
+    // Effective look target
+    const lookTargetX = hasMouse ? mouse.x : autoLX;
+    const lookTargetY = hasMouse ? mouse.y : autoLY;
+
+    // Normalised look direction (-1..1)
+    const lookNX = (lookTargetX - cx) / (width / 2 + 1);
+    const lookNY = (lookTargetY - cy) / (height / 2 + 1);
+
+    // Breathing / pulse
+    const breatheScale = 1 + Math.sin(time * 0.018) * (robotState === 'sleeping' ? 0.04 : 0.015);
+
+    // Blink
+    nextBlinkAt--;
+    if (nextBlinkAt <= 0) {
+      blinkTimer = 8;
+      nextBlinkAt = 200 + Math.random() * 300 - (clickRapidity * 80);
+    }
+    if (blinkTimer > 0) blinkTimer--;
+    const blinkScale = blinkTimer > 0 ? Math.max(0.05, 1 - (blinkTimer / 8) * 0.95) : 1;
+
+    // Sphere rotation: mirrors head turning toward cursor
+    const sphereRotY = time * 0.003 + lookNX * 0.55;
+    const sphereRotX = lookNY * 0.35;
+    const cosRY = Math.cos(sphereRotY), sinRY = Math.sin(sphereRotY);
+    const cosRX = Math.cos(sphereRotX), sinRX = Math.sin(sphereRotX);
+
+    // Sphere radius reacts to state
+    const baseRadius = 195 * scaleFactor * breatheScale;
+    const excitedJitter = robotState === 'excited' ? (Math.random() - 0.5) * 18 * glitchIntensity : 0;
+    const sphereRadius = baseRadius + excitedJitter;
+
+    // Dwell orbit: particles swirl toward cursor if user dwells
+    const dwellStrength = Math.min(dwellFrames / 120, 1);
+
     particles.forEach((p, idx) => {
       let tx, ty;
-      
-      const phi = Math.acos(1 - 2 * (idx + 0.5) / particleCount);
-      const theta = Math.PI * (1 + Math.sqrt(5)) * idx;
-      
-      // Rotate the sphere
-      const rotationY = time * 0.005 + mx * 0.0015;
-      const rotationX = my * 0.0015;
-      
-      // Calculate 3D position
-      let x = Math.sin(phi) * Math.cos(theta);
-      let y = Math.cos(phi);
-      let z = Math.sin(phi) * Math.sin(theta);
-      
-      // Apply Y rotation
-      const cosY = Math.cos(rotationY);
-      const sinY = Math.sin(rotationY);
-      let x1 = x * cosY - z * sinY;
-      let z1 = x * sinY + z * cosY;
-      
-      // Apply X rotation
-      const cosX = Math.cos(rotationX);
-      const sinX = Math.sin(rotationX);
-      let y1 = y * cosX - z1 * sinX;
-      let z2 = y * sinX + z1 * cosX;
-      
-      // Perspective projection scale (optional, adds depth)
-      const perspective = 400 / (400 - z2 * 100);
-      
-      const radius = 220 * scaleFactor;
-      
-      tx = width / 2 + x1 * radius * perspective + lookX;
-      ty = height / 2 + y1 * radius * perspective + lookY;
-      
-      // Glitch distortion
-      if (isGlitching && Math.random() > 0.6) {
-        tx += (Math.random() - 0.5) * 150 * glitchIntensity;
-        ty += (Math.random() - 0.5) * 50 * glitchIntensity; // Mostly horizontal glitch
+
+      let sx, sy, sz;
+
+      if (idx < CORE_SIZE) {
+        // Core: Dense inner sphere
+        const phi = Math.acos(1 - 2 * (idx + 0.5) / CORE_SIZE);
+        const theta = Math.PI * (1 + Math.sqrt(5)) * idx + time * 0.05;
+        sx = Math.sin(phi) * Math.cos(theta);
+        sy = Math.cos(phi);
+        sz = Math.sin(phi) * Math.sin(theta);
+        
+        // Scale down core radius
+        const r = (sphereRadius * 0.35) * (1 + blinkScale * 0.1); 
+        sx *= r; sy *= r; sz *= r;
+      } else if (idx < CORE_SIZE + RING1_SIZE) {
+        // Ring 1: Horizontal orbit
+        const localIdx = idx - CORE_SIZE;
+        const angle = (localIdx / RING1_SIZE) * TAU + time * 0.02;
+        const r = sphereRadius * 0.7;
+        sx = Math.cos(angle) * r;
+        sy = Math.sin(angle * 2) * 10; // Slight wave
+        sz = Math.sin(angle) * r;
+      } else if (idx < CORE_SIZE + RING1_SIZE + RING2_SIZE) {
+        // Ring 2: Vertical orbit
+        const localIdx = idx - (CORE_SIZE + RING1_SIZE);
+        const angle = (localIdx / RING2_SIZE) * TAU - time * 0.015;
+        const r = sphereRadius * 0.85;
+        sx = Math.cos(angle) * r;
+        sy = Math.sin(angle) * r;
+        sz = Math.cos(angle * 2) * 15;
+      } else {
+        // Ring 3: Data nodes floating around
+        const localIdx = idx - (CORE_SIZE + RING1_SIZE + RING2_SIZE);
+        const phi = Math.acos(1 - 2 * (localIdx + 0.5) / RING3_SIZE);
+        const theta = Math.PI * (1 + Math.sqrt(5)) * localIdx - time * 0.008;
+        const r = sphereRadius * 1.1 + Math.sin(time * 0.01 + localIdx) * 20;
+        sx = Math.sin(phi) * Math.cos(theta) * r;
+        sy = Math.cos(phi) * r;
+        sz = Math.sin(phi) * Math.sin(theta) * r;
       }
 
-      p.vx = (p.vx + (tx - p.x) * 0.08) * 0.82;
-      p.vy = (p.vy + (ty - p.y) * 0.08) * 0.82;
-      limitSpeed(p, isGlitching ? 20.0 : 6.0);
+      // Add mouse look rotation
+      const sx1 = sx * cosRY - sz * sinRY;
+      const sz1 = sx * sinRY + sz * cosRY;
+      const sy1 = sy * cosRX - sz1 * sinRX;
+      const sz2 = sy * sinRX + sz1 * cosRX;
+
+      // Store depth for coloring
+      particleDepth[idx] = sz2 / sphereRadius; 
+
+      const perspective = 420 / (420 - sz2 * 110 / sphereRadius);
+      tx = cx + sx1 * perspective;
+      ty = cy + sy1 * perspective;
+
+      // Dwell: particles slowly orbit toward cursor
+      if (dwellStrength > 0 && hasMouse) {
+        const dDX = mouse.x - tx;
+        const dDY = mouse.y - ty;
+        const dDist = Math.hypot(dDX, dDY) + 1;
+        const orbitAngle = Math.atan2(dDY, dDX) + Math.PI / 2;
+        tx += Math.cos(orbitAngle) * 30 * dwellStrength * (dDist < 120 ? 1 : 0);
+        ty += Math.sin(orbitAngle) * 30 * dwellStrength * (dDist < 120 ? 1 : 0);
+      }
+
+      // Glitch distortion
+      if (isGlitching && Math.random() > 0.55) {
+        tx += (Math.random() - 0.5) * 160 * glitchIntensity;
+        ty += (Math.random() - 0.5) * 55 * glitchIntensity;
+      }
+
+      // Spring toward target — eyes are snappier
+      const spring = 0.07;
+      const damp = 0.83;
+      p.vx = (p.vx + (tx - p.x) * spring) * damp;
+      p.vy = (p.vy + (ty - p.y) * spring) * damp;
+      limitSpeed(p, isGlitching ? 22 : (6.5));
       p.x += p.vx;
       p.y += p.vy;
     });
@@ -773,13 +933,35 @@ export function initHeroParticles(options = {}) {
       drawSize = p.size * 1.8 * currentSizeMultiplier;
     }
 
-    let drawColor = p.color;
+    const isLight = isLightMode();
+    let drawColor = isLight ? COLORS_LIGHT[p.colorIndex] : COLORS_DARK[p.colorIndex];
     if (currentSectionMode === 'robot') {
       if (isGlitching) {
-        drawColor = Math.random() > 0.5 ? 'rgba(6, 182, 212, 0.9)' : 'rgba(236, 72, 153, 0.9)'; // Cyan and Magenta glitch
+        // Frantic colour during glitch
+        const r = Math.random();
+        if (r < 0.35)      drawColor = isLight ? `rgba(8, 145, 178, ${0.8 + Math.random() * 0.2})` : `rgba(6, 182, 212, ${0.8 + Math.random() * 0.2})`;
+        else if (r < 0.65) drawColor = isLight ? `rgba(219, 39, 119, ${0.8 + Math.random() * 0.2})` : `rgba(236, 72, 153, ${0.8 + Math.random() * 0.2})`;
+        else               drawColor = isLight ? `rgba(15, 23, 42, ${0.5 + Math.random() * 0.5})` : `rgba(255,255,255, ${0.5 + Math.random() * 0.5})`;
       } else {
-        // Core network colors: Electric Blue & deep Cyan
-        drawColor = idx % 3 === 0 ? 'rgba(56, 189, 248, 0.85)' : 'rgba(14, 165, 233, 0.6)';
+        // Body sphere: depth-based shading (front = bright, back = dim)
+        let depth = particleDepth[idx]; // -1 (back) to 1 (front)
+        if (isNaN(depth)) depth = 0; // safeguard
+        const t = (depth + 1) / 2;       // 0..1
+        const alpha = 0.3 + t * 0.6;
+
+        if (robotState === 'sleeping') {
+          drawColor = isLight ? `rgba(30, 64, 175, ${alpha * 0.5})` : `rgba(14, 100, 180, ${alpha * 0.5})`;
+        } else if (robotState === 'excited') {
+          // Excited: shift toward purple/magenta
+          drawColor = idx % 3 === 0
+            ? (isLight ? `rgba(126, 34, 206, ${alpha})` : `rgba(168, 85, 247, ${alpha})`)
+            : (isLight ? `rgba(14, 165, 233, ${alpha})` : `rgba(56, 189, 248, ${alpha})`);
+        } else {
+          // Normal: electric-blue gradient by depth
+          drawColor = idx % 4 === 0
+            ? (isLight ? `rgba(37, 99, 235, ${alpha})` : `rgba(99, 179, 255, ${alpha})`)
+            : (isLight ? `rgba(2, 132, 199, ${alpha})` : `rgba(14, 165, 233, ${alpha})`);
+        }
       }
     } else if (currentSectionMode === 'fight') {
       if (p.flash > 0) {
@@ -821,7 +1003,8 @@ export function initHeroParticles(options = {}) {
     time++;
 
     const fade = currentSectionMode === 'racing' ? 0.12 : 0.18;
-    ctx.fillStyle = `rgba(0, 0, 0, ${fade})`;
+    const isLight = isLightMode();
+    ctx.fillStyle = isLight ? `rgba(255, 255, 255, ${fade})` : `rgba(0, 0, 0, ${fade})`;
     ctx.fillRect(0, 0, width, height);
 
     if (mouse.targetX !== null && mouse.targetY !== null) {
@@ -875,10 +1058,10 @@ export function initHeroParticles(options = {}) {
         drawParticle(p, idx);
       });
 
-      // Draw grid lines
-      if (currentSectionMode === 'constellation' || (currentSectionMode === 'robot' && !isGlitching)) {
-        ctx.lineWidth = currentSectionMode === 'robot' ? 0.35 : 0.6;
-        const connectDist = currentSectionMode === 'robot' ? 65 : 85;
+      // Draw connection lines
+      if (currentSectionMode === 'constellation') {
+        ctx.lineWidth = 0.6;
+        const connectDist = 85;
         for (let i = 0; i < particles.length; i++) {
           const p1 = particles[i];
           for (let j = i + 1; j < particles.length; j++) {
@@ -887,9 +1070,8 @@ export function initHeroParticles(options = {}) {
             const dy = p1.y - p2.y;
             const dist = Math.hypot(dx, dy);
             if (dist < connectDist) {
-              const alpha = ((connectDist - dist) / connectDist) * (currentSectionMode === 'robot' ? 0.4 : 0.26);
-              const color = currentSectionMode === 'robot' ? `rgba(56, 189, 248, ${alpha})` : `rgba(99, 102, 241, ${alpha})`;
-              ctx.strokeStyle = color;
+              const alpha = ((connectDist - dist) / connectDist) * 0.26;
+              ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
               ctx.beginPath();
               ctx.moveTo(p1.x, p1.y);
               ctx.lineTo(p2.x, p2.y);
@@ -897,6 +1079,32 @@ export function initHeroParticles(options = {}) {
             }
           }
         }
+      }
+
+      // Robot: connect body sphere particles + draw eye-glow accents
+      if (currentSectionMode === 'robot' && !isGlitching) {
+        ctx.lineWidth = 0.3;
+        const connectDist = 58;
+        for (let i = BODY_START; i < particles.length; i++) {
+          const p1 = particles[i];
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < connectDist) {
+              const depth = (particleDepth[i] + 1) / 2; // 0..1 front bias
+              const alpha = ((connectDist - dist) / connectDist) * 0.35 * depth;
+              ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.stroke();
+            }
+          }
+        }
+
+       
       }
     }
 
@@ -921,38 +1129,39 @@ export function initHeroParticles(options = {}) {
 
   function handleClickBurst(e) {
     if (currentSectionMode === 'robot') {
-      // 1. Guard against non-numeric coordinates (e.g. keyboard triggers)
-      if (typeof e.clientX !== 'number' || typeof e.clientY !== 'number') {
-        return;
-      }
+      if (typeof e.clientX !== 'number' || typeof e.clientY !== 'number') return;
+      if (e.target && e.target.closest('a, button, input, textarea, [role="button"], [data-theme-toggle]')) return;
 
-      // 2. Filter out clicks on interactive UI elements (links, buttons, form controls, etc.)
-      if (e.target && e.target.closest('a, button, input, textarea, [role="button"], [data-theme-toggle]')) {
-        return;
-      }
+      // Spike click-rapidity habit
+      clickRapidity = Math.min(clickRapidity + 0.35, 2.0);
 
-
-
-      // Glitch interaction on click
+      // Scale glitch intensity with how "hyper" the user is
       isGlitching = true;
-      glitchIntensity = 1.0 + Math.random();
-      glitchTimer = 45; // ~0.75s
+      glitchIntensity = 0.8 + clickRapidity * 0.6;
+      glitchTimer = 30 + Math.floor(clickRapidity * 20);
 
-      // Default scatter burst with some glitch chaos
-      particles.forEach(p => {
+      // Force-wake from sleep
+      if (robotState === 'sleeping') {
+        nextBlinkAt = 5;   // immediate blink
+        robotState = 'alert';
+      }
+
+      // Radial scatter from click point (body only; eyes spring back on their own)
+      particles.forEach((p, idx) => {
+        if (idx < BODY_START) return; // don't scatter eyes — let them track
         const dx = p.x - e.clientX;
         const dy = p.y - e.clientY;
-        const dist = Math.hypot(dx, dy);
-        if (dist < 200 * scaleFactor) {
-           const force = (200 * scaleFactor - dist) / 50;
-           p.vx += (dx / dist) * force;
-           p.vy += (dy / dist) * force;
+        const dist = Math.hypot(dx, dy) + 1;
+        if (dist < 220 * scaleFactor) {
+          const force = ((220 * scaleFactor - dist) / 55) * (1 + clickRapidity * 0.4);
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
         }
       });
       return;
     }
 
-    // Default scatter burst
+    // Default scatter burst for other modes
     particles.forEach(p => {
       const angle = Math.random() * TAU;
       const force = Math.random() * 3 + 2;
@@ -1092,16 +1301,46 @@ export function initHeroParticles(options = {}) {
     }
   }
 
+  // Scroll velocity: fast scroll excites the robot
+  let lastScrollY = window.scrollY;
+  function handleScroll() {
+    if (currentSectionMode !== 'robot') return;
+    const delta = Math.abs(window.scrollY - lastScrollY);
+    lastScrollY = window.scrollY;
+    if (delta > 8) {
+      mouseVelocity = Math.min(mouseVelocity + delta * 0.4, 40);
+    }
+  }
+
+  // Double-click: robot does a strong glitch burst
+  function handleDblClick(e) {
+    if (currentSectionMode !== 'robot') return;
+    if (e.target && e.target.closest('a, button, input, textarea')) return;
+    isGlitching = true;
+    glitchIntensity = 2.0;
+    glitchTimer = 60;
+    clickRapidity = Math.min(clickRapidity + 0.8, 2.0);
+    // All body particles burst outward then snap back
+    particles.forEach((p, idx) => {
+      if (idx < BODY_START) return;
+      const angle = Math.random() * TAU;
+      p.vx += Math.cos(angle) * (4 + Math.random() * 6);
+      p.vy += Math.sin(angle) * (4 + Math.random() * 6);
+    });
+  }
+
   // Bind all event listeners
   document.addEventListener('mouseover', handleDocumentOver);
   document.addEventListener('mouseout', handleDocumentOut);
   document.addEventListener('mousemove', handleMouseMove);
   document.addEventListener('click', handleClickBurst);
+  document.addEventListener('dblclick', handleDblClick);
   document.addEventListener('mouseleave', handleMouseLeave);
   document.addEventListener('focusin', handleFocusIn);
   document.addEventListener('focusout', handleFocusOut);
   window.addEventListener('keydown', handleKeyDown);
   window.addEventListener('resize', handleResize);
+  window.addEventListener('scroll', handleScroll, { passive: true });
 
   // Initial trigger & run
   handleResize();
@@ -1113,14 +1352,91 @@ export function initHeroParticles(options = {}) {
   return () => {
     cancelAnimationFrame(animationFrameId);
     window.removeEventListener('resize', handleResize);
+    window.removeEventListener('scroll', handleScroll);
     document.removeEventListener('mouseover', handleDocumentOver);
     document.removeEventListener('mouseout', handleDocumentOut);
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('click', handleClickBurst);
+    document.removeEventListener('dblclick', handleDblClick);
     document.removeEventListener('mouseleave', handleMouseLeave);
     document.removeEventListener('focusin', handleFocusIn);
     document.removeEventListener('focusout', handleFocusOut);
     window.removeEventListener('keydown', handleKeyDown);
     scrollTriggers.forEach(t => t.kill());
+  };
+}
+
+
+export function initDashboardParticles(canvasId, isDarkTheme) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  let width, height;
+  let particles = [];
+  const particleCount = 45;
+  const DASHBOARD_COLORS = [
+    'rgba(245, 158, 11, 0.75)', // amber
+    'rgba(16, 185, 129, 0.75)', // emerald
+    'rgba(244, 63, 94, 0.65)',  // rose
+    'rgba(14, 165, 233, 0.65)'  // sky
+  ];
+
+  function resize() {
+    width = canvas.parentElement.clientWidth;
+    height = canvas.parentElement.clientHeight;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function init() {
+    particles = [];
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        size: Math.random() * 2 + 1,
+        color: DASHBOARD_COLORS[Math.floor(Math.random() * DASHBOARD_COLORS.length)]
+      });
+    }
+  }
+
+  let rafId;
+  function animate() {
+    const isLightMode = () => document.documentElement.classList.contains('light') || document.documentElement.getAttribute('data-theme') === 'light';
+    const isLight = isLightMode();
+    ctx.fillStyle = isLight ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+    ctx.fillRect(0, 0, width, height);
+
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0 || p.x > width) p.vx *= -1;
+      if (p.y < 0 || p.y > height) p.vy *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    });
+
+    rafId = requestAnimationFrame(animate);
+  }
+
+  resize();
+  init();
+  animate();
+
+  window.addEventListener('resize', resize);
+  return () => {
+    cancelAnimationFrame(rafId);
+    window.removeEventListener('resize', resize);
   };
 }

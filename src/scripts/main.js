@@ -12,7 +12,7 @@ import {
   deferHeroAnimations,
 } from './modules/hero.js';
 import { initAliveMotion, refreshAliveMotion } from './modules/alive.js';
-import { initHeroParticles } from './modules/hero-particles.js';
+import { initHeroParticles, initDashboardParticles } from './modules/hero-particles.js';
 import { bindLazyImages } from './modules/media.js';
 import {
   bindMobileNav,
@@ -177,6 +177,11 @@ window.addEventListener('DOMContentLoaded', () => {
     if (isDev) console.error('initHeroParticles failed', e);
   }
   if (!perfLite) {
+    try {
+      initDashboardParticles('dashboard-particles-canvas');
+    } catch (e) {
+      if (isDev) console.error('initDashboardParticles failed', e);
+    }
     try {
       bindHeroSpotlight();
     } catch (_) {}

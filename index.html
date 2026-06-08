@@ -994,8 +994,9 @@
             </div>
 
             <!-- Tile 3: Stats Dashboard -->
-            <div class="bento-tile tile-small flex flex-col justify-between">
-              <div>
+            <div id="dashboard-tile" class="bento-tile tile-small flex flex-col justify-between relative overflow-hidden">
+              <canvas id="dashboard-particles-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-60"></canvas>
+              <div class="relative z-10">
                 <h3 class="bento-title">Metrics</h3>
                 <div class="space-y-2.5 mt-1">
                   <div>
